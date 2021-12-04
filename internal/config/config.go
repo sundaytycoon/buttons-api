@@ -18,6 +18,24 @@ type Database struct {
 	Name     string `mapstructure:"name"`
 }
 
+func (o *Database) DSN() string {
+	op := er.GetOperator()
+
+	if o.Dialect == "mysql" {
+		return fmt.Sprintf(
+			"%s:%s@tcp(%s:%s)/%s?parseTime=true&interpolateParams=true",
+			o.User, o.Password, o.Host, o.Port, o.Name,
+		)
+	} else if o.Dialect == "postges" {
+		return fmt.Sprintf(
+			"user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
+			o.User, o.Password, o.Host, o.Port, o.Name,
+		)
+	} else {
+		panic(er.WrapOp(fmt.Errorf("database's dialect is wrong, [%v]", o), op))
+	}
+}
+
 type EndPoint struct {
 	Host string `mapstructure:"host"`
 	Port string `mapstructure:"port"`

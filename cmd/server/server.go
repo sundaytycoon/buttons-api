@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/spf13/cobra"
+	adaptermysql "github.com/sundaytycoon/profile.me-server/internal/adapter/mysql"
 	"github.com/sundaytycoon/profile.me-server/internal/config"
 	"github.com/sundaytycoon/profile.me-server/internal/server"
 	"github.com/sundaytycoon/profile.me-server/pkg/er"
@@ -33,6 +34,7 @@ func ServerStart() error {
 	d := dig.New()
 	er.PanicError(d.Provide(config.New))
 	er.PanicError(d.Provide(server.New))
+	er.PanicError(d.Provide(adaptermysql.New))
 	er.PanicError(d.Invoke(Main))
 
 	return nil
