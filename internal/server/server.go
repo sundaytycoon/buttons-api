@@ -10,6 +10,9 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/sundaytycoon/profile.me-server/internal/config"
+	serviceuser "github.com/sundaytycoon/profile.me-server/internal/core/service/user"
+	handleruser "github.com/sundaytycoon/profile.me-server/internal/handler/user"
+	repositoryuser "github.com/sundaytycoon/profile.me-server/internal/repository/user"
 	"github.com/sundaytycoon/profile.me-server/pkg/er"
 	"go.uber.org/dig"
 
@@ -24,6 +27,8 @@ type Server struct {
 func New(params struct {
 	dig.In
 	Config *config.Config
+
+	UserRepository *repositoryuser.Repository
 }) *Server {
 
 	r := chi.NewRouter()
@@ -33,6 +38,10 @@ func New(params struct {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+
+	userHandler := handleruser.New(serviceuser.New())
+
+	r.Get("user/:id", userHandler.GetUser)
 
 	return &Server{
 		http: &http.Server{
