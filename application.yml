@@ -1,0 +1,16 @@
+env: # automatically injected by system environment values
+
+httpServer:
+  host: 0.0.0.0
+  port: 4000
+
+grpcServer:
+  host: 0.0.0.0
+  port: 4001
+
+serviceDatabase:
+  host: localhost
+  password: p@ssword
+  user: profileme
+  name: profileme
+  port: 33307

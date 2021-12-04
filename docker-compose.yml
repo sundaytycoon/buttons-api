@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  pm-db:
+    image: mysql:latest
+    container_name: pm-db
+    ports:
+      - "33307:3306"
+    environment:
+      - MYSQL_DATABASE=profileme
+      - MYSQL_USER=profileme
+      - MYSQL_PASSWORD=p@ssword
+      - MYSQL_ROOT_PASSWORD=p@ssword
