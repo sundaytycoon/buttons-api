@@ -5,17 +5,33 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/sundaytycoon/profile.me-server/internal/core/port"
+	"go.uber.org/dig"
+
+	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/mysql"
+	repositoryuser "github.com/sundaytycoon/profile.me-server/internal/repository/user"
+	serviceuser "github.com/sundaytycoon/profile.me-server/internal/service/user"
+	servicestorage "github.com/sundaytycoon/profile.me-server/internal/storage/service"
 )
 
 type Handler struct {
-	userService port.UserService
+	userService userService
 }
 
-func New(userService port.UserService) *Handler {
+func New(params struct {
+	dig.In
+	ServiceDB *mysql.Client
+}) *Handler {
+
+	repositoryUser := repositoryuser.New(params.ServiceDB, servicestorage.New())
+	serviceUser := serviceuser.New(repositoryUser)
+
 	return &Handler{
-		userService: userService,
+		userService: serviceUser,
 	}
+}
+
+func (h *Handler) RouteHTTP(r *chi.Mux) {
+	r.Get("/user/:id", h.GetUser)
 }
 
 func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {

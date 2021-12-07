@@ -1,4 +1,4 @@
-package execdbconn
+package mysql
 
 import (
 	"context"

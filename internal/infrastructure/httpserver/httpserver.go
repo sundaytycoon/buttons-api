@@ -1,4 +1,4 @@
-package server
+package httpserver
 
 import (
 	"context"
@@ -9,12 +9,8 @@ import (
 	"syscall"
 
 	"github.com/rs/zerolog/log"
-	"go.uber.org/dig"
 
 	"github.com/sundaytycoon/profile.me-server/internal/config"
-	serviceuser "github.com/sundaytycoon/profile.me-server/internal/core/service/user"
-	handleruser "github.com/sundaytycoon/profile.me-server/internal/handler/user"
-	repositoryuser "github.com/sundaytycoon/profile.me-server/internal/repository/user"
 	"github.com/sundaytycoon/profile.me-server/pkg/er"
 
 	"github.com/go-chi/chi/v5"
@@ -23,14 +19,10 @@ import (
 
 type Server struct {
 	http *http.Server
+	mux  *chi.Mux
 }
 
-func New(params struct {
-	dig.In
-	Config *config.Config
-
-	UserRepository *repositoryuser.Repository
-}) *Server {
+func New(cfg *config.Config) *Server {
 
 	r := chi.NewRouter()
 
@@ -40,16 +32,21 @@ func New(params struct {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	userHandler := handleruser.New(serviceuser.New(params.UserRepository))
-
-	r.Get("user/:id", userHandler.GetUser)
-
 	return &Server{
 		http: &http.Server{
-			Addr:    net.JoinHostPort(params.Config.HTTPEndPoint.Host, params.Config.HTTPEndPoint.Port),
+			Addr:    net.JoinHostPort(cfg.HTTPEndPoint.Host, cfg.HTTPEndPoint.Port),
 			Handler: r,
 		},
+		mux: r,
 	}
+}
+
+type Handler interface {
+	RouteHTTP(r *chi.Mux)
+}
+
+func (s *Server) SetHandler(h Handler) {
+	h.RouteHTTP(s.mux)
 }
 
 func (s *Server) Start() error {

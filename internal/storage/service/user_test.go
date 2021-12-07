@@ -1,12 +1,13 @@
-package user
+package service
 
 import (
 	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	profilemeserver "github.com/sundaytycoon/profile.me-server"
-	adaptermysql "github.com/sundaytycoon/profile.me-server/internal/adapter/mysql"
+	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/mysql"
 )
 
 func init() {
@@ -14,10 +15,10 @@ func init() {
 }
 
 func TestGetUser(t *testing.T) {
-	a, err := adaptermysql.MockNew(profilemeserver.MySQLDocker)
+	a, err := mysql.MockNew(profilemeserver.MySQLDocker)
 	assert.Empty(t, err)
 
-	userStore, err := New()
+	serviceStorage := New()
 	assert.Empty(t, err)
 
 	ctx := context.Background()
@@ -26,7 +27,7 @@ func TestGetUser(t *testing.T) {
 	tx, err := conn.BeginTx(ctx, nil)
 	assert.Empty(t, err)
 	expectedId := "1"
-	u, err := userStore.GetUser(ctx, tx, expectedId)
+	u, err := serviceStorage.GetUser(ctx, tx, expectedId)
 	assert.Empty(t, err)
 	err = tx.Commit()
 	assert.Empty(t, err)

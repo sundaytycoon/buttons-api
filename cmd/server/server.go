@@ -2,13 +2,43 @@ package server
 
 import (
 	"github.com/spf13/cobra"
-	adaptermysql "github.com/sundaytycoon/profile.me-server/internal/adapter/mysql"
-	storeuser "github.com/sundaytycoon/profile.me-server/internal/adapter/mysql/store/user"
-	"github.com/sundaytycoon/profile.me-server/internal/config"
-	"github.com/sundaytycoon/profile.me-server/internal/server"
-	"github.com/sundaytycoon/profile.me-server/pkg/er"
 	"go.uber.org/dig"
+
+	"github.com/sundaytycoon/profile.me-server/internal/config"
+	handleruser "github.com/sundaytycoon/profile.me-server/internal/handler/user"
+	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/httpserver"
+	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/mysql"
+	"github.com/sundaytycoon/profile.me-server/pkg/er"
 )
+
+
+func ServerStart() error {
+	// build DI and Invoke server application
+	d := dig.New()
+	er.PanicError(d.Provide(config.New))
+	er.PanicError(d.Provide(mysql.New))
+	er.PanicError(d.Provide(handleruser.New))
+
+	er.PanicError(d.Invoke(Main))
+
+	return nil
+}
+
+func Main(params struct {
+	dig.In
+	Config *config.Config
+	UserHandler *handleruser.Handler
+}) error {
+
+	httpServer := httpserver.New(params.Config)
+	httpServer.SetHandler(params.UserHandler)
+
+	go httpServer.Start()
+
+	httpServer.Stop()
+	return nil
+}
+
 
 func ServerCommand() *cobra.Command {
 	c := &cobra.Command{
@@ -28,26 +58,4 @@ func ServerCommand() *cobra.Command {
 		},
 	})
 	return c
-}
-
-func ServerStart() error {
-	// build DI and Invoke server application
-	d := dig.New()
-	er.PanicError(d.Provide(config.New))
-	er.PanicError(d.Provide(server.New))
-	er.PanicError(d.Provide(adaptermysql.New))
-	er.PanicError(d.Provide(storeuser.New))
-	er.PanicError(d.Invoke(Main))
-
-	return nil
-}
-
-func Main(params struct {
-	dig.In
-	Server *server.Server
-}) error {
-	go params.Server.Start()
-
-	params.Server.Stop()
-	return nil
 }

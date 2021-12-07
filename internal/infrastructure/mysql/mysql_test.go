@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	profilemeserver "github.com/sundaytycoon/profile.me-server"
 )
 

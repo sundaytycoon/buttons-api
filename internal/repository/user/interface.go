@@ -4,11 +4,17 @@ package user
 
 import (
 	"context"
+	"database/sql"
 
-	"github.com/sundaytycoon/profile.me-server/internal/core/domain"
-	"github.com/sundaytycoon/profile.me-server/pkg/execdbconn"
+	"github.com/sundaytycoon/profile.me-server/internal/constants/model"
+	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/mysql"
 )
 
 type userStore interface {
-	GetUser(ctx context.Context, tx execdbconn.ContextExecutor, id string) (*domain.User, error)
+	GetUser(ctx context.Context, tx mysql.ContextExecutor, id string) (*model.User, error)
+}
+
+type mysqlClient interface {
+	Conn(ctx context.Context) (*sql.Conn, error)
+	Close() error
 }

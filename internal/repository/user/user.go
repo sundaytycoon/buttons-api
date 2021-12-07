@@ -3,34 +3,27 @@ package user
 import (
 	"context"
 
-	adaptermysql "github.com/sundaytycoon/profile.me-server/internal/adapter/mysql"
-	storeuser "github.com/sundaytycoon/profile.me-server/internal/adapter/mysql/store/user"
-	"github.com/sundaytycoon/profile.me-server/internal/core/domain"
+	"github.com/sundaytycoon/profile.me-server/internal/constants/model"
 	"github.com/sundaytycoon/profile.me-server/pkg/er"
-	"go.uber.org/dig"
 )
 
 // user repository  직접 구현 한 곳
 type Repository struct {
-	mysqlAdapter *adaptermysql.Adapter
-	userStore    userStore
+	mysqlClient mysqlClient
+	userStore   userStore
 }
 
-func New(params struct {
-	dig.In
-	ServiceDBAdapter *adaptermysql.Adapter
-	UserStore        *storeuser.Store
-}) (*Repository, error) {
+func New(m mysqlClient, u userStore) *Repository {
 	return &Repository{
-		mysqlAdapter: params.ServiceDBAdapter,
-		userStore:    params.UserStore,
-	}, nil
+		mysqlClient:  m,
+		userStore:    u,
+	}
 }
 
-func (r *Repository) GetUser(ctx context.Context, id string) (*domain.User, error) {
+func (r *Repository) GetUser(ctx context.Context, id string) (*model.User, error) {
 	op := er.GetOperator()
 
-	conn, err := r.mysqlAdapter.Conn(ctx)
+	conn, err := r.mysqlClient.Conn(ctx)
 	if err != nil {
 		return nil, er.WrapOp(err, op)
 	}
@@ -44,6 +37,6 @@ func (r *Repository) GetUser(ctx context.Context, id string) (*domain.User, erro
 }
 
 
-func (r *Repository) Save(ctx context.Context, u *domain.User) (*domain.User, error) {
+func (r *Repository) Save(ctx context.Context, u *model.User) (*model.User, error) {
 	return nil, nil
 }

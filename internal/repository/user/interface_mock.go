@@ -9,8 +9,9 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	domain "github.com/sundaytycoon/profile.me-server/internal/core/domain"
-	execdbconn "github.com/sundaytycoon/profile.me-server/pkg/execdbconn"
+
+	domain "github.com/sundaytycoon/profile.me-server/internal/constants/model"
+	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/mysql"
 )
 
 // MockuserStore is a mock of userStore interface.
@@ -37,7 +38,7 @@ func (m *MockuserStore) EXPECT() *MockuserStoreMockRecorder {
 }
 
 // GetUser mocks base method.
-func (m *MockuserStore) GetUser(ctx context.Context, tx execdbconn.ContextExecutor, id string) (*domain.User, error) {
+func (m *MockuserStore) GetUser(ctx context.Context, tx mysql.ContextExecutor, id string) (*domain.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUser", ctx, tx, id)
 	ret0, _ := ret[0].(*domain.User)

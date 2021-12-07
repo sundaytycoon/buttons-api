@@ -8,18 +8,19 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
+	"go.uber.org/dig"
+
 	"github.com/sundaytycoon/profile.me-server/internal/config"
 	"github.com/sundaytycoon/profile.me-server/pkg/er"
 	"github.com/sundaytycoon/profile.me-server/pkg/retry"
 	"github.com/sundaytycoon/profile.me-server/pkg/testdockercontainer"
-	"go.uber.org/dig"
 )
 
-type Adapter struct {
+type Client struct {
 	DB *sql.DB
 }
 
-func MockNew(mysqlDocker *testdockercontainer.DockerContainer) (*Adapter, error) {
+func MockNew(mysqlDocker *testdockercontainer.DockerContainer) (*Client, error) {
 	return New(
 		struct {
 			dig.In
@@ -40,7 +41,7 @@ func MockNew(mysqlDocker *testdockercontainer.DockerContainer) (*Adapter, error)
 func New(params struct {
 	dig.In
 	ServiceDatabase *config.Database
-}) (*Adapter, error) {
+}) (*Client, error) {
 	op := er.GetOperator()
 
 	db, err := sql.Open("mysql", params.ServiceDatabase.DSN())
@@ -49,16 +50,16 @@ func New(params struct {
 	}
 	db.SetMaxIdleConns(10)
 	db.SetMaxOpenConns(100)
-	return &Adapter{
+	return &Client{
 		DB: db,
 	}, nil
 }
 
-func (a *Adapter) Close() error {
+func (a *Client) Close() error {
 	return a.DB.Close()
 }
 
-func (a *Adapter) Conn(ctx context.Context) (*sql.Conn, error) {
+func (a *Client) Conn(ctx context.Context) (*sql.Conn, error) {
 	op := er.GetOperator()
 
 	v, err := retry.Retry(5, 1*time.Second, func() (interface{}, error) {
