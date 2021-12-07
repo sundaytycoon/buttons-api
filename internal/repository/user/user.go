@@ -15,8 +15,8 @@ type Repository struct {
 
 func New(m mysqlClient, u userStore) *Repository {
 	return &Repository{
-		mysqlClient:  m,
-		userStore:    u,
+		mysqlClient: m,
+		userStore:   u,
 	}
 }
 
@@ -35,7 +35,6 @@ func (r *Repository) GetUser(ctx context.Context, id string) (*model.User, error
 
 	return u, nil
 }
-
 
 func (r *Repository) Save(ctx context.Context, u *model.User) (*model.User, error) {
 	return nil, nil

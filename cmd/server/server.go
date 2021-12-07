@@ -4,19 +4,18 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/dig"
 
+	"github.com/sundaytycoon/profile.me-server/infrastructure/httpserver"
+	adapterservicedb "github.com/sundaytycoon/profile.me-server/internal/adapter/servicedb"
 	"github.com/sundaytycoon/profile.me-server/internal/config"
 	handleruser "github.com/sundaytycoon/profile.me-server/internal/handler/user"
-	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/httpserver"
-	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/mysql"
 	"github.com/sundaytycoon/profile.me-server/pkg/er"
 )
-
 
 func ServerStart() error {
 	// build DI and Invoke server application
 	d := dig.New()
 	er.PanicError(d.Provide(config.New))
-	er.PanicError(d.Provide(mysql.New))
+	er.PanicError(d.Provide(adapterservicedb.New))
 	er.PanicError(d.Provide(handleruser.New))
 
 	er.PanicError(d.Invoke(Main))
@@ -26,7 +25,7 @@ func ServerStart() error {
 
 func Main(params struct {
 	dig.In
-	Config *config.Config
+	Config      *config.Config
 	UserHandler *handleruser.Handler
 }) error {
 
@@ -38,7 +37,6 @@ func Main(params struct {
 	httpServer.Stop()
 	return nil
 }
-
 
 func ServerCommand() *cobra.Command {
 	c := &cobra.Command{

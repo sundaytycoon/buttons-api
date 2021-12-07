@@ -1,4 +1,4 @@
-package service
+package servicedb
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	profilemeserver "github.com/sundaytycoon/profile.me-server"
-	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/mysql"
+	"github.com/sundaytycoon/profile.me-server/infrastructure/mysql"
 )
 
 func init() {
@@ -22,7 +22,7 @@ func TestGetUser(t *testing.T) {
 	assert.Empty(t, err)
 
 	ctx := context.Background()
-	conn, err := a.Conn(ctx)
+	conn, err := a.DB.Conn(ctx)
 	assert.Empty(t, err)
 	tx, err := conn.BeginTx(ctx, nil)
 	assert.Empty(t, err)

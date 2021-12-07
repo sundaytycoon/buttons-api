@@ -1,14 +1,13 @@
-package service
+package servicedb
 
 import (
 	"context"
 
+	"github.com/sundaytycoon/profile.me-server/infrastructure/mysql"
 	constantsmodel "github.com/sundaytycoon/profile.me-server/internal/constants/model"
 	constantsquery "github.com/sundaytycoon/profile.me-server/internal/constants/query"
-	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/mysql"
 	"github.com/sundaytycoon/profile.me-server/pkg/er"
 )
-
 
 type Storage struct{}
 

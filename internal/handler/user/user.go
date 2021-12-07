@@ -7,10 +7,10 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/dig"
 
-	"github.com/sundaytycoon/profile.me-server/internal/infrastructure/mysql"
+	adapterservicedb "github.com/sundaytycoon/profile.me-server/internal/adapter/servicedb"
 	repositoryuser "github.com/sundaytycoon/profile.me-server/internal/repository/user"
 	serviceuser "github.com/sundaytycoon/profile.me-server/internal/service/user"
-	servicestorage "github.com/sundaytycoon/profile.me-server/internal/storage/service"
+	servicedbstorage "github.com/sundaytycoon/profile.me-server/internal/storage/servicedb"
 )
 
 type Handler struct {
@@ -19,10 +19,10 @@ type Handler struct {
 
 func New(params struct {
 	dig.In
-	ServiceDB *mysql.Client
+	ServiceDB *adapterservicedb.Adapter
 }) *Handler {
 
-	repositoryUser := repositoryuser.New(params.ServiceDB, servicestorage.New())
+	repositoryUser := repositoryuser.New(params.ServiceDB, servicedbstorage.New())
 	serviceUser := serviceuser.New(repositoryUser)
 
 	return &Handler{
