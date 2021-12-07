@@ -9,12 +9,13 @@ import (
 	"syscall"
 
 	"github.com/rs/zerolog/log"
+	"go.uber.org/dig"
+
 	"github.com/sundaytycoon/profile.me-server/internal/config"
 	serviceuser "github.com/sundaytycoon/profile.me-server/internal/core/service/user"
 	handleruser "github.com/sundaytycoon/profile.me-server/internal/handler/user"
 	repositoryuser "github.com/sundaytycoon/profile.me-server/internal/repository/user"
 	"github.com/sundaytycoon/profile.me-server/pkg/er"
-	"go.uber.org/dig"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -39,7 +40,7 @@ func New(params struct {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	userHandler := handleruser.New(serviceuser.New())
+	userHandler := handleruser.New(serviceuser.New(params.UserRepository))
 
 	r.Get("user/:id", userHandler.GetUser)
 

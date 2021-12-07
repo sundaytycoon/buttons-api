@@ -19,22 +19,22 @@ func New(userRepo port.UserRepository) *service {
 	}
 }
 
-func (s *service) Get(ctx context.Context, id string) (domain.User, error) {
+func (s *service) Get(ctx context.Context, id string) (*domain.User, error) {
 	op := er.GetOperator()
 
-	u, err := s.userRepository.Get(ctx, id)
+	u, err := s.userRepository.GetUser(ctx, id)
 	if err != nil {
-		return domain.User{}, er.WrapOp(err, op)
+		return nil, er.WrapOp(err, op)
 	}
 	return u, nil
 }
 
-func (s *service) Create(ctx context.Context, name, state string) (domain.User, error) {
+func (s *service) Create(ctx context.Context, name, state string) (*domain.User, error) {
 	op := er.GetOperator()
 
-	u, err := s.userRepository.Save(ctx, domain.User{Name: name, State: state})
+	u, err := s.userRepository.Save(ctx, &domain.User{Name: name, State: state})
 	if err != nil {
-		return domain.User{}, er.WrapOp(err, op)
+		return nil, er.WrapOp(err, op)
 	}
 	return u, nil
 }

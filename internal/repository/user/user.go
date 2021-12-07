@@ -42,3 +42,8 @@ func (r *Repository) GetUser(ctx context.Context, id string) (*domain.User, erro
 
 	return u, nil
 }
+
+
+func (r *Repository) Save(ctx context.Context, u *domain.User) (*domain.User, error) {
+	return nil, nil
+}
