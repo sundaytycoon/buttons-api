@@ -4,7 +4,7 @@
 
 ### 개발 셋팅 관련 문서
 
-- [DEVELOPMENT.md](./DEVELOPMENT.md)
+- [DEVELOPMENT.md](https://github.com/sundaytycoon/buttons-api/blob/main/DEVELOPMENT.md)
 
 
 ### package structure
