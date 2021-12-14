@@ -1,5 +1,5 @@
 package buttonsapi
 
 const (
-	App = "profile.me"
+	App = "buttons"
 )
