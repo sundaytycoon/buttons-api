@@ -4,11 +4,19 @@
 
 모든 실행 환경은 **docker**와 **docker-compose**를 기반으로 하고 있기 때문에 **docker**와 **docker-compose**만 설치되어 있으면 돼요.
 
-### 에디터 환경 설정
-
+### IDEA IntelliJ - goimport
 goimport룰은 다음과 같이 설정해주세요.
 
 ![goimport](doc/_images/go-imports.png)
+
+### IDEA IntelliJ - protobuf
+- 해당 프로젝트는 buf를 이용합니다. buf로 인한 protobuf셋업을 해주세요.
+- buf의 cache는 다음과 같은 위치에 있고, 디렉토리가 해시값에 의해 계속 변경됩니다.
+- buf의 모듈을 새로 받을 때 마다 매번 잡아주어야만 합니다.
+
+![buf-cache](doc/_images/buf-cache.png)
+![buf-intelliJ](doc/_images/buf-intelliJ.png)
+
 
 <!-- 
 ## 디버깅 환경
