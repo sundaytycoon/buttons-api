@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package profileme.server.v1;
+
+option go_package = "github.com/sundaytycoon/profile.me-server/gen/go";
+
+
+option java_multiple_files = true;
+option java_outer_classname = "User";
+option java_package = "com.profileme.server.v1";
+
+
+service UserService {
+  rpc Get(UserMessage) returns (UserMessage) {
+    option (google.api.http) = {
+      post: "/v1/user"
+      body: "*"
+    };
+  };
+}
+
+message UserMessage {
+  string id   = 1; // the id of this message.
+  string name = 2; // @exclude the name of this message
+}

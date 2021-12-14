@@ -1,12 +1,15 @@
 package user
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/rs/zerolog/log"
 	"go.uber.org/dig"
 
+	v1pb "github.com/sundaytycoon/profile.me-server/gen/go/proto/rpc/v1"
 	adapterservicedb "github.com/sundaytycoon/profile.me-server/internal/adapter/servicedb"
 	repositoryuser "github.com/sundaytycoon/profile.me-server/internal/repository/user"
 	serviceuser "github.com/sundaytycoon/profile.me-server/internal/service/user"
@@ -15,6 +18,7 @@ import (
 
 type Handler struct {
 	userService userService
+	v1pb.UnimplementedUserServiceServer
 }
 
 func New(params struct {
@@ -51,4 +55,9 @@ func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(200)
 	render.Respond(w, r, u)
+}
+
+func (h *Handler) Get(ctx context.Context, req *v1pb.UserMessage) (*v1pb.UserMessage, error) {
+	log.Trace().Str("name", req.Name).Str("id", req.Id).Msg("message")
+	return req, nil
 }

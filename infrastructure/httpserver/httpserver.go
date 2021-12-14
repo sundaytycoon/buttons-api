@@ -62,7 +62,7 @@ func (s *Server) Start() error {
 	return nil
 }
 
-// Close When it get sigterm, It'll gracefully closed till request is done or TCP connection reset.
+// Stop When it get sigterm, It'll gracefully closed till request is done or TCP connection reset.
 func (s *Server) Stop() {
 	stop := make(chan os.Signal, 1)
 

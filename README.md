@@ -16,3 +16,12 @@ TDD코드를 잘 짜고 싶은건 맞는데, 어떤 코드가 테스트짜기 �
 - git: https://github.com/iDevoid/stygis
 - meidum: https://medium.com/@matiasvarela/hexagonal-architecture-in-go-cfd4e436faa3
 - youtube: https://www.youtube.com/playlist?list=PLGl1Jc8ErU1w27y8-7Gdcloy1tHO7NriL
+
+# scripts
+
+### protobuf generating
+
+``` bash
+./scripts.protogen.sh
+./scripts.protosetup.sh
+```

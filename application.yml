@@ -14,3 +14,4 @@ serviceDatabase:
   user: profileme
   name: profileme
   port: 33307
+  dialect: mysql
