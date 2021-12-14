@@ -8,10 +8,10 @@ import (
 
 	"go.uber.org/dig"
 
-	"github.com/sundaytycoon/profile.me-server/infrastructure/mysql"
-	"github.com/sundaytycoon/profile.me-server/internal/config"
-	"github.com/sundaytycoon/profile.me-server/pkg/er"
-	"github.com/sundaytycoon/profile.me-server/pkg/retry"
+	"github.com/sundaytycoon/buttons-api/infrastructure/mysql"
+	"github.com/sundaytycoon/buttons-api/internal/config"
+	"github.com/sundaytycoon/buttons-api/pkg/er"
+	"github.com/sundaytycoon/buttons-api/pkg/retry"
 )
 
 type Adapter struct {

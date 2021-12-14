@@ -6,16 +6,16 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	profilemeserver "github.com/sundaytycoon/profile.me-server"
-	"github.com/sundaytycoon/profile.me-server/infrastructure/mysql"
+	buttonsapi "github.com/sundaytycoon/buttons-api"
+	"github.com/sundaytycoon/buttons-api/infrastructure/mysql"
 )
 
 func init() {
-	profilemeserver.TestInit()
+	buttonsapi.TestInit()
 }
 
 func TestGetUser(t *testing.T) {
-	a, err := mysql.MockNew(profilemeserver.MySQLDocker)
+	a, err := mysql.MockNew(buttonsapi.MySQLDocker)
 	assert.Empty(t, err)
 
 	serviceStorage := New()

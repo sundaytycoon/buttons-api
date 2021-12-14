@@ -5,15 +5,15 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	profilemeserver "github.com/sundaytycoon/profile.me-server"
+	buttonsapi "github.com/sundaytycoon/buttons-api"
 )
 
 func init() {
-	profilemeserver.TestInit()
+	buttonsapi.TestInit()
 }
 
 func Test_New(t *testing.T) {
-	a, err := MockNew(profilemeserver.MySQLDocker)
+	a, err := MockNew(buttonsapi.MySQLDocker)
 	assert.Empty(t, err)
 	rows, err := a.DB.Query("SELECT 1+1")
 	assert.Empty(t, err)

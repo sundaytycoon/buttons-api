@@ -1,9 +1,9 @@
-package profilemeserver
+package buttonsapi
 
 import (
 	"context"
 
-	"github.com/sundaytycoon/profile.me-server/pkg/testdockercontainer"
+	"github.com/sundaytycoon/buttons-api/pkg/testdockercontainer"
 )
 
 var (

@@ -6,8 +6,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/sundaytycoon/profile.me-server/infrastructure/mysql"
-	"github.com/sundaytycoon/profile.me-server/internal/constants/model"
+	"github.com/sundaytycoon/buttons-api/infrastructure/mysql"
+	"github.com/sundaytycoon/buttons-api/internal/constants/model"
 )
 
 type userStore interface {

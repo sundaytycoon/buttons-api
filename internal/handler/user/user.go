@@ -9,11 +9,11 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.uber.org/dig"
 
-	v1pb "github.com/sundaytycoon/profile.me-server/gen/go/proto/rpc/v1"
-	adapterservicedb "github.com/sundaytycoon/profile.me-server/internal/adapter/servicedb"
-	repositoryuser "github.com/sundaytycoon/profile.me-server/internal/repository/user"
-	serviceuser "github.com/sundaytycoon/profile.me-server/internal/service/user"
-	servicedbstorage "github.com/sundaytycoon/profile.me-server/internal/storage/servicedb"
+	v1pb "github.com/sundaytycoon/buttons-api/gen/go/proto/rpc/v1"
+	adapterservicedb "github.com/sundaytycoon/buttons-api/internal/adapter/servicedb"
+	repositoryuser "github.com/sundaytycoon/buttons-api/internal/repository/user"
+	serviceuser "github.com/sundaytycoon/buttons-api/internal/service/user"
+	servicedbstorage "github.com/sundaytycoon/buttons-api/internal/storage/servicedb"
 )
 
 type Handler struct {

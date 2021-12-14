@@ -10,8 +10,8 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/sundaytycoon/profile.me-server/internal/config"
-	"github.com/sundaytycoon/profile.me-server/pkg/er"
+	"github.com/sundaytycoon/buttons-api/internal/config"
+	"github.com/sundaytycoon/buttons-api/pkg/er"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

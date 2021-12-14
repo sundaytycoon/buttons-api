@@ -3,10 +3,10 @@ package servicedb
 import (
 	"context"
 
-	"github.com/sundaytycoon/profile.me-server/infrastructure/mysql"
-	constantsmodel "github.com/sundaytycoon/profile.me-server/internal/constants/model"
-	constantsquery "github.com/sundaytycoon/profile.me-server/internal/constants/query"
-	"github.com/sundaytycoon/profile.me-server/pkg/er"
+	"github.com/sundaytycoon/buttons-api/infrastructure/mysql"
+	constantsmodel "github.com/sundaytycoon/buttons-api/internal/constants/model"
+	constantsquery "github.com/sundaytycoon/buttons-api/internal/constants/query"
+	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
 type Storage struct{}

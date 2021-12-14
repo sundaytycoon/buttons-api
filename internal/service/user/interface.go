@@ -5,7 +5,7 @@ package user
 import (
 	"context"
 
-	"github.com/sundaytycoon/profile.me-server/internal/constants/model"
+	"github.com/sundaytycoon/buttons-api/internal/constants/model"
 )
 
 type userRepository interface {

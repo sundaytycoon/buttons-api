@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package profileme.server.v1;
 
-option go_package = "github.com/sundaytycoon/profile.me-server/gen/go";
+option go_package = "github.com/sundaytycoon/buttons-api/gen/go";
 
 
 option java_multiple_files = true;

@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	model "github.com/sundaytycoon/profile.me-server/internal/constants/model"
+	model "github.com/sundaytycoon/buttons-api/internal/constants/model"
 )
 
 // MockuserRepository is a mock of userRepository interface.

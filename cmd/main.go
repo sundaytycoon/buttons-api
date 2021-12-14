@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	// _ "go.uber.org/automaxprocs"
 
-	cmdserver "github.com/sundaytycoon/profile.me-server/cmd/server"
+	cmdserver "github.com/sundaytycoon/buttons-api/cmd/server"
 )
 
 var rootCmd = &cobra.Command{

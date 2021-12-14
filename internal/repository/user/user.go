@@ -3,8 +3,8 @@ package user
 import (
 	"context"
 
-	"github.com/sundaytycoon/profile.me-server/internal/constants/model"
-	"github.com/sundaytycoon/profile.me-server/pkg/er"
+	"github.com/sundaytycoon/buttons-api/internal/constants/model"
+	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
 // user repository  직접 구현 한 곳

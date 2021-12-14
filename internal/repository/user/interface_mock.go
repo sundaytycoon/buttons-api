@@ -10,8 +10,8 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	mysql "github.com/sundaytycoon/profile.me-server/infrastructure/mysql"
-	model "github.com/sundaytycoon/profile.me-server/internal/constants/model"
+	mysql "github.com/sundaytycoon/buttons-api/infrastructure/mysql"
+	model "github.com/sundaytycoon/buttons-api/internal/constants/model"
 )
 
 // MockuserStore is a mock of userStore interface.

@@ -1,4 +1,4 @@
-module github.com/sundaytycoon/profile.me-server
+module github.com/sundaytycoon/buttons-api
 
 go 1.17
 

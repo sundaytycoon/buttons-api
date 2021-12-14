@@ -1,7 +1,7 @@
 //go:build tools
 // +build tools
 
-package profilemeserver
+package buttonsapi
 
 import (
 	_ "github.com/golang/mock/mockgen"

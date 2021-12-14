@@ -5,9 +5,9 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/sundaytycoon/profile.me-server/internal/config"
-	"github.com/sundaytycoon/profile.me-server/pkg/er"
-	"github.com/sundaytycoon/profile.me-server/pkg/testdockercontainer"
+	"github.com/sundaytycoon/buttons-api/internal/config"
+	"github.com/sundaytycoon/buttons-api/pkg/er"
+	"github.com/sundaytycoon/buttons-api/pkg/testdockercontainer"
 )
 
 type Client struct {

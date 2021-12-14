@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/sundaytycoon/profile.me-server/pkg/er"
+	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
 type Database struct {
@@ -65,7 +65,7 @@ func New() (*Config, error) {
 	viper.SetConfigType("yaml")
 
 	if env == "alpha" || env == "prod" {
-		// yaml, err := getYamlFromSSM(env, profilemeserver.App)
+		// yaml, err := getYamlFromSSM(env, buttonsapi.App)
 		// if err != nil {
 		// 	return nil, er.WrapOp(err, op)
 		// }

@@ -19,11 +19,11 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
 
-	v1pb "github.com/sundaytycoon/profile.me-server/gen/go/proto/rpc/v1"
-	adapterservicedb "github.com/sundaytycoon/profile.me-server/internal/adapter/servicedb"
-	"github.com/sundaytycoon/profile.me-server/internal/config"
-	handleruser "github.com/sundaytycoon/profile.me-server/internal/handler/user"
-	"github.com/sundaytycoon/profile.me-server/pkg/er"
+	v1pb "github.com/sundaytycoon/buttons-api/gen/go/proto/rpc/v1"
+	adapterservicedb "github.com/sundaytycoon/buttons-api/internal/adapter/servicedb"
+	"github.com/sundaytycoon/buttons-api/internal/config"
+	handleruser "github.com/sundaytycoon/buttons-api/internal/handler/user"
+	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
 func Main() error {
