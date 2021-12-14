@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package profileme.server.v1;
+package buttons.api.v1;
+
+import "google/api/annotations.proto";
 
 option go_package = "github.com/sundaytycoon/buttons-api/gen/go";
-
-
 option java_multiple_files = true;
 option java_outer_classname = "User";
-option java_package = "com.profileme.server.v1";
+option java_package = "com.buttons.api.v1";
 
 
 service UserService {

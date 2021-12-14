@@ -31,3 +31,8 @@ go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@${PROTOC_GEN_
 # for gateway
 go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@${PROTOC_GEN_GATEWAY}
 go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@${PROTOC_GEN_OPENAPI2}
+
+# buf install https://docs.buf.build/installation#github-releases
+
+brew tap bufbuild/buf
+brew install buf
