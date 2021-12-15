@@ -11,7 +11,7 @@
 
 TDD코드를 잘 짜고 싶은건 맞는데, 어떤 코드가 테스트짜기 좋은코드인지 잘 모르겠어서 골라본 코드페턴 hexagonal(핫 한듯해서)
 
-1. edges
+1. infrastructure
 2. handler [handler]
 3. (interceptor by handler) [middleware]
 4. service[do business logic]
