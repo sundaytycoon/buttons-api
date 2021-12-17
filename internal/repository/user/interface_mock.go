@@ -10,7 +10,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	mysql "github.com/sundaytycoon/buttons-api/infrastructure/mysql"
+	mysql "github.com/sundaytycoon/buttons-api/edge/mysql"
 	model "github.com/sundaytycoon/buttons-api/internal/constants/model"
 )
 

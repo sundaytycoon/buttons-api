@@ -8,7 +8,7 @@ import (
 
 	"go.uber.org/dig"
 
-	"github.com/sundaytycoon/buttons-api/infrastructure/mysql"
+	"github.com/sundaytycoon/buttons-api/edge/mysql"
 	"github.com/sundaytycoon/buttons-api/internal/config"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 	"github.com/sundaytycoon/buttons-api/pkg/retry"

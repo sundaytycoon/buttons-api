@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	buttonsapi "github.com/sundaytycoon/buttons-api"
-	"github.com/sundaytycoon/buttons-api/infrastructure/mysql"
+	"github.com/sundaytycoon/buttons-api/edge/mysql"
 )
 
 func init() {

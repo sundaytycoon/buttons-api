@@ -1,12 +1,8 @@
 package httpserver
 
 import (
-	"context"
 	"net"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/rs/zerolog/log"
 
@@ -60,19 +56,4 @@ func (s *Server) Start() error {
 		}
 	}
 	return nil
-}
-
-// Stop When it get sigterm, It'll gracefully closed till request is done or TCP connection reset.
-func (s *Server) Stop() {
-	stop := make(chan os.Signal, 1)
-
-	signal.Notify(stop, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGSEGV)
-	<-stop
-	log.Info().Msg("i got the SIGTERM signal, gotta stop")
-	log.Info().Msg("Shutdown http, start!!")
-	if err := s.http.Shutdown(context.Background()); err != nil {
-		log.Err(err).Msgf("http shutdown")
-	}
-	log.Info().Msg("gracefully shutdown!")
-	close(stop)
 }

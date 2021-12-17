@@ -6,7 +6,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/sundaytycoon/buttons-api/infrastructure/mysql"
+	"github.com/sundaytycoon/buttons-api/edge/mysql"
 	"github.com/sundaytycoon/buttons-api/internal/constants/model"
 )
 

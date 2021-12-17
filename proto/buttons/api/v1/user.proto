@@ -2,24 +2,22 @@ syntax = "proto3";
 
 package buttons.api.v1;
 
-import "google/api/annotations.proto";
-
 option go_package = "github.com/sundaytycoon/buttons-api/gen/go";
 option java_multiple_files = true;
 option java_outer_classname = "User";
-option java_package = "com.buttons.api.v1";
+option java_package = "proto.buttons.api.v1";
 
 
 service UserService {
-  rpc Get(UserMessage) returns (UserMessage) {
-    option (google.api.http) = {
-      post: "/v1/user"
-      body: "*"
-    };
-  };
+  rpc Get(UserServiceGetRequest) returns (UserServiceGetResponse);
 }
 
-message UserMessage {
+message UserServiceGetRequest {
+  string id   = 1; // the id of this message.
+  string name = 2; // @exclude the name of this message
+}
+
+message UserServiceGetResponse {
   string id   = 1; // the id of this message.
   string name = 2; // @exclude the name of this message
 }

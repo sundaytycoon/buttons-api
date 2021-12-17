@@ -3,7 +3,7 @@ package servicedb
 import (
 	"context"
 
-	"github.com/sundaytycoon/buttons-api/infrastructure/mysql"
+	"github.com/sundaytycoon/buttons-api/edge/mysql"
 	constantsmodel "github.com/sundaytycoon/buttons-api/internal/constants/model"
 	constantsquery "github.com/sundaytycoon/buttons-api/internal/constants/query"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
