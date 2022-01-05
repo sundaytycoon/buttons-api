@@ -7,7 +7,7 @@ import (
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
-// user service를 직접 구현 한 곳
+// Service user service를 직접 구현 한 곳
 type Service struct {
 	userRepository userRepository
 }

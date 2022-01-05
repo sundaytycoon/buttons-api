@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -11,8 +12,10 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.uber.org/dig"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	v1pb "github.com/sundaytycoon/buttons-api/gen/go/buttons/api/v1"
+	"github.com/sundaytycoon/buttons-api/insecure"
 
 	adapterservicedb "github.com/sundaytycoon/buttons-api/internal/adapter/servicedb"
 	repositoryuser "github.com/sundaytycoon/buttons-api/internal/repository/user"
@@ -25,6 +28,9 @@ type Handler struct {
 	userService   userService
 	timeoutMillis time.Duration
 	v1pb.UnimplementedUserServiceServer
+
+	mu    *sync.RWMutex
+	users []*v1pb.User
 }
 
 func New(params struct {
@@ -38,6 +44,7 @@ func New(params struct {
 	return &Handler{
 		timeoutMillis: 2000 * time.Millisecond,
 		userService:   serviceUser,
+		mu:            &sync.RWMutex{},
 	}
 }
 
@@ -58,7 +65,12 @@ func (h *Handler) Connect(grpcEndpoint string, mux *runtime.ServeMux) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), h.timeoutMillis)
 	defer cancel()
-	conn, err := grpc.DialContext(ctx, grpcEndpoint, grpc.WithBlock(), grpc.WithInsecure())
+	conn, err := grpc.DialContext(
+		ctx,
+		grpcEndpoint,
+		grpc.WithBlock(),
+		grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(insecure.CertPool, "")),
+	)
 	if err != nil {
 		return er.WrapOp(err, op)
 	}
@@ -91,4 +103,28 @@ func (h *Handler) Get(ctx context.Context, req *v1pb.UserServiceGetRequest) (*v1
 		Id:   req.GetId(),
 		Name: req.GetName(),
 	}, nil
+}
+
+func (h *Handler) AddUser(ctx context.Context, req *v1pb.AddUserRequest) (*v1pb.User, error) {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+	log.Debug().Msgf("AddUser", req)
+	h.users = append(h.users, req.User)
+	return req.User, nil
+}
+
+// ListUser lists all users in the store.
+func (h *Handler) ListUser(req *v1pb.ListUserRequest, srv v1pb.UserService_ListUserServer) error {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+
+	log.Debug().Msgf("ListUsers", req)
+	for _, user := range h.users {
+		err := srv.Send(user)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -11,9 +11,27 @@ PROTOC_GEN_OPENAPI2=v2.6.0
 PROTOC_ZIP=protoc-${PROTOC_VER}-osx-x86_64.zip
 USER=`whoami`
 
+.PHONY: swagger-ui-gen
+swagger-ui-gen:
+	mkdir -p ./third_party/OpenAPI
+	curl -o ./third_party/OpenAPI/swaagerui.tar.gz -L https://github.com/swagger-api/swagger-ui/archive/refs/tags/v4.1.3.tar.gz
+	tar -xf ./third_party/OpenAPI/swaagerui.tar.gz  -C ./third_party/OpenAPI
+	mv ./third_party/OpenAPI/swagger-ui-4.1.3/dist/* ./third_party/OpenAPI
+	rm -rf ./third_party/OpenAPI/swaagerui.tar.gz
+	rm -rf ./third_party/OpenAPI/swagger-ui-4.1.3
+
+
 .PHONY: protogen
 protogen:
+	rm -rf gen
+	mkdir -p ./gen/go
 	buf build -o -#format=json | jq '.file[] | .package' | sort | uniq | head
+	buf generate
+
+.PHONY: protolint
+protolint:
+	buf breaking --against 'https://github.com/sundaytycoon/buttons-api.git#branch=main'
+	buf lint
 
 .PHONY: protosetup
 protosetup:
@@ -37,3 +55,4 @@ protosetup:
 	brew install buf
 
 	brew install jq
+

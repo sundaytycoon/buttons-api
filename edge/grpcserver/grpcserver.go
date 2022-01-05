@@ -7,11 +7,13 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
 	hchk "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
 
+	"github.com/sundaytycoon/buttons-api/insecure"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
@@ -33,6 +35,7 @@ func New() *Server {
 		//		},
 		//	),
 		//),
+		grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle:     15 * time.Second,
 			MaxConnectionAge:      30 * time.Second,
@@ -86,7 +89,7 @@ func (s *Server) Start(endpoint string) error {
 	if err != nil {
 		return er.WrapOp(err, op)
 	}
-	log.Info().Msgf("run grpc application")
+	log.Info().Str("endpoint", endpoint).Msgf("run grpc application")
 	if err = s.grpcServer.Serve(grpcListener); err != nil {
 		if err != grpc.ErrServerStopped {
 			return er.WrapOp(err, op)
