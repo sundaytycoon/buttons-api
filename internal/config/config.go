@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/spf13/viper"
 
@@ -16,6 +17,11 @@ type Database struct {
 	Password string `mapstructure:"password"`
 	Dialect  string `mapstructure:"dialect"`
 	Name     string `mapstructure:"name"`
+
+	ConnectionValidation                    bool          `mapstructure:"connection_validation"`
+	ConnectionValidationSQL                 string        `mapstructure:"connection_validation_sql"`
+	ConnectionValidationRetryTimes          int64         `mapstructure:"connection_validation_retry_times"`
+	ConnectionValidationRetryDuringEachTime time.Duration `mapstructure:"connection_validation_retry_during_each_time"`
 }
 
 func (o *Database) DSN() string {
@@ -45,6 +51,7 @@ type Config struct {
 	Env   string
 	Debug bool
 
+	BatchDB      *Database `mapstructure:"batchDatabase"`
 	ServiceDB    *Database `mapstructure:"serviceDatabase"`
 	HTTPEndPoint *EndPoint `mapstructure:"httpServer"`
 	GRPCEndPoint *EndPoint `mapstructure:"grpcServer"`

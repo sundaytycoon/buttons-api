@@ -2,15 +2,15 @@ package main
 
 import (
 	"github.com/spf13/cobra"
-	// _ "go.uber.org/automaxprocs"
 
+	cmdent "github.com/sundaytycoon/buttons-api/cmd/ent"
 	cmdserver "github.com/sundaytycoon/buttons-api/cmd/server"
 )
 
 var rootCmd = &cobra.Command{
-	Use:     "profileme",
-	Aliases: []string{"pm"},
-	Short:   "profile.me server project",
+	Use:     "buttons",
+	Aliases: []string{"btn"},
+	Short:   "buttons server project",
 	RunE: func(c *cobra.Command, _ []string) error {
 		return c.Help()
 	},
@@ -28,6 +28,7 @@ var rootCmd = &cobra.Command{
 func main() {
 	rootCmd.AddCommand(
 		cmdserver.ServerCommand(),
+		cmdent.MigrationCommand(),
 	)
 
 	if err := rootCmd.Execute(); err != nil {

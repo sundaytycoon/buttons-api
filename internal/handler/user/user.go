@@ -15,7 +15,7 @@ import (
 
 	v1pb "github.com/sundaytycoon/buttons-api/gen/go/buttons/api/v1"
 
-	adapterservicedb "github.com/sundaytycoon/buttons-api/internal/adapter/servicedb"
+	adapterbatchdb "github.com/sundaytycoon/buttons-api/internal/adapter/batchdb"
 	repositoryuser "github.com/sundaytycoon/buttons-api/internal/repository/user"
 	serviceuser "github.com/sundaytycoon/buttons-api/internal/service/user"
 	servicedbstorage "github.com/sundaytycoon/buttons-api/internal/storage/servicedb"
@@ -33,7 +33,7 @@ type Handler struct {
 
 func New(params struct {
 	dig.In
-	ServiceDB *adapterservicedb.Adapter
+	ServiceDB *adapterbatchdb.Adapter
 }) *Handler {
 
 	repositoryUser := repositoryuser.New(params.ServiceDB, servicedbstorage.New())

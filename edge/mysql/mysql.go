@@ -10,11 +10,7 @@ import (
 	"github.com/sundaytycoon/buttons-api/pkg/testdockercontainer"
 )
 
-type Client struct {
-	DB *sql.DB
-}
-
-func MockNew(mysqlDocker *testdockercontainer.DockerContainer) (*Client, error) {
+func MockNew(mysqlDocker *testdockercontainer.DockerContainer) (*sql.DB, error) {
 	d := &config.Database{
 		Host:     mysqlDocker.ExternalHost,
 		Port:     mysqlDocker.ExternalPort,
@@ -26,20 +22,18 @@ func MockNew(mysqlDocker *testdockercontainer.DockerContainer) (*Client, error) 
 	return New(d.DSN())
 }
 
-func New(dsn string) (*Client, error) {
+func New(dsn string) (*sql.DB, error) {
 	op := er.GetOperator()
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, er.WrapOp(err, op)
 	}
+	err = db.Ping()
+	if err != nil {
+		return nil, er.WrapOp(err, op)
+	}
 	db.SetMaxIdleConns(10)
 	db.SetMaxOpenConns(50)
-	return &Client{
-		DB: db,
-	}, nil
-}
-
-func (a *Client) Close() error {
-	return a.DB.Close()
+	return db, nil
 }

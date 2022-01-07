@@ -8,10 +8,23 @@ grpcServer:
   host: 0.0.0.0
   port: 4001
 
+batchDatabase:
+  host: localhost
+  password: p@ssword
+  user: buttons
+  name: buttons
+  port: 33307
+  dialect: mysql
+
+  connection_validation: true
+  connection_validation_sql: "SELECT 1 + 1"
+  connection_validation_retry_times: 5
+  connection_validation_retry_during_each_time: 1s
+
 serviceDatabase:
   host: localhost
   password: p@ssword
-  user: profileme
-  name: profileme
+  user: buttons
+  name: buttons
   port: 33307
   dialect: mysql
