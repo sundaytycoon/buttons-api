@@ -1,8 +1,6 @@
 package grpcgw
 
 import (
-	"crypto/tls"
-	"fmt"
 	"io/fs"
 	"mime"
 	"net"
@@ -13,9 +11,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/protobuf/encoding/protojson"
 
-	"github.com/sundaytycoon/buttons-api/insecure"
+	"github.com/sundaytycoon/buttons-api/doc"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
-	"github.com/sundaytycoon/buttons-api/third_party"
 )
 
 type GRPCServer interface {
@@ -47,18 +44,12 @@ func New() *Gateway {
 		mux: mux,
 		httpServer: &http.Server{
 			Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				fmt.Println("requested", r.URL.String())
-				fmt.Println(r.URL.Path, strings.HasSuffix(r.URL.Path, "/api"))
 				if strings.HasPrefix(r.URL.Path, "/api") {
-					fmt.Println("/api")
 					mux.ServeHTTP(w, r)
 					return
 				}
 				getOpenAPIHandler().ServeHTTP(w, r)
 			}),
-			TLSConfig: &tls.Config{
-				Certificates: []tls.Certificate{insecure.Cert},
-			},
 		},
 	}
 }
@@ -86,7 +77,7 @@ func (gw *Gateway) Start(endpoint string) error {
 func getOpenAPIHandler() http.Handler {
 	mime.AddExtensionType(".svg", "image/svg+xml")
 	// Use subdirectory in embedded files
-	subFS, err := fs.Sub(third_party.OpenAPI, "OpenAPI")
+	subFS, err := fs.Sub(doc.OpenAPI, "OpenAPI")
 	if err != nil {
 		panic("couldn't create sub filesystem: " + err.Error())
 	}

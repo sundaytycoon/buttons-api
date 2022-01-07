@@ -15,7 +15,11 @@ import (
 )
 
 type Adapter struct {
-	MySQL *mysql.Client
+	MySQL                                   *mysql.Client
+	ConnectionValidation                    bool
+	ConnectionValidationSQL                 string
+	ConnectionValidationRetryTimes          int64
+	ConnectionValidationRetryDuringEachTime time.Duration
 }
 
 func New(params struct {
@@ -30,19 +34,26 @@ func New(params struct {
 	}
 
 	return &Adapter{
-		MySQL: mysqlClient,
+		MySQL:                                   mysqlClient,
+		ConnectionValidation:                    true,
+		ConnectionValidationSQL:                 "SELECT 1+1",
+		ConnectionValidationRetryTimes:          5,
+		ConnectionValidationRetryDuringEachTime: 1 * time.Second,
 	}, nil
 }
 
 func (a *Adapter) Conn(ctx context.Context) (*sql.Conn, error) {
 	op := er.GetOperator()
+	if !a.ConnectionValidation {
+		return a.MySQL.DB.Conn(ctx)
+	}
 
-	v, err := retry.Retry(5, 1*time.Second, func() (interface{}, error) {
+	v, err := retry.Retry(int(a.ConnectionValidationRetryTimes), a.ConnectionValidationRetryDuringEachTime, func() (interface{}, error) {
 		conn, err := a.MySQL.DB.Conn(ctx)
 		if err != nil {
 			return nil, err
 		}
-		if _, err := a.MySQL.DB.QueryContext(ctx, "SELECT 1 + 1"); err != nil {
+		if _, err := a.MySQL.DB.QueryContext(ctx, a.ConnectionValidationSQL); err != nil {
 			return nil, err
 		}
 		return conn, nil

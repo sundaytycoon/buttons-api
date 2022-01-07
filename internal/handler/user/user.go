@@ -12,10 +12,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.uber.org/dig"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 
 	v1pb "github.com/sundaytycoon/buttons-api/gen/go/buttons/api/v1"
-	"github.com/sundaytycoon/buttons-api/insecure"
 
 	adapterservicedb "github.com/sundaytycoon/buttons-api/internal/adapter/servicedb"
 	repositoryuser "github.com/sundaytycoon/buttons-api/internal/repository/user"
@@ -69,7 +67,7 @@ func (h *Handler) Connect(grpcEndpoint string, mux *runtime.ServeMux) error {
 		ctx,
 		grpcEndpoint,
 		grpc.WithBlock(),
-		grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(insecure.CertPool, "")),
+		grpc.WithInsecure(),
 	)
 	if err != nil {
 		return er.WrapOp(err, op)
@@ -108,7 +106,7 @@ func (h *Handler) Get(ctx context.Context, req *v1pb.UserServiceGetRequest) (*v1
 func (h *Handler) AddUser(ctx context.Context, req *v1pb.AddUserRequest) (*v1pb.User, error) {
 	h.mu.RLock()
 	defer h.mu.RUnlock()
-	log.Debug().Msgf("AddUser", req)
+	log.Debug().Msgf("AddUser %v", req)
 	h.users = append(h.users, req.User)
 	return req.User, nil
 }
@@ -118,7 +116,7 @@ func (h *Handler) ListUser(req *v1pb.ListUserRequest, srv v1pb.UserService_ListU
 	h.mu.RLock()
 	defer h.mu.RUnlock()
 
-	log.Debug().Msgf("ListUsers", req)
+	log.Debug().Msgf("ListUsers %v", req)
 	for _, user := range h.users {
 		err := srv.Send(user)
 		if err != nil {

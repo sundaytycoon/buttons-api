@@ -13,12 +13,12 @@ USER=`whoami`
 
 .PHONY: swagger-ui-gen
 swagger-ui-gen:
-	mkdir -p ./third_party/OpenAPI
-	curl -o ./third_party/OpenAPI/swaagerui.tar.gz -L https://github.com/swagger-api/swagger-ui/archive/refs/tags/v4.1.3.tar.gz
-	tar -xf ./third_party/OpenAPI/swaagerui.tar.gz  -C ./third_party/OpenAPI
-	mv ./third_party/OpenAPI/swagger-ui-4.1.3/dist/* ./third_party/OpenAPI
-	rm -rf ./third_party/OpenAPI/swaagerui.tar.gz
-	rm -rf ./third_party/OpenAPI/swagger-ui-4.1.3
+	mkdir -p ./doc/OpenAPI
+	curl -o ./doc/OpenAPI/swaagerui.tar.gz -L https://github.com/swagger-api/swagger-ui/archive/refs/tags/v4.1.3.tar.gz
+	tar -xf ./doc/OpenAPI/swaagerui.tar.gz  -C ./doc/OpenAPI
+	mv ./doc/OpenAPI/swagger-ui-4.1.3/dist/* ./doc/OpenAPI
+	rm -rf ./doc/OpenAPI/swaagerui.tar.gz
+	rm -rf ./doc/OpenAPI/swagger-ui-4.1.3
 
 
 .PHONY: protogen
@@ -55,4 +55,3 @@ protosetup:
 	brew install buf
 
 	brew install jq
-

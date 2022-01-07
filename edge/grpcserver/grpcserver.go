@@ -7,13 +7,11 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
 	hchk "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/sundaytycoon/buttons-api/insecure"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
@@ -35,7 +33,6 @@ func New() *Server {
 		//		},
 		//	),
 		//),
-		grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle:     15 * time.Second,
 			MaxConnectionAge:      30 * time.Second,
