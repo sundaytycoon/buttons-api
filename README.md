@@ -19,6 +19,9 @@ TDD코드를 잘 짜고 싶은건 맞는데, 어떤 코드가 테스트짜기 �
 6. storage[serviceDB, cache, search engine]
 - constants => 정적 쿼리 및 정적 모델(DTO, VO)
 
+
+![code dependency graph](./doc/_images/godepgraph.png)
+
 # References
 
 - git: https://github.com/iDevoid/stygis
