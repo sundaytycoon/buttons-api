@@ -25,7 +25,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 service UserService {
   rpc Get(UserServiceGetRequest) returns (UserServiceGetResponse);
-   rpc AddUser(AddUserRequest) returns (User) {
+  rpc AddUser(AddUserRequest) returns (User) {
     option (google.api.http) = {
       // Route to this method from POST requests to /api/v1/users
       post: "/api/v1/users"

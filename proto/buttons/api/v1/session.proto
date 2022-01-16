@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package buttons.api.v1;
+
+option go_package = "github.com/sundaytycoon/buttons-api/gen/go/proto/buttons/api/v1";
+option java_multiple_files = true;
+option java_outer_classname = "SessionProto";
+option java_package = "proto.buttons.api.v1";
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/annotations.proto";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/sundaytycoon/buttons-api";
+    description: "buttons-api gRPC-gateway repository";
+  }
+  schemes: HTTP;
+};
+
+
+service SessionService {
+  rpc GetRedirectURL(GetRedirectURLRequest)  returns (GetRedirectURLResponse) {
+    option (google.api.http) = {
+      // Route to this method from POST requests to /api/v1/users
+      get: "/api/v1/session/redirect_url"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Add a user"
+      description: "Add a user to the server."
+      tags: "Users"
+    };
+  }
+}
+
+message GetRedirectURLRequest {
+  string provider = 1;
+}
+
+message GetRedirectURLResponse {
+
+}

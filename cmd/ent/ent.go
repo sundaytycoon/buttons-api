@@ -1,3 +1,8 @@
+// Package ent
+/*
+- https://entgo.io/docs/generating-ent-schemas
+- daily
+*/
 package ent
 
 import (
@@ -43,6 +48,7 @@ func Main() error {
 
 	return nil
 }
+
 func BasicMigration(params struct {
 	dig.In
 	ServiceDB *adapterservicedb.Adapter

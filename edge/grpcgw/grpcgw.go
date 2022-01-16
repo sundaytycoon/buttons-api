@@ -48,6 +48,11 @@ func New() *Gateway {
 					mux.ServeHTTP(w, r)
 					return
 				}
+				if strings.HasPrefix(r.URL.Path, "/test") {
+					r.URL.Path = strings.ReplaceAll(r.URL.EscapedPath(), "/test", "")
+					getTestHTMLHandler().ServeHTTP(w, r)
+					return
+				}
 				getOpenAPIHandler().ServeHTTP(w, r)
 			}),
 		},
@@ -78,6 +83,17 @@ func getOpenAPIHandler() http.Handler {
 	mime.AddExtensionType(".svg", "image/svg+xml")
 	// Use subdirectory in embedded files
 	subFS, err := fs.Sub(doc.OpenAPI, "OpenAPI")
+	if err != nil {
+		panic("couldn't create sub filesystem: " + err.Error())
+	}
+	return http.FileServer(http.FS(subFS))
+}
+
+// getTestHTMLHandler serves an test html page
+func getTestHTMLHandler() http.Handler {
+	// Use subdirectory in embedded files
+	mime.AddExtensionType(".svg", "image/svg+xml")
+	subFS, err := fs.Sub(doc.Public, "public")
 	if err != nil {
 		panic("couldn't create sub filesystem: " + err.Error())
 	}

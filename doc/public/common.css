@@ -1,0 +1,31 @@
+body {
+    background-color: #e2e2e2;
+}
+
+.application {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    max-width: 48rem;
+    width: 100%;
+    padding: 1rem;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    width: 100%;
+    padding-bottom: 1rem;
+}
+
+.flex-center {
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,36 @@
+<html>
+<head>
+    <title> Test Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="./common.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <div class="application">
+        <div class="container">
+            <div class="row flex-center">
+                <button onClick="onGoogleLogin()">
+                    Google
+                </button>
+            </div>
+            <div class="row flex-center">
+                facebook
+            </div>
+            <div class="row flex-center">
+                kakao
+            </div>
+            <div class="row flex-center">
+                naver
+            </div>
+        </div>
+    </div>
+<script>
+const onGoogleLogin = async () => {
+    const { data } = await axios.get('http://localhost:4002/api/v1/sessions/redirect_url')
+    console.log(data)
+}
+</script>
+</body>
+</html>
