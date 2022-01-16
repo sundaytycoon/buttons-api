@@ -87,7 +87,7 @@ func (cc *CarCreate) Save(ctx context.Context) (*Car, error) {
 		})
 		for i := len(cc.hooks) - 1; i >= 0; i-- {
 			if cc.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return nil, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = cc.hooks[i](mut)
 		}
@@ -123,10 +123,10 @@ func (cc *CarCreate) ExecX(ctx context.Context) {
 // check runs all checks and user-defined validators on the builder.
 func (cc *CarCreate) check() error {
 	if _, ok := cc.mutation.Model(); !ok {
-		return &ValidationError{Name: "model", err: errors.New(`ent: missing required field "model"`)}
+		return &ValidationError{Name: "model", err: errors.New(`entd: missing required field "model"`)}
 	}
 	if _, ok := cc.mutation.RegisteredAt(); !ok {
-		return &ValidationError{Name: "registered_at", err: errors.New(`ent: missing required field "registered_at"`)}
+		return &ValidationError{Name: "registered_at", err: errors.New(`entd: missing required field "registered_at"`)}
 	}
 	return nil
 }

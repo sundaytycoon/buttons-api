@@ -13,9 +13,9 @@ func init() {
 }
 
 func Test_New(t *testing.T) {
-	a, err := MockNew(buttonsapi.MySQLDocker)
+	db, err := MockNew(buttonsapi.MySQLDocker)
 	assert.Empty(t, err)
-	rows, err := a.DB.Query("SELECT 1+1")
+	rows, err := db.Query("SELECT 1+1")
 	assert.Empty(t, err)
 	var r int64
 	for rows.Next() {
@@ -25,6 +25,6 @@ func Test_New(t *testing.T) {
 	assert.Empty(t, err)
 
 	assert.EqualValues(t, 2, r)
-	err = a.Close()
+	err = db.Close()
 	assert.Empty(t, err)
 }

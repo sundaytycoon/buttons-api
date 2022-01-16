@@ -14,7 +14,7 @@ USER=`whoami`
 
 
 #		--ignoreprefixes \
-#			ent \
+#			entd \
 #		-maxlevel 10\
 
 

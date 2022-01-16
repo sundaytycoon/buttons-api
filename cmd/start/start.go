@@ -29,7 +29,7 @@ func main() {
 	logCtx := func(ctx context.Context, i ...interface{}) {
 		Println("MYSQL[LOG]", i)
 	}
-	//client, err := ent.Open(dialect.SQLite, "file:ent?mode=memory&cache=shared&_fk=1")
+	//client, err := entd.Open(dialect.SQLite, "file:entd?mode=memory&cache=shared&_fk=1")
 	//if err != nil {
 	//	log.Fatalf("failed opening connection to sqlite: %v", err)
 	//}

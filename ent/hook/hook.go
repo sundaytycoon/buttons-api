@@ -17,7 +17,7 @@ type CarFunc func(context.Context, *ent.CarMutation) (ent.Value, error)
 func (f CarFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 	mv, ok := m.(*ent.CarMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CarMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *entd.CarMutation", m)
 	}
 	return f(ctx, mv)
 }
@@ -30,7 +30,7 @@ type GroupFunc func(context.Context, *ent.GroupMutation) (ent.Value, error)
 func (f GroupFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 	mv, ok := m.(*ent.GroupMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.GroupMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *entd.GroupMutation", m)
 	}
 	return f(ctx, mv)
 }
@@ -43,7 +43,7 @@ type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
 func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 	mv, ok := m.(*ent.UserMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *entd.UserMutation", m)
 	}
 	return f(ctx, mv)
 }
@@ -157,7 +157,7 @@ func If(hk ent.Hook, cond Condition) ent.Hook {
 
 // On executes the given hook only for the given operation.
 //
-//	hook.On(Log, ent.Delete|ent.Create)
+//	hook.On(Log, entd.Delete|entd.Create)
 //
 func On(hk ent.Hook, op ent.Op) ent.Hook {
 	return If(hk, HasOp(op))
@@ -165,7 +165,7 @@ func On(hk ent.Hook, op ent.Op) ent.Hook {
 
 // Unless skips the given hook only for the given operation.
 //
-//	hook.Unless(Log, ent.Update|ent.UpdateOne)
+//	hook.Unless(Log, entd.Update|entd.UpdateOne)
 //
 func Unless(hk ent.Hook, op ent.Op) ent.Hook {
 	return If(hk, Not(HasOp(op)))
@@ -182,9 +182,9 @@ func FixedError(err error) ent.Hook {
 
 // Reject returns a hook that rejects all operations that match op.
 //
-//	func (T) Hooks() []ent.Hook {
-//		return []ent.Hook{
-//			Reject(ent.Delete|ent.Update),
+//	func (T) Hooks() []entd.Hook {
+//		return []entd.Hook{
+//			Reject(entd.Delete|entd.Update),
 //		}
 //	}
 //

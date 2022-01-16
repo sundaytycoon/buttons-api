@@ -101,7 +101,7 @@ func (gu *GroupUpdate) Save(ctx context.Context) (int, error) {
 		})
 		for i := len(gu.hooks) - 1; i >= 0; i-- {
 			if gu.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return 0, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = gu.hooks[i](mut)
 		}
@@ -138,7 +138,7 @@ func (gu *GroupUpdate) ExecX(ctx context.Context) {
 func (gu *GroupUpdate) check() error {
 	if v, ok := gu.mutation.Name(); ok {
 		if err := group.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
+			return &ValidationError{Name: "name", err: fmt.Errorf("entd: validator failed for field \"name\": %w", err)}
 		}
 	}
 	return nil
@@ -323,7 +323,7 @@ func (guo *GroupUpdateOne) Save(ctx context.Context) (*Group, error) {
 		})
 		for i := len(guo.hooks) - 1; i >= 0; i-- {
 			if guo.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return nil, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = guo.hooks[i](mut)
 		}
@@ -360,7 +360,7 @@ func (guo *GroupUpdateOne) ExecX(ctx context.Context) {
 func (guo *GroupUpdateOne) check() error {
 	if v, ok := guo.mutation.Name(); ok {
 		if err := group.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
+			return &ValidationError{Name: "name", err: fmt.Errorf("entd: validator failed for field \"name\": %w", err)}
 		}
 	}
 	return nil
@@ -387,7 +387,7 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 		_spec.Node.Columns = append(_spec.Node.Columns, group.FieldID)
 		for _, f := range fields {
 			if !group.ValidColumn(f) {
-				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
+				return nil, &ValidationError{Name: f, err: fmt.Errorf("entd: invalid field %q for query", f)}
 			}
 			if f != group.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)

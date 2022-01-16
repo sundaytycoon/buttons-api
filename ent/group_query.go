@@ -333,7 +333,7 @@ func (gq *GroupQuery) Select(fields ...string) *GroupSelect {
 func (gq *GroupQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range gq.fields {
 		if !group.ValidColumn(f) {
-			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
+			return &ValidationError{Name: f, err: fmt.Errorf("entd: invalid field %q for query", f)}
 		}
 	}
 	if gq.path != nil {
@@ -361,7 +361,7 @@ func (gq *GroupQuery) sqlAll(ctx context.Context) ([]*Group, error) {
 	}
 	_spec.Assign = func(columns []string, values []interface{}) error {
 		if len(nodes) == 0 {
-			return fmt.Errorf("ent: Assign called without calling ScanValues")
+			return fmt.Errorf("entd: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
 		node.Edges.loadedTypes = loadedTypes
@@ -450,7 +450,7 @@ func (gq *GroupQuery) sqlCount(ctx context.Context) (int, error) {
 func (gq *GroupQuery) sqlExist(ctx context.Context) (bool, error) {
 	n, err := gq.sqlCount(ctx)
 	if err != nil {
-		return false, fmt.Errorf("ent: check existence: %w", err)
+		return false, fmt.Errorf("entd: check existence: %w", err)
 	}
 	return n > 0, nil
 }
@@ -569,7 +569,7 @@ func (ggb *GroupGroupBy) ScanX(ctx context.Context, v interface{}) {
 // It is only allowed when executing a group-by query with one field.
 func (ggb *GroupGroupBy) Strings(ctx context.Context) ([]string, error) {
 	if len(ggb.fields) > 1 {
-		return nil, errors.New("ent: GroupGroupBy.Strings is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: GroupGroupBy.Strings is not achievable when grouping more than 1 field")
 	}
 	var v []string
 	if err := ggb.Scan(ctx, &v); err != nil {
@@ -600,7 +600,7 @@ func (ggb *GroupGroupBy) String(ctx context.Context) (_ string, err error) {
 	case 0:
 		err = &NotFoundError{group.Label}
 	default:
-		err = fmt.Errorf("ent: GroupGroupBy.Strings returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: GroupGroupBy.Strings returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -618,7 +618,7 @@ func (ggb *GroupGroupBy) StringX(ctx context.Context) string {
 // It is only allowed when executing a group-by query with one field.
 func (ggb *GroupGroupBy) Ints(ctx context.Context) ([]int, error) {
 	if len(ggb.fields) > 1 {
-		return nil, errors.New("ent: GroupGroupBy.Ints is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: GroupGroupBy.Ints is not achievable when grouping more than 1 field")
 	}
 	var v []int
 	if err := ggb.Scan(ctx, &v); err != nil {
@@ -649,7 +649,7 @@ func (ggb *GroupGroupBy) Int(ctx context.Context) (_ int, err error) {
 	case 0:
 		err = &NotFoundError{group.Label}
 	default:
-		err = fmt.Errorf("ent: GroupGroupBy.Ints returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: GroupGroupBy.Ints returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -667,7 +667,7 @@ func (ggb *GroupGroupBy) IntX(ctx context.Context) int {
 // It is only allowed when executing a group-by query with one field.
 func (ggb *GroupGroupBy) Float64s(ctx context.Context) ([]float64, error) {
 	if len(ggb.fields) > 1 {
-		return nil, errors.New("ent: GroupGroupBy.Float64s is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: GroupGroupBy.Float64s is not achievable when grouping more than 1 field")
 	}
 	var v []float64
 	if err := ggb.Scan(ctx, &v); err != nil {
@@ -698,7 +698,7 @@ func (ggb *GroupGroupBy) Float64(ctx context.Context) (_ float64, err error) {
 	case 0:
 		err = &NotFoundError{group.Label}
 	default:
-		err = fmt.Errorf("ent: GroupGroupBy.Float64s returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: GroupGroupBy.Float64s returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -716,7 +716,7 @@ func (ggb *GroupGroupBy) Float64X(ctx context.Context) float64 {
 // It is only allowed when executing a group-by query with one field.
 func (ggb *GroupGroupBy) Bools(ctx context.Context) ([]bool, error) {
 	if len(ggb.fields) > 1 {
-		return nil, errors.New("ent: GroupGroupBy.Bools is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: GroupGroupBy.Bools is not achievable when grouping more than 1 field")
 	}
 	var v []bool
 	if err := ggb.Scan(ctx, &v); err != nil {
@@ -747,7 +747,7 @@ func (ggb *GroupGroupBy) Bool(ctx context.Context) (_ bool, err error) {
 	case 0:
 		err = &NotFoundError{group.Label}
 	default:
-		err = fmt.Errorf("ent: GroupGroupBy.Bools returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: GroupGroupBy.Bools returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -827,7 +827,7 @@ func (gs *GroupSelect) ScanX(ctx context.Context, v interface{}) {
 // Strings returns list of strings from a selector. It is only allowed when selecting one field.
 func (gs *GroupSelect) Strings(ctx context.Context) ([]string, error) {
 	if len(gs.fields) > 1 {
-		return nil, errors.New("ent: GroupSelect.Strings is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: GroupSelect.Strings is not achievable when selecting more than 1 field")
 	}
 	var v []string
 	if err := gs.Scan(ctx, &v); err != nil {
@@ -857,7 +857,7 @@ func (gs *GroupSelect) String(ctx context.Context) (_ string, err error) {
 	case 0:
 		err = &NotFoundError{group.Label}
 	default:
-		err = fmt.Errorf("ent: GroupSelect.Strings returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: GroupSelect.Strings returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -874,7 +874,7 @@ func (gs *GroupSelect) StringX(ctx context.Context) string {
 // Ints returns list of ints from a selector. It is only allowed when selecting one field.
 func (gs *GroupSelect) Ints(ctx context.Context) ([]int, error) {
 	if len(gs.fields) > 1 {
-		return nil, errors.New("ent: GroupSelect.Ints is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: GroupSelect.Ints is not achievable when selecting more than 1 field")
 	}
 	var v []int
 	if err := gs.Scan(ctx, &v); err != nil {
@@ -904,7 +904,7 @@ func (gs *GroupSelect) Int(ctx context.Context) (_ int, err error) {
 	case 0:
 		err = &NotFoundError{group.Label}
 	default:
-		err = fmt.Errorf("ent: GroupSelect.Ints returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: GroupSelect.Ints returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -921,7 +921,7 @@ func (gs *GroupSelect) IntX(ctx context.Context) int {
 // Float64s returns list of float64s from a selector. It is only allowed when selecting one field.
 func (gs *GroupSelect) Float64s(ctx context.Context) ([]float64, error) {
 	if len(gs.fields) > 1 {
-		return nil, errors.New("ent: GroupSelect.Float64s is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: GroupSelect.Float64s is not achievable when selecting more than 1 field")
 	}
 	var v []float64
 	if err := gs.Scan(ctx, &v); err != nil {
@@ -951,7 +951,7 @@ func (gs *GroupSelect) Float64(ctx context.Context) (_ float64, err error) {
 	case 0:
 		err = &NotFoundError{group.Label}
 	default:
-		err = fmt.Errorf("ent: GroupSelect.Float64s returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: GroupSelect.Float64s returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -968,7 +968,7 @@ func (gs *GroupSelect) Float64X(ctx context.Context) float64 {
 // Bools returns list of bools from a selector. It is only allowed when selecting one field.
 func (gs *GroupSelect) Bools(ctx context.Context) ([]bool, error) {
 	if len(gs.fields) > 1 {
-		return nil, errors.New("ent: GroupSelect.Bools is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: GroupSelect.Bools is not achievable when selecting more than 1 field")
 	}
 	var v []bool
 	if err := gs.Scan(ctx, &v); err != nil {
@@ -998,7 +998,7 @@ func (gs *GroupSelect) Bool(ctx context.Context) (_ bool, err error) {
 	case 0:
 		err = &NotFoundError{group.Label}
 	default:
-		err = fmt.Errorf("ent: GroupSelect.Bools returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: GroupSelect.Bools returned %d results when one was expected", len(v))
 	}
 	return
 }

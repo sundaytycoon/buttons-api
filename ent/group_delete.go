@@ -47,7 +47,7 @@ func (gd *GroupDelete) Exec(ctx context.Context) (int, error) {
 		})
 		for i := len(gd.hooks) - 1; i >= 0; i-- {
 			if gd.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return 0, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = gd.hooks[i](mut)
 		}

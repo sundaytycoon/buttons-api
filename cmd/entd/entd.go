@@ -1,9 +1,9 @@
-// Package ent
+// Package entd
 /*
 - https://entgo.io/docs/generating-ent-schemas
 - daily
 */
-package ent
+package entd
 
 import (
 	"context"
@@ -20,9 +20,9 @@ import (
 
 func MigrationCommand() *cobra.Command {
 	c := &cobra.Command{
-		Use:     "ent",
+		Use:     "entd",
 		Aliases: []string{"e"},
-		Short:   "ent go processs",
+		Short:   "entd go processs",
 		RunE: func(c *cobra.Command, _ []string) error {
 			return c.Help()
 		},
@@ -30,7 +30,7 @@ func MigrationCommand() *cobra.Command {
 	c.AddCommand(&cobra.Command{
 		Use:     "migration",
 		Aliases: []string{"m"},
-		Short:   "ent go script migration",
+		Short:   "entd go script migration",
 		RunE: func(c *cobra.Command, _ []string) error {
 			return Main()
 		},

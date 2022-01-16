@@ -47,7 +47,7 @@ func (cd *CarDelete) Exec(ctx context.Context) (int, error) {
 		})
 		for i := len(cd.hooks) - 1; i >= 0; i-- {
 			if cd.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return 0, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = cd.hooks[i](mut)
 		}

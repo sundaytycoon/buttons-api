@@ -13,7 +13,7 @@ import (
 // User is the model entity for the User schema.
 type User struct {
 	config `json:"-"`
-	// ID of the ent.
+	// ID of the entd.
 	ID int `json:"id,omitempty"`
 	// Age holds the value of the "age" field.
 	Age int `json:"age,omitempty"`
@@ -122,7 +122,7 @@ func (u *User) Update() *UserUpdateOne {
 func (u *User) Unwrap() *User {
 	tx, ok := u.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: User is not a transactional entity")
+		panic("entd: User is not a transactional entity")
 	}
 	u.config.driver = tx.drv
 	return u

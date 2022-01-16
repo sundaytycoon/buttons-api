@@ -2,11 +2,11 @@ env: # automatically injected by system environment values
 
 httpServer:
   host: 0.0.0.0
-  port: 4002
+  port: 5002
 
 grpcServer:
   host: 0.0.0.0
-  port: 4001
+  port: 5001
 
 batchDatabase:
   host: localhost

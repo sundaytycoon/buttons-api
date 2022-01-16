@@ -13,7 +13,7 @@ import (
 // Group is the model entity for the Group schema.
 type Group struct {
 	config `json:"-"`
-	// ID of the ent.
+	// ID of the entd.
 	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
@@ -98,7 +98,7 @@ func (gr *Group) Update() *GroupUpdateOne {
 func (gr *Group) Unwrap() *Group {
 	tx, ok := gr.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Group is not a transactional entity")
+		panic("entd: Group is not a transactional entity")
 	}
 	gr.config.driver = tx.drv
 	return gr

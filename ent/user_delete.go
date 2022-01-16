@@ -47,7 +47,7 @@ func (ud *UserDelete) Exec(ctx context.Context) (int, error) {
 		})
 		for i := len(ud.hooks) - 1; i >= 0; i-- {
 			if ud.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return 0, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = ud.hooks[i](mut)
 		}

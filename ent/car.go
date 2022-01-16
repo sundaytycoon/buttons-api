@@ -15,7 +15,7 @@ import (
 // Car is the model entity for the Car schema.
 type Car struct {
 	config `json:"-"`
-	// ID of the ent.
+	// ID of the entd.
 	ID int `json:"id,omitempty"`
 	// Model holds the value of the "model" field.
 	Model string `json:"model,omitempty"`
@@ -125,7 +125,7 @@ func (c *Car) Update() *CarUpdateOne {
 func (c *Car) Unwrap() *Car {
 	tx, ok := c.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Car is not a transactional entity")
+		panic("entd: Car is not a transactional entity")
 	}
 	c.config.driver = tx.drv
 	return c

@@ -58,3 +58,8 @@ make protosetup # For set up protobuf using `buf`
 
 make protogen # For generating protobuf
 ```
+
+시립대 핏
+
+🥕 시립대학교 돌아다니면서 운동하는 크루 🥕
+🏃‍♂️

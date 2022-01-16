@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/spf13/cobra"
 
-	cmdent "github.com/sundaytycoon/buttons-api/cmd/ent"
+	cmdent "github.com/sundaytycoon/buttons-api/cmd/entd"
 	cmdserver "github.com/sundaytycoon/buttons-api/cmd/server"
 )
 

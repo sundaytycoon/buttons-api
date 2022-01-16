@@ -15,14 +15,14 @@ func init() {
 }
 
 func TestGetUser(t *testing.T) {
-	a, err := mysql.MockNew(buttonsapi.MySQLDocker)
+	db, err := mysql.MockNew(buttonsapi.MySQLDocker)
 	assert.Empty(t, err)
 
 	serviceStorage := New()
 	assert.Empty(t, err)
 
 	ctx := context.Background()
-	conn, err := a.DB.Conn(ctx)
+	conn, err := db.Conn(ctx)
 	assert.Empty(t, err)
 	tx, err := conn.BeginTx(ctx, nil)
 	assert.Empty(t, err)

@@ -76,7 +76,7 @@ func (gc *GroupCreate) Save(ctx context.Context) (*Group, error) {
 		})
 		for i := len(gc.hooks) - 1; i >= 0; i-- {
 			if gc.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return nil, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = gc.hooks[i](mut)
 		}
@@ -112,11 +112,11 @@ func (gc *GroupCreate) ExecX(ctx context.Context) {
 // check runs all checks and user-defined validators on the builder.
 func (gc *GroupCreate) check() error {
 	if _, ok := gc.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "name"`)}
+		return &ValidationError{Name: "name", err: errors.New(`entd: missing required field "name"`)}
 	}
 	if v, ok := gc.mutation.Name(); ok {
 		if err := group.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "name": %w`, err)}
+			return &ValidationError{Name: "name", err: fmt.Errorf(`entd: validator failed for field "name": %w`, err)}
 		}
 	}
 	return nil

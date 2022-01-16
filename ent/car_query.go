@@ -333,7 +333,7 @@ func (cq *CarQuery) Select(fields ...string) *CarSelect {
 func (cq *CarQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range cq.fields {
 		if !car.ValidColumn(f) {
-			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
+			return &ValidationError{Name: f, err: fmt.Errorf("entd: invalid field %q for query", f)}
 		}
 	}
 	if cq.path != nil {
@@ -368,7 +368,7 @@ func (cq *CarQuery) sqlAll(ctx context.Context) ([]*Car, error) {
 	}
 	_spec.Assign = func(columns []string, values []interface{}) error {
 		if len(nodes) == 0 {
-			return fmt.Errorf("ent: Assign called without calling ScanValues")
+			return fmt.Errorf("entd: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
 		node.Edges.loadedTypes = loadedTypes
@@ -421,7 +421,7 @@ func (cq *CarQuery) sqlCount(ctx context.Context) (int, error) {
 func (cq *CarQuery) sqlExist(ctx context.Context) (bool, error) {
 	n, err := cq.sqlCount(ctx)
 	if err != nil {
-		return false, fmt.Errorf("ent: check existence: %w", err)
+		return false, fmt.Errorf("entd: check existence: %w", err)
 	}
 	return n > 0, nil
 }
@@ -540,7 +540,7 @@ func (cgb *CarGroupBy) ScanX(ctx context.Context, v interface{}) {
 // It is only allowed when executing a group-by query with one field.
 func (cgb *CarGroupBy) Strings(ctx context.Context) ([]string, error) {
 	if len(cgb.fields) > 1 {
-		return nil, errors.New("ent: CarGroupBy.Strings is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: CarGroupBy.Strings is not achievable when grouping more than 1 field")
 	}
 	var v []string
 	if err := cgb.Scan(ctx, &v); err != nil {
@@ -571,7 +571,7 @@ func (cgb *CarGroupBy) String(ctx context.Context) (_ string, err error) {
 	case 0:
 		err = &NotFoundError{car.Label}
 	default:
-		err = fmt.Errorf("ent: CarGroupBy.Strings returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: CarGroupBy.Strings returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -589,7 +589,7 @@ func (cgb *CarGroupBy) StringX(ctx context.Context) string {
 // It is only allowed when executing a group-by query with one field.
 func (cgb *CarGroupBy) Ints(ctx context.Context) ([]int, error) {
 	if len(cgb.fields) > 1 {
-		return nil, errors.New("ent: CarGroupBy.Ints is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: CarGroupBy.Ints is not achievable when grouping more than 1 field")
 	}
 	var v []int
 	if err := cgb.Scan(ctx, &v); err != nil {
@@ -620,7 +620,7 @@ func (cgb *CarGroupBy) Int(ctx context.Context) (_ int, err error) {
 	case 0:
 		err = &NotFoundError{car.Label}
 	default:
-		err = fmt.Errorf("ent: CarGroupBy.Ints returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: CarGroupBy.Ints returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -638,7 +638,7 @@ func (cgb *CarGroupBy) IntX(ctx context.Context) int {
 // It is only allowed when executing a group-by query with one field.
 func (cgb *CarGroupBy) Float64s(ctx context.Context) ([]float64, error) {
 	if len(cgb.fields) > 1 {
-		return nil, errors.New("ent: CarGroupBy.Float64s is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: CarGroupBy.Float64s is not achievable when grouping more than 1 field")
 	}
 	var v []float64
 	if err := cgb.Scan(ctx, &v); err != nil {
@@ -669,7 +669,7 @@ func (cgb *CarGroupBy) Float64(ctx context.Context) (_ float64, err error) {
 	case 0:
 		err = &NotFoundError{car.Label}
 	default:
-		err = fmt.Errorf("ent: CarGroupBy.Float64s returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: CarGroupBy.Float64s returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -687,7 +687,7 @@ func (cgb *CarGroupBy) Float64X(ctx context.Context) float64 {
 // It is only allowed when executing a group-by query with one field.
 func (cgb *CarGroupBy) Bools(ctx context.Context) ([]bool, error) {
 	if len(cgb.fields) > 1 {
-		return nil, errors.New("ent: CarGroupBy.Bools is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: CarGroupBy.Bools is not achievable when grouping more than 1 field")
 	}
 	var v []bool
 	if err := cgb.Scan(ctx, &v); err != nil {
@@ -718,7 +718,7 @@ func (cgb *CarGroupBy) Bool(ctx context.Context) (_ bool, err error) {
 	case 0:
 		err = &NotFoundError{car.Label}
 	default:
-		err = fmt.Errorf("ent: CarGroupBy.Bools returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: CarGroupBy.Bools returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -798,7 +798,7 @@ func (cs *CarSelect) ScanX(ctx context.Context, v interface{}) {
 // Strings returns list of strings from a selector. It is only allowed when selecting one field.
 func (cs *CarSelect) Strings(ctx context.Context) ([]string, error) {
 	if len(cs.fields) > 1 {
-		return nil, errors.New("ent: CarSelect.Strings is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: CarSelect.Strings is not achievable when selecting more than 1 field")
 	}
 	var v []string
 	if err := cs.Scan(ctx, &v); err != nil {
@@ -828,7 +828,7 @@ func (cs *CarSelect) String(ctx context.Context) (_ string, err error) {
 	case 0:
 		err = &NotFoundError{car.Label}
 	default:
-		err = fmt.Errorf("ent: CarSelect.Strings returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: CarSelect.Strings returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -845,7 +845,7 @@ func (cs *CarSelect) StringX(ctx context.Context) string {
 // Ints returns list of ints from a selector. It is only allowed when selecting one field.
 func (cs *CarSelect) Ints(ctx context.Context) ([]int, error) {
 	if len(cs.fields) > 1 {
-		return nil, errors.New("ent: CarSelect.Ints is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: CarSelect.Ints is not achievable when selecting more than 1 field")
 	}
 	var v []int
 	if err := cs.Scan(ctx, &v); err != nil {
@@ -875,7 +875,7 @@ func (cs *CarSelect) Int(ctx context.Context) (_ int, err error) {
 	case 0:
 		err = &NotFoundError{car.Label}
 	default:
-		err = fmt.Errorf("ent: CarSelect.Ints returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: CarSelect.Ints returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -892,7 +892,7 @@ func (cs *CarSelect) IntX(ctx context.Context) int {
 // Float64s returns list of float64s from a selector. It is only allowed when selecting one field.
 func (cs *CarSelect) Float64s(ctx context.Context) ([]float64, error) {
 	if len(cs.fields) > 1 {
-		return nil, errors.New("ent: CarSelect.Float64s is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: CarSelect.Float64s is not achievable when selecting more than 1 field")
 	}
 	var v []float64
 	if err := cs.Scan(ctx, &v); err != nil {
@@ -922,7 +922,7 @@ func (cs *CarSelect) Float64(ctx context.Context) (_ float64, err error) {
 	case 0:
 		err = &NotFoundError{car.Label}
 	default:
-		err = fmt.Errorf("ent: CarSelect.Float64s returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: CarSelect.Float64s returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -939,7 +939,7 @@ func (cs *CarSelect) Float64X(ctx context.Context) float64 {
 // Bools returns list of bools from a selector. It is only allowed when selecting one field.
 func (cs *CarSelect) Bools(ctx context.Context) ([]bool, error) {
 	if len(cs.fields) > 1 {
-		return nil, errors.New("ent: CarSelect.Bools is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: CarSelect.Bools is not achievable when selecting more than 1 field")
 	}
 	var v []bool
 	if err := cs.Scan(ctx, &v); err != nil {
@@ -969,7 +969,7 @@ func (cs *CarSelect) Bool(ctx context.Context) (_ bool, err error) {
 	case 0:
 		err = &NotFoundError{car.Label}
 	default:
-		err = fmt.Errorf("ent: CarSelect.Bools returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: CarSelect.Bools returned %d results when one was expected", len(v))
 	}
 	return
 }

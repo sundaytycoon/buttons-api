@@ -159,7 +159,7 @@ func (uu *UserUpdate) Save(ctx context.Context) (int, error) {
 		})
 		for i := len(uu.hooks) - 1; i >= 0; i-- {
 			if uu.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return 0, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = uu.hooks[i](mut)
 		}
@@ -196,7 +196,7 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 func (uu *UserUpdate) check() error {
 	if v, ok := uu.mutation.Age(); ok {
 		if err := user.AgeValidator(v); err != nil {
-			return &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
+			return &ValidationError{Name: "age", err: fmt.Errorf("entd: validator failed for field \"age\": %w", err)}
 		}
 	}
 	return nil
@@ -506,7 +506,7 @@ func (uuo *UserUpdateOne) Save(ctx context.Context) (*User, error) {
 		})
 		for i := len(uuo.hooks) - 1; i >= 0; i-- {
 			if uuo.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return nil, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = uuo.hooks[i](mut)
 		}
@@ -543,7 +543,7 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 func (uuo *UserUpdateOne) check() error {
 	if v, ok := uuo.mutation.Age(); ok {
 		if err := user.AgeValidator(v); err != nil {
-			return &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
+			return &ValidationError{Name: "age", err: fmt.Errorf("entd: validator failed for field \"age\": %w", err)}
 		}
 	}
 	return nil
@@ -570,7 +570,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		_spec.Node.Columns = append(_spec.Node.Columns, user.FieldID)
 		for _, f := range fields {
 			if !user.ValidColumn(f) {
-				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
+				return nil, &ValidationError{Name: f, err: fmt.Errorf("entd: invalid field %q for query", f)}
 			}
 			if f != user.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)

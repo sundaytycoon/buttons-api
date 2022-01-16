@@ -91,7 +91,7 @@ func (cu *CarUpdate) Save(ctx context.Context) (int, error) {
 		})
 		for i := len(cu.hooks) - 1; i >= 0; i-- {
 			if cu.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return 0, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = cu.hooks[i](mut)
 		}
@@ -280,7 +280,7 @@ func (cuo *CarUpdateOne) Save(ctx context.Context) (*Car, error) {
 		})
 		for i := len(cuo.hooks) - 1; i >= 0; i-- {
 			if cuo.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+				return nil, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
 			}
 			mut = cuo.hooks[i](mut)
 		}
@@ -334,7 +334,7 @@ func (cuo *CarUpdateOne) sqlSave(ctx context.Context) (_node *Car, err error) {
 		_spec.Node.Columns = append(_spec.Node.Columns, car.FieldID)
 		for _, f := range fields {
 			if !car.ValidColumn(f) {
-				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
+				return nil, &ValidationError{Name: f, err: fmt.Errorf("entd: invalid field %q for query", f)}
 			}
 			if f != car.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)

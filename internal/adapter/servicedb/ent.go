@@ -59,7 +59,7 @@ func Println(title string, i ...interface{}) {
 
 func MockDB() (*entsql.Driver, error) {
 	op := er.GetOperator()
-	drv, err := entsql.Open(dialect.SQLite, "file:ent?mode=memory&cache=shared&_fk=1")
+	drv, err := entsql.Open(dialect.SQLite, "file:entd?mode=memory&cache=shared&_fk=1")
 	if err != nil {
 		return nil, er.WrapOp(err, op)
 	}

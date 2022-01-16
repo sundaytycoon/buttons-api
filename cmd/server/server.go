@@ -19,6 +19,7 @@ import (
 	adapterbatchdb "github.com/sundaytycoon/buttons-api/internal/adapter/batchdb"
 	adapterservicedb "github.com/sundaytycoon/buttons-api/internal/adapter/servicedb"
 	"github.com/sundaytycoon/buttons-api/internal/config"
+	handlerauth "github.com/sundaytycoon/buttons-api/internal/handler/auth"
 	handleruser "github.com/sundaytycoon/buttons-api/internal/handler/user"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
@@ -30,6 +31,7 @@ func Main() error {
 	er.PanicError(d.Provide(adapterservicedb.New))
 	er.PanicError(d.Provide(adapterbatchdb.New))
 	er.PanicError(d.Provide(handleruser.New))
+	er.PanicError(d.Provide(handlerauth.New))
 
 	er.PanicError(d.Invoke(ServerStart))
 
@@ -47,11 +49,18 @@ func ServerStart(params struct {
 	dig.In
 	Config      *config.Config
 	UserHandler *handleruser.Handler
+	AuthHandler *handlerauth.Handler
 }) error {
 	app := grpcserver.New()
 	gw := grpcgw.New()
-	grpcAppHandlers := []grpcserver.GRPCHandler{params.UserHandler}
-	grpcGWHandlers := []grpcgw.GRPCHandler{params.UserHandler}
+	grpcAppHandlers := []grpcserver.GRPCHandler{
+		params.UserHandler,
+		params.AuthHandler,
+	}
+	grpcGWHandlers := []grpcgw.GRPCHandler{
+		params.UserHandler,
+		params.AuthHandler,
+	}
 	httpEndpoint := net.JoinHostPort(params.Config.HTTPEndPoint.Host, params.Config.HTTPEndPoint.Port)
 	grpcEndpoint := net.JoinHostPort(params.Config.GRPCEndPoint.Host, params.Config.GRPCEndPoint.Port)
 

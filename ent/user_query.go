@@ -369,7 +369,7 @@ func (uq *UserQuery) Select(fields ...string) *UserSelect {
 func (uq *UserQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range uq.fields {
 		if !user.ValidColumn(f) {
-			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
+			return &ValidationError{Name: f, err: fmt.Errorf("entd: invalid field %q for query", f)}
 		}
 	}
 	if uq.path != nil {
@@ -398,7 +398,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 	}
 	_spec.Assign = func(columns []string, values []interface{}) error {
 		if len(nodes) == 0 {
-			return fmt.Errorf("ent: Assign called without calling ScanValues")
+			return fmt.Errorf("entd: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
 		node.Edges.loadedTypes = loadedTypes
@@ -516,7 +516,7 @@ func (uq *UserQuery) sqlCount(ctx context.Context) (int, error) {
 func (uq *UserQuery) sqlExist(ctx context.Context) (bool, error) {
 	n, err := uq.sqlCount(ctx)
 	if err != nil {
-		return false, fmt.Errorf("ent: check existence: %w", err)
+		return false, fmt.Errorf("entd: check existence: %w", err)
 	}
 	return n > 0, nil
 }
@@ -635,7 +635,7 @@ func (ugb *UserGroupBy) ScanX(ctx context.Context, v interface{}) {
 // It is only allowed when executing a group-by query with one field.
 func (ugb *UserGroupBy) Strings(ctx context.Context) ([]string, error) {
 	if len(ugb.fields) > 1 {
-		return nil, errors.New("ent: UserGroupBy.Strings is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: UserGroupBy.Strings is not achievable when grouping more than 1 field")
 	}
 	var v []string
 	if err := ugb.Scan(ctx, &v); err != nil {
@@ -666,7 +666,7 @@ func (ugb *UserGroupBy) String(ctx context.Context) (_ string, err error) {
 	case 0:
 		err = &NotFoundError{user.Label}
 	default:
-		err = fmt.Errorf("ent: UserGroupBy.Strings returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: UserGroupBy.Strings returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -684,7 +684,7 @@ func (ugb *UserGroupBy) StringX(ctx context.Context) string {
 // It is only allowed when executing a group-by query with one field.
 func (ugb *UserGroupBy) Ints(ctx context.Context) ([]int, error) {
 	if len(ugb.fields) > 1 {
-		return nil, errors.New("ent: UserGroupBy.Ints is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: UserGroupBy.Ints is not achievable when grouping more than 1 field")
 	}
 	var v []int
 	if err := ugb.Scan(ctx, &v); err != nil {
@@ -715,7 +715,7 @@ func (ugb *UserGroupBy) Int(ctx context.Context) (_ int, err error) {
 	case 0:
 		err = &NotFoundError{user.Label}
 	default:
-		err = fmt.Errorf("ent: UserGroupBy.Ints returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: UserGroupBy.Ints returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -733,7 +733,7 @@ func (ugb *UserGroupBy) IntX(ctx context.Context) int {
 // It is only allowed when executing a group-by query with one field.
 func (ugb *UserGroupBy) Float64s(ctx context.Context) ([]float64, error) {
 	if len(ugb.fields) > 1 {
-		return nil, errors.New("ent: UserGroupBy.Float64s is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: UserGroupBy.Float64s is not achievable when grouping more than 1 field")
 	}
 	var v []float64
 	if err := ugb.Scan(ctx, &v); err != nil {
@@ -764,7 +764,7 @@ func (ugb *UserGroupBy) Float64(ctx context.Context) (_ float64, err error) {
 	case 0:
 		err = &NotFoundError{user.Label}
 	default:
-		err = fmt.Errorf("ent: UserGroupBy.Float64s returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: UserGroupBy.Float64s returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -782,7 +782,7 @@ func (ugb *UserGroupBy) Float64X(ctx context.Context) float64 {
 // It is only allowed when executing a group-by query with one field.
 func (ugb *UserGroupBy) Bools(ctx context.Context) ([]bool, error) {
 	if len(ugb.fields) > 1 {
-		return nil, errors.New("ent: UserGroupBy.Bools is not achievable when grouping more than 1 field")
+		return nil, errors.New("entd: UserGroupBy.Bools is not achievable when grouping more than 1 field")
 	}
 	var v []bool
 	if err := ugb.Scan(ctx, &v); err != nil {
@@ -813,7 +813,7 @@ func (ugb *UserGroupBy) Bool(ctx context.Context) (_ bool, err error) {
 	case 0:
 		err = &NotFoundError{user.Label}
 	default:
-		err = fmt.Errorf("ent: UserGroupBy.Bools returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: UserGroupBy.Bools returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -893,7 +893,7 @@ func (us *UserSelect) ScanX(ctx context.Context, v interface{}) {
 // Strings returns list of strings from a selector. It is only allowed when selecting one field.
 func (us *UserSelect) Strings(ctx context.Context) ([]string, error) {
 	if len(us.fields) > 1 {
-		return nil, errors.New("ent: UserSelect.Strings is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: UserSelect.Strings is not achievable when selecting more than 1 field")
 	}
 	var v []string
 	if err := us.Scan(ctx, &v); err != nil {
@@ -923,7 +923,7 @@ func (us *UserSelect) String(ctx context.Context) (_ string, err error) {
 	case 0:
 		err = &NotFoundError{user.Label}
 	default:
-		err = fmt.Errorf("ent: UserSelect.Strings returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: UserSelect.Strings returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -940,7 +940,7 @@ func (us *UserSelect) StringX(ctx context.Context) string {
 // Ints returns list of ints from a selector. It is only allowed when selecting one field.
 func (us *UserSelect) Ints(ctx context.Context) ([]int, error) {
 	if len(us.fields) > 1 {
-		return nil, errors.New("ent: UserSelect.Ints is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: UserSelect.Ints is not achievable when selecting more than 1 field")
 	}
 	var v []int
 	if err := us.Scan(ctx, &v); err != nil {
@@ -970,7 +970,7 @@ func (us *UserSelect) Int(ctx context.Context) (_ int, err error) {
 	case 0:
 		err = &NotFoundError{user.Label}
 	default:
-		err = fmt.Errorf("ent: UserSelect.Ints returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: UserSelect.Ints returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -987,7 +987,7 @@ func (us *UserSelect) IntX(ctx context.Context) int {
 // Float64s returns list of float64s from a selector. It is only allowed when selecting one field.
 func (us *UserSelect) Float64s(ctx context.Context) ([]float64, error) {
 	if len(us.fields) > 1 {
-		return nil, errors.New("ent: UserSelect.Float64s is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: UserSelect.Float64s is not achievable when selecting more than 1 field")
 	}
 	var v []float64
 	if err := us.Scan(ctx, &v); err != nil {
@@ -1017,7 +1017,7 @@ func (us *UserSelect) Float64(ctx context.Context) (_ float64, err error) {
 	case 0:
 		err = &NotFoundError{user.Label}
 	default:
-		err = fmt.Errorf("ent: UserSelect.Float64s returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: UserSelect.Float64s returned %d results when one was expected", len(v))
 	}
 	return
 }
@@ -1034,7 +1034,7 @@ func (us *UserSelect) Float64X(ctx context.Context) float64 {
 // Bools returns list of bools from a selector. It is only allowed when selecting one field.
 func (us *UserSelect) Bools(ctx context.Context) ([]bool, error) {
 	if len(us.fields) > 1 {
-		return nil, errors.New("ent: UserSelect.Bools is not achievable when selecting more than 1 field")
+		return nil, errors.New("entd: UserSelect.Bools is not achievable when selecting more than 1 field")
 	}
 	var v []bool
 	if err := us.Scan(ctx, &v); err != nil {
@@ -1064,7 +1064,7 @@ func (us *UserSelect) Bool(ctx context.Context) (_ bool, err error) {
 	case 0:
 		err = &NotFoundError{user.Label}
 	default:
-		err = fmt.Errorf("ent: UserSelect.Bools returned %d results when one was expected", len(v))
+		err = fmt.Errorf("entd: UserSelect.Bools returned %d results when one was expected", len(v))
 	}
 	return
 }
