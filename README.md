@@ -6,6 +6,29 @@
 go run cmd/main.go server start # 5001 grpc - 5002 http
 ```
 
+# package structue?
+```
+  📂 git@daangn/search-statistics
+   ┣📂 cmd
+   ┃ ┗ 📜 main.go # [server, entd]가 있음
+   ┣📂 doc
+   ┃ ┗ 📂 OpenAPI # swagger.json들어오는곳/ swagger-ui 다운받는 곳
+   ┣📂 edge # 비지니스로직 상세하게 타지 않으면서, 외부 서버랑 최종적으로 통신하는 코드들
+   ┣📂 ent # entd.go 의 generated된 파일들 한 뭉텅이
+   ┣📂 gen/go/buttons/api/v1 # protobuf로 generated된 golang파일
+   ┣📂 internal # 내부 비지니스로직 담는곳
+   ┣📂 pkg
+   ┣📂 proto # protobuf 파일들이 있음.
+```
+
+``` makefile
+make generate-docs # 요거하면 토드 dependency graph가 바뀌어요
+```
+
+![code dependency graph](./doc/_images/godepgraph.png)
+
+
+
 # wiki
 
 ### ent.go 유용한 스크립트 모음
@@ -28,14 +51,6 @@ go run cmd/main.go ent migration # step 3
 ### 개발 셋팅 관련 문서
 
 - [DEVELOPMENT.md](https://github.com/sundaytycoon/buttons-api/blob/main/DEVELOPMENT.md)
-
-### package dependencies
-
-``` makefile
-make generate-docs # 요거하면 토드 dependency graph가 바뀌어요
-```
-
-![code dependency graph](./doc/_images/godepgraph.png)
 
 # scripts
 
