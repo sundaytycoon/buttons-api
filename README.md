@@ -22,7 +22,7 @@ go run cmd/main.go server start # 5001 grpc - 5002 http
 ```
 
 ``` makefile
-make generate-docs # 요거하면 토드 dependency graph가 바뀌어요
+make generate-docs # 요거하면 코드 dependency graph가 바뀌어요
 ```
 
 ![code dependency graph](./doc/_images/godepgraph.png)
