@@ -1,5 +1,11 @@
 # buttons-api
 
+# gettings started
+
+```
+go run cmd/main.go server start # 5001 grpc - 5002 http
+```
+
 # wiki
 
 ### ent.go 유용한 스크립트 모음
