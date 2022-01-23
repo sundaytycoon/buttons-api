@@ -4,6 +4,9 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
+	"google.golang.org/grpc/metadata"
+	"io/ioutil"
 	"os"
 	"time"
 
@@ -19,10 +22,12 @@ import (
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
+const UserInfoAPIEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo"
+
 var googleOauthConfig = oauth2.Config{
-	RedirectURL:  "http://localhost:5002/auth/callback",
+	RedirectURL:  "http://localhost:5002/api/v1/auth/callback",
 	ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
-	ClientSecret: os.Getenv("GOOGLE_SECRET_KEY"),
+	ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
 	Endpoint:     google.Endpoint,
 }
@@ -81,8 +86,50 @@ func (h *Handler) GetRedirectURL(ctx context.Context, req *v1pb.GetRedirectURLRe
 
 	res := &v1pb.GetRedirectURLResponse{
 		Provider:    req.Provider,
-		RedirectUrl: googleOauthConfig.AuthCodeURL(state),
+		RedirectUrl: googleOauthConfig.AuthCodeURL("http://localhost:3000"),
 	}
-	log.Trace().Interface("req", req).Interface("res", res).Send()
+	log.Trace().Str("operator", "GetRedirectURL").Interface("req", req).Interface("res", res).Send()
+	return res, nil
+}
+
+func (h *Handler) GetCallback(ctx context.Context, req *v1pb.GetCallbackRequest) (*v1pb.GetCallbackResponse, error) {
+	res := &v1pb.GetCallbackResponse{}
+	token, err := googleOauthConfig.Exchange(ctx, req.Code)
+	if err != nil {
+		fmt.Println("GetCallback = 1")
+		return nil, err
+	}
+	fmt.Println(token)
+	t, err := googleOauthConfig.TokenSource(ctx, token).Token()
+	if err != nil {
+		fmt.Println("GetCallback = 2")
+		return nil, err
+	}
+	fmt.Println(t)
+	client := googleOauthConfig.Client(ctx, token)
+	userInfoResp, err := client.Get(UserInfoAPIEndpoint)
+	if err != nil {
+		fmt.Println("GetCallback = 3")
+		return nil, err
+	}
+	defer userInfoResp.Body.Close()
+	userInfo, err := ioutil.ReadAll(userInfoResp.Body)
+	if err != nil {
+		fmt.Println("GetCallback = 3")
+		return nil, err
+	}
+	log.Trace().
+		Str("user_info", string(userInfo)).
+		Str("operator", "GetCallback").
+		Interface("token", token).
+		Interface("req", req).
+		Interface("res", res).
+		Send()
+
+	// FIXME: https://stackoverflow.com/questions/49878855/how-to-do-a-302-redirect-in-grpc-gateway
+	metadata.NewOutgoingContext(ctx, metadata.New(map[string]string{
+		"status":   "302",
+		"Location": req.State,
+	}))
 	return res, nil
 }

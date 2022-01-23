@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   btn-db:
+    platform: linux/x86_64
     image: mysql:latest
     container_name: btn-db
     ports:

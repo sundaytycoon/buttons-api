@@ -44,6 +44,19 @@ func New() *Gateway {
 		mux: mux,
 		httpServer: &http.Server{
 			Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+				var header [][]string
+				for k, v := range r.Header {
+					header = append(header, []string{k, strings.Join(v, "/")})
+				}
+				var reqBody map[string]interface{}
+				log.Info().
+					Str("method", r.Method).
+					Str("proto", r.Proto).
+					Interface("url", r.URL).
+					Interface("header", header).
+					Interface("body", reqBody).
+					Send()
 				if strings.HasPrefix(r.URL.Path, "/api") {
 					mux.ServeHTTP(w, r)
 					return

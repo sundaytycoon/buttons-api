@@ -22,17 +22,13 @@ type Server struct {
 
 func New() *Server {
 	grpcServer := grpc.NewServer(
-		//grpc.UnaryInterceptor(
-		//	grpcmiddleware.ChainUnaryServer(
-		//		func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-		//			if v, ok := req.(*v1pb.UserRe); ok {
-		//				fmt.Println("---------")
-		//				fmt.Println(v.Name)
-		//			}
-		//			return handler(ctx, req)
-		//		},
-		//	),
-		//),
+		grpc.UnaryInterceptor(
+			//grpcmiddleware.ChainUnaryServer(
+			//	func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+			//		return handler(ctx, req)
+			//	},
+			//),
+		),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle:     15 * time.Second,
 			MaxConnectionAge:      30 * time.Second,

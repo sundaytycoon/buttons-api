@@ -19,6 +19,62 @@
     "application/json"
   ],
   "paths": {
+    "/api/v1/auth/callback": {
+      "get": {
+        "summary": "get callback data",
+        "description": "google send me callback data ",
+        "operationId": "AuthService_GetCallback",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCallbackResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "authuser",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "prompt",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "OAauth 2.0"
+        ]
+      }
+    },
     "/api/v1/auth/redirect_url": {
       "get": {
         "summary": "get redirect_url from provider",
@@ -79,6 +135,9 @@
           }
         }
       }
+    },
+    "v1GetCallbackResponse": {
+      "type": "object"
     },
     "v1GetRedirectURLResponse": {
       "type": "object",
