@@ -1,15 +1,8 @@
 # buttons-api
 
-# erd diagrams
+# 설계 UMLs
 
-``` mermaid
-pie
-"Dogs" : 386
-"Cats" : 85
-"Rats" : 15
-
-```
-
+[UMLs.md](./UMLs.md)
 
 # gettings started
 
