@@ -1,5 +1,16 @@
 # buttons-api
 
+# erd diagrams
+
+``` mermaid
+pie
+"Dogs" : 386
+"Cats" : 85
+"Rats" : 15
+
+```
+
+
 # gettings started
 
 ```
