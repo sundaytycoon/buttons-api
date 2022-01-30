@@ -6,19 +6,20 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"time"
 )
 
-// User holds the schema definition for the User entity.
-type User struct {
+// UserMeta holds the schema definition for the UserOAuthProvider entity.
+type UserMeta struct {
 	ent.Schema
 }
 
-// Fields of the User.
-func (User) Fields() []ent.Field {
+// Fields of the UserMeta.
+func (UserMeta) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").Unique(),
-
+		field.String("user_id").Unique(),
 		field.Time("created_at").
 			Default(time.Now).
 			Comment("해당 row를 최초로 만든 시간은 언제인지?"),
@@ -38,31 +39,34 @@ func (User) Fields() []ent.Field {
 			Default("ACTIVE").
 			Comment("해당 사용자는 서비스에서 유효한지 아닌지"),
 
-		field.Enum("type").
-			Values("USER", "ADMIN").
-			Default("USER").
-			Comment("일반 사용자인지, 어드민 인지, 스태프 인지.. 등"),
-
-		field.Bool("signup").
-			Default(false).
-			Comment("회원가입이 잘 끝난 사용자인지 아닌지?"),
-
-		field.String("username").
-			Unique().
-			Comment("서비스에서 유일한 사용자의 이름"),
+		field.String("profile").
+			Comment("어떤 Oauth provider를 이용하였는지?"),
 	}
 }
 
-//Edge of the User
-func (User) Edges() []ent.Edge {
+// Edge of the UserMeta
+func (UserMeta) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("oauth_providers", UserOAuthProvider.Type),
-		edge.To("meta", UserMeta.Type),
+		edge.From("user", User.Type).
+			Ref("meta").
+			// setting the edge to unique, ensure
+			// that a car can have only one owner.
+			Unique(),
 	}
 }
 
-// Annotations of the Entity.
-func (User) Annotations() []schema.Annotation {
+// Indexes of the UserMeta
+func (UserMeta) Indexes() []ent.Index {
+	return []ent.Index{
+		// unique index.
+		index.
+			Fields("user_id").
+			Unique(),
+	}
+}
+
+// Annotations of the UserMeta.
+func (UserMeta) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{
 			Charset:   "utf8mb4",

@@ -5,13 +5,20 @@ erDiagram
     USER_OAUTH_PROVIDERS {
         string id
         string user_id
-        string provider
+        enum provider
+        time expiry
         string access_token
         string refresh_token
    }
     USERS ||--o{ USER_OAUTH_PROVIDERS : USERS_id
     USERS {
         string id
+    }
+    USERS ||--o{ USER_META : USERS_id
+    USER_META {
+        string id
+        string user_id
+        string profile
     }
     USERS ||--o{ USER_DEVICES : USERS_id
     USER_DEVICES {
@@ -23,11 +30,6 @@ erDiagram
         string push_token
         string accessed_at
         string created_at
-    }
-    USERS ||--o{ USER_META : USERS_id
-    USER_META {
-        string id
-        string user_id
     }
 ```
 

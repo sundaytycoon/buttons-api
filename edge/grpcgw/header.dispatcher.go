@@ -33,5 +33,4 @@ func HeaderDispatcher(w http.ResponseWriter) {
 			w.Header().Del(originKey)
 		}
 	}
-
 }
