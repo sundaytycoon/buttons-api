@@ -19,6 +19,8 @@ erDiagram
         string user_id
         string type
         string agent
+        string device_token
+        string push_token
         string accessed_at
         string created_at
     }
@@ -51,9 +53,17 @@ erDiagram
     }
 ```
 
-### event domains
+# sequence diagram
+//         get_oauth_token_from_provider --> callback_identity_token
 
-``` mermaid
-
-
+```mermaid
+stateDiagram-v2
+    Client<WebView> --> ButtonsServer: un-authorized user login
+    state ButtonsServer {
+        [*] --> get_oauth_token_from_provider
+        get_oauth_token_from_provider --> [*]
+    }
+    ButtonsServer --> Client<WebView>: redirect_url to provider
+    Client<WebView> --> OAuthProvider: send user's identity
+    OAuthProvider --> ButtonsAPI
 ```

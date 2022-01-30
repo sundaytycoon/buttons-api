@@ -1,7 +1,7 @@
 package server
 
 import (
-	"fmt"
+	glueauth "github.com/sundaytycoon/buttons-api/internal/glue/auth"
 	"net"
 	"net/http"
 	"os"
@@ -55,11 +55,11 @@ func ServerStart(params struct {
 	gw := grpcgw.New()
 	grpcAppHandlers := []grpcserver.GRPCHandler{
 		params.UserHandler,
-		params.AuthHandler,
+		glueauth.New(params.AuthHandler),
 	}
 	grpcGWHandlers := []grpcgw.GRPCHandler{
 		params.UserHandler,
-		params.AuthHandler,
+		glueauth.New(params.AuthHandler),
 	}
 	httpEndpoint := net.JoinHostPort(params.Config.HTTPEndPoint.Host, params.Config.HTTPEndPoint.Port)
 	grpcEndpoint := net.JoinHostPort(params.Config.GRPCEndPoint.Host, params.Config.GRPCEndPoint.Port)
@@ -67,23 +67,28 @@ func ServerStart(params struct {
 	go func() {
 		app.SetHandlers(grpcAppHandlers...)
 		if err := app.Start(grpcEndpoint); err != nil {
-			fmt.Println("grpc Start")
-			fmt.Println(err)
+			log.Error().
+				Err(err).
+				Str("endpoint", grpcEndpoint).
+				Msg("grpc is stopped")
 		}
 	}()
 
 	go func() {
 		if err := gw.Start(httpEndpoint); err != nil {
-			fmt.Println("http mux gateway Start")
-			fmt.Println(err)
-
+			log.Error().
+				Err(err).
+				Str("endpoint", grpcEndpoint).
+				Msg("http mux is stopped")
 		}
 	}()
 
 	go func() {
 		if err := gw.ConnectWithHandlers(grpcEndpoint, grpcGWHandlers...); err != nil {
-			fmt.Println("ConnectWithHandlers")
-			fmt.Println(err)
+			log.Error().
+				Err(err).
+				Str("endpoint", grpcEndpoint).
+				Msg("connector[grpc-http] is stopped")
 		}
 	}()
 

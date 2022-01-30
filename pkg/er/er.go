@@ -16,25 +16,33 @@ type Error struct {
 	NamedErr  error
 }
 
+func New(msg string, namedErr error) error {
+	err := newError(fmt.Errorf(msg))
+	return WithNamedErr(err, namedErr)
+}
+
 func WithMessage(err error, msg string) error {
-	e := new(err)
+	e := newError(err)
 	e.Message = msg
 	return e
 }
 
 func WithNamedErr(source error, named error) error {
-	e := new(source)
+	e := newError(source)
 	e.NamedErr = named
 	return e
 }
 
 func WrapOp(err error, op string) error {
-	e := new(err)
+	e := newError(err)
 	e.Ops = append(e.Ops, op)
 	return e
 }
 
-func new(err error) *Error {
+func newError(err error) *Error {
+	if err == nil {
+		err = errors.New("empty error")
+	}
 	if e, ok := err.(*Error); ok {
 		return e
 	}
@@ -42,8 +50,8 @@ func new(err error) *Error {
 }
 
 func Is(sourceErr, targetErr error) bool {
-	se := new(sourceErr)
-	te := new(targetErr)
+	se := newError(sourceErr)
+	te := newError(targetErr)
 
 	return errors.Is(se.SourceErr, te.SourceErr)
 }

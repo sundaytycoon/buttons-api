@@ -24,10 +24,10 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 
 service AuthService {
-  rpc GetRedirectURL(GetRedirectURLRequest)  returns (GetRedirectURLResponse) {
+  rpc GetWebRedirectURL(GetWebRedirectURLRequest)  returns (GetWebRedirectURLResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /api/v1/auth/redirect_url
-      get: "/api/v1/auth/redirect_url"
+      get: "/api/v1/auth/web/redirect_url"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "get redirect_url from provider"
@@ -35,10 +35,10 @@ service AuthService {
       tags: "OAauth 2.0"
     };
   }
-  rpc GetCallback(GetCallbackRequest)  returns (GetCallbackResponse) {
+  rpc GetWebGoogleCallback(GetWebGoogleCallbackRequest)  returns (GetWebGoogleCallbackResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /api/v1/auth/callback
-      get: "/api/v1/auth/callback"
+      get: "/api/v1/auth/web/google_callback"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "get callback data"
@@ -48,23 +48,26 @@ service AuthService {
   }
 }
 
-message GetRedirectURLRequest {
+message GetWebRedirectURLRequest {
   string provider = 1;
+  string service = 2;
 }
 
-message GetRedirectURLResponse {
+message GetWebRedirectURLResponse {
   string provider = 1;
   string redirect_url = 2;
 }
 
+message GetWebGoogleCallbackRequest {
 
-message GetCallbackRequest {
-  string state = 1;
-  string code = 2;
-  string scope = 3;
-  string authuser = 4;
-  string prompt = 5;
+  // googles
+  string code = 11; // from: google provider
+  string state = 12; // from: buttons-api's value
+  string scope = 13; // from: google provider
+  string authuser = 14; // from: google provider
+  string prompt = 15; // from: google provider
+  string hd = 16; // from: google provider specific host dd@{hd}
 }
 
-message GetCallbackResponse {
+message GetWebGoogleCallbackResponse {
 }

@@ -19,16 +19,16 @@
     "application/json"
   ],
   "paths": {
-    "/api/v1/auth/callback": {
+    "/api/v1/auth/web/google_callback": {
       "get": {
         "summary": "get callback data",
         "description": "google send me callback data ",
-        "operationId": "AuthService_GetCallback",
+        "operationId": "AuthService_GetWebGoogleCallback",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetCallbackResponse"
+              "$ref": "#/definitions/v1GetWebGoogleCallbackResponse"
             }
           },
           "default": {
@@ -68,6 +68,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "hd",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -75,16 +81,16 @@
         ]
       }
     },
-    "/api/v1/auth/redirect_url": {
+    "/api/v1/auth/web/redirect_url": {
       "get": {
         "summary": "get redirect_url from provider",
         "description": "generate redirect_url and give to webview",
-        "operationId": "AuthService_GetRedirectURL",
+        "operationId": "AuthService_GetWebRedirectURL",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetRedirectURLResponse"
+              "$ref": "#/definitions/v1GetWebRedirectURLResponse"
             }
           },
           "default": {
@@ -97,6 +103,12 @@
         "parameters": [
           {
             "name": "provider",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "service",
             "in": "query",
             "required": false,
             "type": "string"
@@ -136,10 +148,10 @@
         }
       }
     },
-    "v1GetCallbackResponse": {
+    "v1GetWebGoogleCallbackResponse": {
       "type": "object"
     },
-    "v1GetRedirectURLResponse": {
+    "v1GetWebRedirectURLResponse": {
       "type": "object",
       "properties": {
         "provider": {

@@ -18,8 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
-	GetRedirectURL(ctx context.Context, in *GetRedirectURLRequest, opts ...grpc.CallOption) (*GetRedirectURLResponse, error)
-	GetCallback(ctx context.Context, in *GetCallbackRequest, opts ...grpc.CallOption) (*GetCallbackResponse, error)
+	GetWebRedirectURL(ctx context.Context, in *GetWebRedirectURLRequest, opts ...grpc.CallOption) (*GetWebRedirectURLResponse, error)
+	GetWebGoogleCallback(ctx context.Context, in *GetWebGoogleCallbackRequest, opts ...grpc.CallOption) (*GetWebGoogleCallbackResponse, error)
 }
 
 type authServiceClient struct {
@@ -30,18 +30,18 @@ func NewAuthServiceClient(cc grpc.ClientConnInterface) AuthServiceClient {
 	return &authServiceClient{cc}
 }
 
-func (c *authServiceClient) GetRedirectURL(ctx context.Context, in *GetRedirectURLRequest, opts ...grpc.CallOption) (*GetRedirectURLResponse, error) {
-	out := new(GetRedirectURLResponse)
-	err := c.cc.Invoke(ctx, "/buttons.api.v1.AuthService/GetRedirectURL", in, out, opts...)
+func (c *authServiceClient) GetWebRedirectURL(ctx context.Context, in *GetWebRedirectURLRequest, opts ...grpc.CallOption) (*GetWebRedirectURLResponse, error) {
+	out := new(GetWebRedirectURLResponse)
+	err := c.cc.Invoke(ctx, "/buttons.api.v1.AuthService/GetWebRedirectURL", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *authServiceClient) GetCallback(ctx context.Context, in *GetCallbackRequest, opts ...grpc.CallOption) (*GetCallbackResponse, error) {
-	out := new(GetCallbackResponse)
-	err := c.cc.Invoke(ctx, "/buttons.api.v1.AuthService/GetCallback", in, out, opts...)
+func (c *authServiceClient) GetWebGoogleCallback(ctx context.Context, in *GetWebGoogleCallbackRequest, opts ...grpc.CallOption) (*GetWebGoogleCallbackResponse, error) {
+	out := new(GetWebGoogleCallbackResponse)
+	err := c.cc.Invoke(ctx, "/buttons.api.v1.AuthService/GetWebGoogleCallback", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -52,19 +52,19 @@ func (c *authServiceClient) GetCallback(ctx context.Context, in *GetCallbackRequ
 // All implementations should embed UnimplementedAuthServiceServer
 // for forward compatibility
 type AuthServiceServer interface {
-	GetRedirectURL(context.Context, *GetRedirectURLRequest) (*GetRedirectURLResponse, error)
-	GetCallback(context.Context, *GetCallbackRequest) (*GetCallbackResponse, error)
+	GetWebRedirectURL(context.Context, *GetWebRedirectURLRequest) (*GetWebRedirectURLResponse, error)
+	GetWebGoogleCallback(context.Context, *GetWebGoogleCallbackRequest) (*GetWebGoogleCallbackResponse, error)
 }
 
 // UnimplementedAuthServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedAuthServiceServer struct {
 }
 
-func (UnimplementedAuthServiceServer) GetRedirectURL(context.Context, *GetRedirectURLRequest) (*GetRedirectURLResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRedirectURL not implemented")
+func (UnimplementedAuthServiceServer) GetWebRedirectURL(context.Context, *GetWebRedirectURLRequest) (*GetWebRedirectURLResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWebRedirectURL not implemented")
 }
-func (UnimplementedAuthServiceServer) GetCallback(context.Context, *GetCallbackRequest) (*GetCallbackResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCallback not implemented")
+func (UnimplementedAuthServiceServer) GetWebGoogleCallback(context.Context, *GetWebGoogleCallbackRequest) (*GetWebGoogleCallbackResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWebGoogleCallback not implemented")
 }
 
 // UnsafeAuthServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -78,38 +78,38 @@ func RegisterAuthServiceServer(s grpc.ServiceRegistrar, srv AuthServiceServer) {
 	s.RegisterService(&AuthService_ServiceDesc, srv)
 }
 
-func _AuthService_GetRedirectURL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRedirectURLRequest)
+func _AuthService_GetWebRedirectURL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWebRedirectURLRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServiceServer).GetRedirectURL(ctx, in)
+		return srv.(AuthServiceServer).GetWebRedirectURL(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/buttons.api.v1.AuthService/GetRedirectURL",
+		FullMethod: "/buttons.api.v1.AuthService/GetWebRedirectURL",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).GetRedirectURL(ctx, req.(*GetRedirectURLRequest))
+		return srv.(AuthServiceServer).GetWebRedirectURL(ctx, req.(*GetWebRedirectURLRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_GetCallback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCallbackRequest)
+func _AuthService_GetWebGoogleCallback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWebGoogleCallbackRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServiceServer).GetCallback(ctx, in)
+		return srv.(AuthServiceServer).GetWebGoogleCallback(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/buttons.api.v1.AuthService/GetCallback",
+		FullMethod: "/buttons.api.v1.AuthService/GetWebGoogleCallback",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).GetCallback(ctx, req.(*GetCallbackRequest))
+		return srv.(AuthServiceServer).GetWebGoogleCallback(ctx, req.(*GetWebGoogleCallbackRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -122,12 +122,12 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuthServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetRedirectURL",
-			Handler:    _AuthService_GetRedirectURL_Handler,
+			MethodName: "GetWebRedirectURL",
+			Handler:    _AuthService_GetWebRedirectURL_Handler,
 		},
 		{
-			MethodName: "GetCallback",
-			Handler:    _AuthService_GetCallback_Handler,
+			MethodName: "GetWebGoogleCallback",
+			Handler:    _AuthService_GetWebGoogleCallback_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,6 +1,8 @@
 package grpcgw
 
 import (
+	"context"
+	"google.golang.org/protobuf/proto"
 	"io/fs"
 	"mime"
 	"net"
@@ -27,6 +29,10 @@ type Gateway struct {
 
 func New() *Gateway {
 	mux := runtime.NewServeMux(
+		runtime.WithForwardResponseOption(func(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
+			HeaderDispatcher(w)
+			return nil
+		}),
 		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
 			Marshaler: &runtime.JSONPb{
 				MarshalOptions: protojson.MarshalOptions{
@@ -53,7 +59,7 @@ func New() *Gateway {
 				log.Info().
 					Str("method", r.Method).
 					Str("proto", r.Proto).
-					Interface("url", r.URL).
+					Interface("url", r.RequestURI).
 					Interface("header", header).
 					Interface("body", reqBody).
 					Send()
