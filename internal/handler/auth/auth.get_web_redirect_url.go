@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	buttonsapi "github.com/sundaytycoon/buttons-api"
+
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 

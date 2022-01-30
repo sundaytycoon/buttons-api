@@ -13,12 +13,10 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.1
 	github.com/json-iterator/go v1.1.12
 	github.com/kisielk/godepgraph v0.0.0-20190626013829-57a7e4a651a9
-	github.com/mattn/go-sqlite3 v1.14.10
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.26.0
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.0
-	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
 	github.com/testcontainers/testcontainers-go v0.12.0
 	go.uber.org/dig v1.13.0
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
@@ -38,7 +36,6 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/containerd/cgroups v0.0.0-20210114181951-8a68de567b68 // indirect
 	github.com/containerd/containerd v1.5.0-beta.4 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/docker/docker v20.10.11+incompatible // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
@@ -69,7 +66,6 @@ require (
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v1.0.2 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
@@ -87,5 +83,4 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
