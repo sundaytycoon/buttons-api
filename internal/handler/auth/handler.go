@@ -13,7 +13,7 @@ import (
 
 type authService interface {
 	GetWebOAuthRedirectURL(provider, fromHost string) (string, error)
-	GetWebCallback(ctx context.Context, provider, code string) (string, string, error)
+	GetWebCallback(ctx context.Context, provider, code, state string) (string, string, error)
 }
 
 type Handler struct {

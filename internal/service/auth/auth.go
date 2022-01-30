@@ -2,11 +2,13 @@ package auth
 
 import (
 	"context"
+	"github.com/sundaytycoon/buttons-api/internal/constants/model"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
 type authRepository interface {
 	GetOAuthRedirectURL(provider, fromHost string) (string, error)
+	GetUserInfoFromProvider(ctx context.Context, provider, code string) (*model.UserToken, error)
 }
 
 // Service user service를 직접 구현 한 곳
@@ -32,11 +34,14 @@ func (s *Service) GetWebOAuthRedirectURL(fromHost, provider string) (string, err
 type GetWebCallbackOut struct {
 }
 
-func (s *Service) GetWebCallback(ctx context.Context, provider, code string) (string, string, error) {
+func (s *Service) GetWebCallback(ctx context.Context, provider, code, state string) (string, string, error) {
 	op := er.GetOperator()
 
 	// 1. get accessToken // refreshToken // expiry // auth_type // email
-
+	ut, err := s.authRepository.GetUserInfoFromProvider(ctx, provider, code)
+	if err != nil {
+		return "", "", er.WrapOp(err, op)
+	}
 	// 2. get userdata
 
 	// 2-1 get userdata using refresh_token
@@ -59,7 +64,7 @@ func (s *Service) GetWebCallback(ctx context.Context, provider, code string) (st
 
 	// 6. 로그인
 
-	// 6-1.
+	// 7. session data 업데ㅇ이트
 
-	return "", "", nil
+	return state, "", nil
 }

@@ -48,7 +48,7 @@ func (h *Handler) GetWebCallback(ctx context.Context, in *GetWebCallbackIn) (*Ge
 		return nil, er.WrapOp(err, op)
 	}
 
-	toHost, tempToken, err := h.authService.GetWebCallback(ctx, in.Provider, in.Code)
+	toHost, tempToken, err := h.authService.GetWebCallback(ctx, in.Provider, in.Code, in.State)
 	if err != nil {
 		return nil, er.WrapOp(err, op)
 	}

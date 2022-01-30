@@ -1,0 +1,52 @@
+env: # automatically injected by system environment values
+
+httpServer:
+  host: 0.0.0.0
+  port: 5002
+  tls: false
+  timeout: 5s
+
+grpcServer:
+  host: 0.0.0.0
+  port: 5001
+  tls: false
+  timeout: 5s
+
+buttonsAdminServer:
+  host: 0.0.0.0
+  port: 4000
+  tls: false
+  timeout: 5s
+
+buttonsAdminWeb:
+  host: 0.0.0.0
+  port: 3000
+  tls: false
+  timeout: 5s
+
+batchDatabase:
+  host: localhost
+  password: p@ssword
+  user: buttons
+  name: buttons
+  port: 33307
+  dialect: mysql
+
+  connection_validation: true
+  connection_validation_sql: "SELECT 1 + 1"
+  connection_validation_retry_times: 5
+  connection_validation_retry_during_each_time: 1s
+
+serviceDatabase:
+  host: localhost
+  password: p@ssword
+  user: buttons
+  name: buttons
+  port: 33307
+  dialect: mysql
+
+google:
+  oauth_callback_url: /api/v1/auth/web/google_callback
+  client_id: wow # drakejin에게 요구하세용
+  client_secret: yaiks # drakejin에게 요구하세용
+

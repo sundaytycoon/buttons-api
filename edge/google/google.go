@@ -2,10 +2,9 @@ package google
 
 import (
 	"context"
+	"errors"
 	jsoniter "github.com/json-iterator/go"
-	buttonsapi "github.com/sundaytycoon/buttons-api"
 	"github.com/sundaytycoon/buttons-api/internal/config"
-	"github.com/sundaytycoon/buttons-api/pkg/er"
 	"go.uber.org/dig"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -51,32 +50,28 @@ type OAuthCallbackResponse struct {
 	Picture string
 }
 
-func (c *Client) OAuthCallback(ctx context.Context, code string) (*OAuthCallbackResponse, error) {
-	op := er.GetOperator()
+var (
+	ErrRefreshTokenIsNotValid = errors.New("google oauth2: refresh_token is not loaded")
+	ErrEmailIsNotVerified     = errors.New("google oauth2: email is not verified")
+)
 
+func (c *Client) OAuthCallback(ctx context.Context, code string) (*OAuthCallbackResponse, error) {
 	token, err := c.cfg.Exchange(ctx, code)
 	if err != nil {
-		err = er.WithNamedErr(err, buttonsapi.ErrGoogleOAuthCallbackInternalError)
-		return nil, er.WrapOp(err, op)
+		return nil, err
 	}
 	t, err := c.cfg.TokenSource(ctx, token).Token()
 	if err != nil {
-		err = er.WithNamedErr(err, buttonsapi.ErrGoogleOAuthCallbackInternalError)
-		return nil, er.WrapOp(err, op)
+		return nil, err
 	}
 	if t.RefreshToken == "" {
-		err = er.New(
-			"google email is not verified",
-			buttonsapi.ErrGoogleOAuthCallbackInternalError,
-		)
-		return nil, er.WrapOp(err, op)
+		return nil, ErrRefreshTokenIsNotValid
 	}
 
 	client := c.cfg.Client(ctx, t)
 	userInfoResp, err := client.Get(UserInfoAPIEndpoint)
 	if err != nil {
-		err = er.WithNamedErr(err, buttonsapi.ErrGoogleOAuthCallbackInternalError)
-		return nil, er.WrapOp(err, op)
+		return nil, err
 	}
 	defer userInfoResp.Body.Close()
 
@@ -88,12 +83,10 @@ func (c *Client) OAuthCallback(ctx context.Context, code string) (*OAuthCallback
 	u := userInfo{}
 	err = jsoniter.NewDecoder(userInfoResp.Body).Decode(&u)
 	if err != nil {
-		err = er.WithNamedErr(err, buttonsapi.ErrGoogleOAuthCallbackInternalError)
-		return nil, er.WrapOp(err, op)
+		return nil, err
 	}
 	if !u.EmailVerified {
-		err = er.New("google email is not verified", buttonsapi.ErrGoogleOAuthCallbackEmailIsNotValid)
-		return nil, er.WrapOp(err, op)
+		return nil, ErrEmailIsNotVerified
 	}
 
 	return &OAuthCallbackResponse{
