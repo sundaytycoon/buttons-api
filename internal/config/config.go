@@ -2,8 +2,9 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"os"
+
+	"github.com/spf13/viper"
 
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
@@ -56,7 +57,6 @@ func New() (*Config, error) {
 	if err := viper.Unmarshal(cfg); err != nil {
 		return nil, er.WrapOp(err, op)
 	}
-
 	cfg.Env = env
 	return cfg, nil
 }

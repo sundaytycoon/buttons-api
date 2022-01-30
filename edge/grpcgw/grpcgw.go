@@ -2,12 +2,13 @@ package grpcgw
 
 import (
 	"context"
-	"google.golang.org/protobuf/proto"
 	"io/fs"
 	"mime"
 	"net"
 	"net/http"
 	"strings"
+
+	"google.golang.org/protobuf/proto"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
@@ -29,51 +30,57 @@ type Gateway struct {
 
 func New() *Gateway {
 	mux := runtime.NewServeMux(
-		runtime.WithForwardResponseOption(func(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
-			HeaderDispatcher(w)
-			return nil
-		}),
-		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
-			Marshaler: &runtime.JSONPb{
-				MarshalOptions: protojson.MarshalOptions{
-					UseProtoNames:   true,
-					EmitUnpopulated: true,
-				},
-				UnmarshalOptions: protojson.UnmarshalOptions{
-					DiscardUnknown: true,
+		runtime.WithForwardResponseOption(
+			func(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
+				HeaderDispatcher(w)
+				return nil
+			},
+		),
+		runtime.WithMarshalerOption(
+			runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
+				Marshaler: &runtime.JSONPb{
+					MarshalOptions: protojson.MarshalOptions{
+						UseProtoNames:   true,
+						EmitUnpopulated: true,
+					},
+					UnmarshalOptions: protojson.UnmarshalOptions{
+						DiscardUnknown: true,
+					},
 				},
 			},
-		}),
+		),
 	)
 
 	return &Gateway{
 		mux: mux,
 		httpServer: &http.Server{
-			Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			Handler: http.HandlerFunc(
+				func(w http.ResponseWriter, r *http.Request) {
 
-				var header [][]string
-				for k, v := range r.Header {
-					header = append(header, []string{k, strings.Join(v, "/")})
-				}
-				var reqBody map[string]interface{}
-				log.Info().
-					Str("method", r.Method).
-					Str("proto", r.Proto).
-					Interface("url", r.RequestURI).
-					Interface("header", header).
-					Interface("body", reqBody).
-					Send()
-				if strings.HasPrefix(r.URL.Path, "/api") {
-					mux.ServeHTTP(w, r)
-					return
-				}
-				if strings.HasPrefix(r.URL.Path, "/test") {
-					r.URL.Path = strings.ReplaceAll(r.URL.EscapedPath(), "/test", "")
-					getTestHTMLHandler().ServeHTTP(w, r)
-					return
-				}
-				getOpenAPIHandler().ServeHTTP(w, r)
-			}),
+					var header [][]string
+					for k, v := range r.Header {
+						header = append(header, []string{k, strings.Join(v, "/")})
+					}
+					var reqBody map[string]interface{}
+					log.Trace().
+						Str("method", r.Method).
+						Str("proto", r.Proto).
+						Interface("url", r.RequestURI).
+						Interface("header", header).
+						Interface("body", reqBody).
+						Send()
+					if strings.HasPrefix(r.URL.Path, "/api") {
+						mux.ServeHTTP(w, r)
+						return
+					}
+					if strings.HasPrefix(r.URL.Path, "/test") {
+						r.URL.Path = strings.ReplaceAll(r.URL.EscapedPath(), "/test", "")
+						getTestHTMLHandler().ServeHTTP(w, r)
+						return
+					}
+					getOpenAPIHandler().ServeHTTP(w, r)
+				},
+			),
 		},
 	}
 }

@@ -40,13 +40,14 @@
         },
         "parameters": [
           {
-            "name": "state",
+            "name": "code",
+            "description": "googles.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "code",
+            "name": "state",
             "in": "query",
             "required": false,
             "type": "string"

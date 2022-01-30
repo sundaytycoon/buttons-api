@@ -3,12 +3,14 @@ package google
 import (
 	"context"
 	"errors"
+	"time"
+
 	jsoniter "github.com/json-iterator/go"
-	"github.com/sundaytycoon/buttons-api/internal/config"
 	"go.uber.org/dig"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-	"time"
+
+	"github.com/sundaytycoon/buttons-api/internal/config"
 )
 
 const UserInfoAPIEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo"
@@ -17,17 +19,19 @@ type Client struct {
 	cfg oauth2.Config
 }
 
-func New(params struct {
-	dig.In
-	Config *config.Config
-}) *Client {
-	return newClient(params.Config.Google)
+func New(
+	params struct {
+		dig.In
+		Config *config.Config
+	},
+) *Client {
+	return newClient(params.Config.HTTPEndPoint, params.Config.Google)
 }
 
-func newClient(googleCfg *config.Google) *Client {
+func newClient(httpCfg *config.EndPoint, googleCfg *config.Google) *Client {
 	return &Client{
 		cfg: oauth2.Config{
-			RedirectURL:  googleCfg.OAuthCallbackURL,
+			RedirectURL:  httpCfg.HTTPAddress() + googleCfg.OAuthCallbackURL,
 			ClientID:     googleCfg.ClientID,
 			ClientSecret: googleCfg.ClientSecret,
 			Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
@@ -37,7 +41,11 @@ func newClient(googleCfg *config.Google) *Client {
 }
 
 func (c *Client) OAuthRedirectURL(state string) string {
-	return c.cfg.AuthCodeURL(state, oauth2.AccessTypeOffline)
+	return c.cfg.AuthCodeURL(
+		state,
+		oauth2.AccessTypeOffline, // For get refresh_token
+		oauth2.ApprovalForce,     // For get refresh_token
+	)
 }
 
 type OAuthCallbackResponse struct {

@@ -2,9 +2,10 @@ package config
 
 import (
 	"fmt"
-	"github.com/sundaytycoon/buttons-api/pkg/er"
 	"net"
 	"time"
+
+	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
 type Database struct {
@@ -55,7 +56,7 @@ func (o *EndPoint) HTTPAddress() string {
 }
 
 type Google struct {
-	OAuthCallbackURL string `mapstructure:"oauth_callback_url"`
-	ClientID         string `mapstructure:"client_id"`
-	ClientSecret     string `mapstrcuture:"client_secret"`
+	OAuthCallbackURL string `mapstructure:"oauthCallbackUrl"`
+	ClientID         string `mapstructure:"clientId"`
+	ClientSecret     string `mapstrcuture:"clientSecret"`
 }

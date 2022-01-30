@@ -2,6 +2,9 @@ package auth
 
 import (
 	"context"
+
+	"github.com/rs/zerolog/log"
+
 	buttonsapi "github.com/sundaytycoon/buttons-api"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
@@ -50,6 +53,7 @@ func (h *Handler) GetWebCallback(ctx context.Context, in *GetWebCallbackIn) (*Ge
 
 	toHost, tempToken, err := h.authService.GetWebCallback(ctx, in.Provider, in.Code, in.State)
 	if err != nil {
+		log.Error().Err(err).Send()
 		return nil, er.WrapOp(err, op)
 	}
 
@@ -58,33 +62,6 @@ func (h *Handler) GetWebCallback(ctx context.Context, in *GetWebCallbackIn) (*Ge
 		ToHost:         toHost,
 		TemporaryToken: tempToken,
 	}
-
-	//token, err := googleOauthConfig.Exchange(ctx, req.Code)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//t, err := googleOauthConfig.TokenSource(ctx, token).Token()
-	//if err != nil {
-	//	return nil, err
-	//}
-	//client := googleOauthConfig.Client(ctx, t)
-	//userInfoResp, err := client.Get(UserInfoAPIEndpoint)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//defer userInfoResp.Body.Close()
-	//userInfo, err := ioutil.ReadAll(userInfoResp.Body)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//log.Trace().
-	//	Str("user_info", string(userInfo)).
-	//	Str("operator", "GetCallback").
-	//	Interface("token", token).
-	//	Interface("req", req).
-	//	Interface("res", res).
-	//	Send()
-	//
 
 	return res, nil
 }

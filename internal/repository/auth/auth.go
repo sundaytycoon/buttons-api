@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+
 	buttonsapi "github.com/sundaytycoon/buttons-api"
 	"github.com/sundaytycoon/buttons-api/edge/google"
 	"github.com/sundaytycoon/buttons-api/internal/constants/model"
@@ -45,6 +46,7 @@ func (r *Repository) GetUserInfoFromProvider(ctx context.Context, provider, code
 			} else {
 				err = er.WithNamedErr(err, buttonsapi.ErrGoogleOAuthCallbackInternalError)
 			}
+			return nil, er.WrapOp(err, op)
 		}
 
 		userToken = &model.UserToken{
@@ -58,11 +60,8 @@ func (r *Repository) GetUserInfoFromProvider(ctx context.Context, provider, code
 		}
 	} else {
 		err = er.New("'provider' service is not defined", buttonsapi.ErrBadRequest)
-	}
-
-	if err != nil {
 		return nil, er.WrapOp(err, op)
 	}
-	return userToken, nil
 
+	return userToken, nil
 }

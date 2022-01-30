@@ -3,14 +3,17 @@ package auth
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"time"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+
+	buttonsapi "github.com/sundaytycoon/buttons-api"
 	v1pb "github.com/sundaytycoon/buttons-api/gen/go/buttons/api/v1"
 	handlerauth "github.com/sundaytycoon/buttons-api/internal/handler/auth"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
-	"net/url"
-	"time"
 )
 
 type Glue struct {
@@ -56,11 +59,16 @@ func (h *Glue) Connect(grpcEndpoint string, mux *runtime.ServeMux) error {
 	return v1pb.RegisterAuthServiceHandler(ctx, mux, conn)
 }
 
-func (g *Glue) GetWebRedirectURL(ctx context.Context, req *v1pb.GetWebRedirectURLRequest) (*v1pb.GetWebRedirectURLResponse, error) {
-	out, err := g.Handler.GetWebRedirectURL(ctx, &handlerauth.GetWebRedirectURLIn{
-		Provider: req.Provider,
-		Service:  req.Service,
-	})
+func (g *Glue) GetWebRedirectURL(
+	ctx context.Context,
+	req *v1pb.GetWebRedirectURLRequest,
+) (*v1pb.GetWebRedirectURLResponse, error) {
+	out, err := g.Handler.GetWebRedirectURL(
+		ctx, &handlerauth.GetWebRedirectURLIn{
+			Provider: req.Provider,
+			Service:  req.Service,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -70,17 +78,35 @@ func (g *Glue) GetWebRedirectURL(ctx context.Context, req *v1pb.GetWebRedirectUR
 	}, nil
 }
 
-func (g *Glue) GetWebGoogleCallback(ctx context.Context, req *v1pb.GetWebGoogleCallbackRequest) (*v1pb.GetWebGoogleCallbackResponse, error) {
-	out, err := g.Handler.GetWebCallback(ctx, &handlerauth.GetWebCallbackIn{})
+func (g *Glue) GetWebGoogleCallback(
+	ctx context.Context,
+	req *v1pb.GetWebGoogleCallbackRequest,
+) (*v1pb.GetWebGoogleCallbackResponse, error) {
+	out, err := g.Handler.GetWebCallback(
+		ctx, &handlerauth.GetWebCallbackIn{
+			Provider: buttonsapi.Google,
+			Code:     req.Code,
+			State:    req.State,
+			Scope:    req.Scope,
+			Hd:       req.Hd,
+			AuthUser: req.Authuser,
+			Prompt:   req.Prompt,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
 
 	qs := url.Values{}
 	qs.Add("provider", out.Provider)
 	qs.Add("temporary_token", out.TemporaryToken)
 
-	err = grpc.SendHeader(ctx, metadata.Pairs(
-		"Status", "302",
-		"Location", fmt.Sprintf("%s?%s", out.ToHost, qs.Encode()),
-	))
+	err = grpc.SendHeader(
+		ctx, metadata.Pairs(
+			"Status", "302",
+			"Location", fmt.Sprintf("%s?%s", out.ToHost, qs.Encode()),
+		),
+	)
 	if err != nil {
 		return nil, err
 	}
