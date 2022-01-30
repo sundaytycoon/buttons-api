@@ -3,10 +3,11 @@
 - https://entgo.io/docs/generating-ent-schemas
 - daily
 */
-package entd
+package entgo
 
 import (
 	"context"
+	"github.com/sundaytycoon/buttons-api/ent/migrate"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -20,9 +21,9 @@ import (
 
 func MigrationCommand() *cobra.Command {
 	c := &cobra.Command{
-		Use:     "entd",
+		Use:     "entgo",
 		Aliases: []string{"e"},
-		Short:   "entd go processs",
+		Short:   "entgo go processs",
 		RunE: func(c *cobra.Command, _ []string) error {
 			return c.Help()
 		},
@@ -30,7 +31,7 @@ func MigrationCommand() *cobra.Command {
 	c.AddCommand(&cobra.Command{
 		Use:     "migration",
 		Aliases: []string{"m"},
-		Short:   "entd go script migration",
+		Short:   "entgo go script migration",
 		RunE: func(c *cobra.Command, _ []string) error {
 			return Main()
 		},
@@ -55,7 +56,13 @@ func BasicMigration(params struct {
 }) error {
 	ctx := context.Background()
 	start := time.Now()
-	if err := params.ServiceDB.EntClient.Schema.Create(ctx); err != nil {
+	if err := params.ServiceDB.EntClient.Schema.Create(
+		ctx,
+		migrate.WithForeignKeys(false),
+		migrate.WithDropIndex(true),
+		migrate.WithDropColumn(true),
+		migrate.WithGlobalUniqueID(true),
+	); err != nil {
 		log.Error().
 			Err(err).
 			Dur("duration", time.Since(start)).
@@ -64,7 +71,7 @@ func BasicMigration(params struct {
 	}
 
 	log.Info().
-		Dur("duration", time.Since(start))
+		Dur("duration", time.Since(start)).Send()
 
 	return nil
 }

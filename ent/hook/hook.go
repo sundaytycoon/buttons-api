@@ -9,32 +9,6 @@ import (
 	"github.com/sundaytycoon/buttons-api/ent"
 )
 
-// The CarFunc type is an adapter to allow the use of ordinary
-// function as Car mutator.
-type CarFunc func(context.Context, *ent.CarMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f CarFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.CarMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *entd.CarMutation", m)
-	}
-	return f(ctx, mv)
-}
-
-// The GroupFunc type is an adapter to allow the use of ordinary
-// function as Group mutator.
-type GroupFunc func(context.Context, *ent.GroupMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f GroupFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.GroupMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *entd.GroupMutation", m)
-	}
-	return f(ctx, mv)
-}
-
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
@@ -43,7 +17,7 @@ type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
 func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 	mv, ok := m.(*ent.UserMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *entd.UserMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
 	}
 	return f(ctx, mv)
 }
@@ -157,7 +131,7 @@ func If(hk ent.Hook, cond Condition) ent.Hook {
 
 // On executes the given hook only for the given operation.
 //
-//	hook.On(Log, entd.Delete|entd.Create)
+//	hook.On(Log, ent.Delete|ent.Create)
 //
 func On(hk ent.Hook, op ent.Op) ent.Hook {
 	return If(hk, HasOp(op))
@@ -165,7 +139,7 @@ func On(hk ent.Hook, op ent.Op) ent.Hook {
 
 // Unless skips the given hook only for the given operation.
 //
-//	hook.Unless(Log, entd.Update|entd.UpdateOne)
+//	hook.Unless(Log, ent.Update|ent.UpdateOne)
 //
 func Unless(hk ent.Hook, op ent.Op) ent.Hook {
 	return If(hk, Not(HasOp(op)))
@@ -182,9 +156,9 @@ func FixedError(err error) ent.Hook {
 
 // Reject returns a hook that rejects all operations that match op.
 //
-//	func (T) Hooks() []entd.Hook {
-//		return []entd.Hook{
-//			Reject(entd.Delete|entd.Update),
+//	func (T) Hooks() []ent.Hook {
+//		return []ent.Hook{
+//			Reject(ent.Delete|ent.Update),
 //		}
 //	}
 //

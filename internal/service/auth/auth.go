@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 	"github.com/sundaytycoon/buttons-api/internal/constants/model"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
@@ -42,6 +43,7 @@ func (s *Service) GetWebCallback(ctx context.Context, provider, code, state stri
 	if err != nil {
 		return "", "", er.WrapOp(err, op)
 	}
+	fmt.Println(ut)
 	// 2. get userdata
 
 	// 2-1 get userdata using refresh_token

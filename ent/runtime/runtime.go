@@ -2,9 +2,9 @@
 
 package runtime
 
-// The schema-stitching logic is generated in github.com/sundaytycoon/buttons-api/entd/runtime.go
+// The schema-stitching logic is generated in github.com/sundaytycoon/buttons-api/ent/runtime.go
 
 const (
-	Version = "v0.9.1"                                          // Version of entd codegen.
-	Sum     = "h1:IG8andyeD79GG24U8Q+1Y45hQXj6gY5evSBcva5gtBk=" // Sum of entd codegen.
+	Version = "v0.10.0"                                         // Version of ent codegen.
+	Sum     = "h1:9cBomE1fh+WX34DPYQL7tDNAIvhKa3tXvwxuLyhYCMo=" // Sum of ent codegen.
 )

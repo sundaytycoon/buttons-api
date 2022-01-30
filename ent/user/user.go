@@ -2,47 +2,48 @@
 
 package user
 
+import (
+	"fmt"
+	"time"
+)
+
 const (
 	// Label holds the string label denoting the user type in the database.
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldAge holds the string denoting the age field in the database.
-	FieldAge = "age"
-	// FieldName holds the string denoting the name field in the database.
-	FieldName = "name"
-	// EdgeCars holds the string denoting the cars edge name in mutations.
-	EdgeCars = "cars"
-	// EdgeGroups holds the string denoting the groups edge name in mutations.
-	EdgeGroups = "groups"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldCreatedBy holds the string denoting the created_by field in the database.
+	FieldCreatedBy = "created_by"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
+	// FieldUpdatedBy holds the string denoting the updated_by field in the database.
+	FieldUpdatedBy = "updated_by"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
+	// FieldType holds the string denoting the type field in the database.
+	FieldType = "type"
+	// FieldSignup holds the string denoting the signup field in the database.
+	FieldSignup = "signup"
+	// FieldUsername holds the string denoting the username field in the database.
+	FieldUsername = "username"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// CarsTable is the table that holds the cars relation/edge.
-	CarsTable = "cars"
-	// CarsInverseTable is the table name for the Car entity.
-	// It exists in this package in order to avoid circular dependency with the "car" package.
-	CarsInverseTable = "cars"
-	// CarsColumn is the table column denoting the cars relation/edge.
-	CarsColumn = "user_cars"
-	// GroupsTable is the table that holds the groups relation/edge. The primary key declared below.
-	GroupsTable = "group_users"
-	// GroupsInverseTable is the table name for the Group entity.
-	// It exists in this package in order to avoid circular dependency with the "group" package.
-	GroupsInverseTable = "groups"
 )
 
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
-	FieldAge,
-	FieldName,
+	FieldCreatedAt,
+	FieldCreatedBy,
+	FieldUpdatedAt,
+	FieldUpdatedBy,
+	FieldStatus,
+	FieldType,
+	FieldSignup,
+	FieldUsername,
 }
-
-var (
-	// GroupsPrimaryKey and GroupsColumn2 are the table columns denoting the
-	// primary key for the groups relation (M2M).
-	GroupsPrimaryKey = []string{"group_id", "user_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -55,8 +56,65 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// AgeValidator is a validator for the "age" field. It is called by the builders before save.
-	AgeValidator func(int) error
-	// DefaultName holds the default value on creation for the "name" field.
-	DefaultName string
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
+	// DefaultSignup holds the default value on creation for the "signup" field.
+	DefaultSignup bool
 )
+
+// Status defines the type for the "status" enum field.
+type Status string
+
+// StatusACTIVE is the default value of the Status enum.
+const DefaultStatus = StatusACTIVE
+
+// Status values.
+const (
+	StatusACTIVE   Status = "ACTIVE"
+	StatusINACTIVE Status = "INACTIVE"
+	StatusDELETED  Status = "DELETED"
+)
+
+func (s Status) String() string {
+	return string(s)
+}
+
+// StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
+func StatusValidator(s Status) error {
+	switch s {
+	case StatusACTIVE, StatusINACTIVE, StatusDELETED:
+		return nil
+	default:
+		return fmt.Errorf("user: invalid enum value for status field: %q", s)
+	}
+}
+
+// Type defines the type for the "type" enum field.
+type Type string
+
+// TypeUSER is the default value of the Type enum.
+const DefaultType = TypeUSER
+
+// Type values.
+const (
+	TypeUSER  Type = "USER"
+	TypeADMIN Type = "ADMIN"
+)
+
+func (_type Type) String() string {
+	return string(_type)
+}
+
+// TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
+func TypeValidator(_type Type) error {
+	switch _type {
+	case TypeUSER, TypeADMIN:
+		return nil
+	default:
+		return fmt.Errorf("user: invalid enum value for type field: %q", _type)
+	}
+}

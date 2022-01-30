@@ -24,6 +24,11 @@ erDiagram
         string accessed_at
         string created_at
     }
+    USERS ||--o{ USER_META : USERS_id
+    USER_META {
+        string id
+        string user_id
+    }
 ```
 
 ### profiles domains

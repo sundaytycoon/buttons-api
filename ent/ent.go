@@ -8,12 +8,10 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/sundaytycoon/buttons-api/ent/car"
-	"github.com/sundaytycoon/buttons-api/ent/group"
 	"github.com/sundaytycoon/buttons-api/ent/user"
 )
 
-// entd aliases to avoid import conflicts in user's code.
+// ent aliases to avoid import conflicts in user's code.
 type (
 	Op         = ent.Op
 	Hook       = ent.Hook
@@ -31,9 +29,7 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		car.Table:   car.ValidColumn,
-		group.Table: group.ValidColumn,
-		user.Table:  user.ValidColumn,
+		user.Table: user.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {
@@ -55,7 +51,7 @@ func Asc(fields ...string) OrderFunc {
 		check := columnChecker(s.TableName())
 		for _, f := range fields {
 			if err := check(f); err != nil {
-				s.AddError(&ValidationError{Name: f, err: fmt.Errorf("entd: %w", err)})
+				s.AddError(&ValidationError{Name: f, err: fmt.Errorf("ent: %w", err)})
 			}
 			s.OrderBy(sql.Asc(s.C(f)))
 		}
@@ -68,7 +64,7 @@ func Desc(fields ...string) OrderFunc {
 		check := columnChecker(s.TableName())
 		for _, f := range fields {
 			if err := check(f); err != nil {
-				s.AddError(&ValidationError{Name: f, err: fmt.Errorf("entd: %w", err)})
+				s.AddError(&ValidationError{Name: f, err: fmt.Errorf("ent: %w", err)})
 			}
 			s.OrderBy(sql.Desc(s.C(f)))
 		}
@@ -102,7 +98,7 @@ func Max(field string) AggregateFunc {
 	return func(s *sql.Selector) string {
 		check := columnChecker(s.TableName())
 		if err := check(field); err != nil {
-			s.AddError(&ValidationError{Name: field, err: fmt.Errorf("entd: %w", err)})
+			s.AddError(&ValidationError{Name: field, err: fmt.Errorf("ent: %w", err)})
 			return ""
 		}
 		return sql.Max(s.C(field))
@@ -114,7 +110,7 @@ func Mean(field string) AggregateFunc {
 	return func(s *sql.Selector) string {
 		check := columnChecker(s.TableName())
 		if err := check(field); err != nil {
-			s.AddError(&ValidationError{Name: field, err: fmt.Errorf("entd: %w", err)})
+			s.AddError(&ValidationError{Name: field, err: fmt.Errorf("ent: %w", err)})
 			return ""
 		}
 		return sql.Avg(s.C(field))
@@ -126,7 +122,7 @@ func Min(field string) AggregateFunc {
 	return func(s *sql.Selector) string {
 		check := columnChecker(s.TableName())
 		if err := check(field); err != nil {
-			s.AddError(&ValidationError{Name: field, err: fmt.Errorf("entd: %w", err)})
+			s.AddError(&ValidationError{Name: field, err: fmt.Errorf("ent: %w", err)})
 			return ""
 		}
 		return sql.Min(s.C(field))
@@ -138,14 +134,14 @@ func Sum(field string) AggregateFunc {
 	return func(s *sql.Selector) string {
 		check := columnChecker(s.TableName())
 		if err := check(field); err != nil {
-			s.AddError(&ValidationError{Name: field, err: fmt.Errorf("entd: %w", err)})
+			s.AddError(&ValidationError{Name: field, err: fmt.Errorf("ent: %w", err)})
 			return ""
 		}
 		return sql.Sum(s.C(field))
 	}
 }
 
-// ValidationError returns when validating a field fails.
+// ValidationError returns when validating a field or edge fails.
 type ValidationError struct {
 	Name string // Field or edge name.
 	err  error
@@ -177,7 +173,7 @@ type NotFoundError struct {
 
 // Error implements the error interface.
 func (e *NotFoundError) Error() string {
-	return "entd: " + e.label + " not found"
+	return "ent: " + e.label + " not found"
 }
 
 // IsNotFound returns a boolean indicating whether the error is a not found error.
@@ -204,7 +200,7 @@ type NotSingularError struct {
 
 // Error implements the error interface.
 func (e *NotSingularError) Error() string {
-	return "entd: " + e.label + " not singular"
+	return "ent: " + e.label + " not singular"
 }
 
 // IsNotSingular returns a boolean indicating whether the error is a not singular error.
@@ -223,7 +219,7 @@ type NotLoadedError struct {
 
 // Error implements the error interface.
 func (e *NotLoadedError) Error() string {
-	return "entd: " + e.edge + " edge was not loaded"
+	return "ent: " + e.edge + " edge was not loaded"
 }
 
 // IsNotLoaded returns a boolean indicating whether the error is a not loaded error.
@@ -245,7 +241,7 @@ type ConstraintError struct {
 
 // Error implements the error interface.
 func (e ConstraintError) Error() string {
-	return "entd: constraint failed: " + e.msg
+	return "ent: constraint failed: " + e.msg
 }
 
 // Unwrap implements the errors.Wrapper interface.

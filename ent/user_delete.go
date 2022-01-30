@@ -47,7 +47,7 @@ func (ud *UserDelete) Exec(ctx context.Context) (int, error) {
 		})
 		for i := len(ud.hooks) - 1; i >= 0; i-- {
 			if ud.hooks[i] == nil {
-				return 0, fmt.Errorf("entd: uninitialized hook (forgotten import entd/runtime?)")
+				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
 			}
 			mut = ud.hooks[i](mut)
 		}
@@ -72,7 +72,7 @@ func (ud *UserDelete) sqlExec(ctx context.Context) (int, error) {
 		Node: &sqlgraph.NodeSpec{
 			Table: user.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeString,
 				Column: user.FieldID,
 			},
 		},

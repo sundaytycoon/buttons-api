@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/spf13/cobra"
 
-	cmdent "github.com/sundaytycoon/buttons-api/cmd/entd"
+	cmdentgo "github.com/sundaytycoon/buttons-api/cmd/entgo"
 	cmdserver "github.com/sundaytycoon/buttons-api/cmd/server"
 )
 
@@ -14,11 +14,7 @@ var rootCmd = &cobra.Command{
 	RunE: func(c *cobra.Command, _ []string) error {
 		return c.Help()
 	},
-	CompletionOptions: struct {
-		DisableDefaultCmd   bool
-		DisableNoDescFlag   bool
-		DisableDescriptions bool
-	}{
+	CompletionOptions: cobra.CompletionOptions{
 		DisableDefaultCmd:   true,
 		DisableNoDescFlag:   true,
 		DisableDescriptions: true,
@@ -28,7 +24,7 @@ var rootCmd = &cobra.Command{
 func main() {
 	rootCmd.AddCommand(
 		cmdserver.ServerCommand(),
-		cmdent.MigrationCommand(),
+		cmdentgo.MigrationCommand(),
 	)
 
 	if err := rootCmd.Execute(); err != nil {
