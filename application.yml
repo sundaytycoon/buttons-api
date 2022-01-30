@@ -49,4 +49,3 @@ google:
   oauth_callback_url: /api/v1/auth/web/google_callback
   client_id: wow # drakejin에게 요구하세용
   client_secret: yaiks # drakejin에게 요구하세용
-
