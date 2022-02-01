@@ -13,6 +13,10 @@ erDiagram
     USERS ||--o{ USER_OAUTH_PROVIDERS : USERS_id
     USERS {
         string id
+        enum status
+        enum type
+        bool signup
+        string username
     }
     USERS ||--o{ USER_META : USERS_id
     USER_META {
@@ -24,12 +28,15 @@ erDiagram
     USER_DEVICES {
         string id
         string user_id
-        string type
-        string agent
-        string device_token
-        string push_token
-        string accessed_at
-        string created_at
+        enum status
+        enum type
+        string os
+        string platform
+    }
+    
+    SESSIONS {
+        string key
+        string user_data
     }
 ```
 
@@ -58,19 +65,4 @@ erDiagram
         string type
         string url
     }
-```
-
-# sequence diagram
-//         get_oauth_token_from_provider --> callback_identity_token
-
-```mermaid
-stateDiagram-v2
-    Client<WebView> --> ButtonsServer: un-authorized user login
-    state ButtonsServer {
-        [*] --> get_oauth_token_from_provider
-        get_oauth_token_from_provider --> [*]
-    }
-    ButtonsServer --> Client<WebView>: redirect_url to provider
-    Client<WebView> --> OAuthProvider: send user's identity
-    OAuthProvider --> ButtonsAPI
 ```

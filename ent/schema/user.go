@@ -1,12 +1,13 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"time"
 )
 
 // User holds the schema definition for the User entity.
@@ -56,8 +57,9 @@ func (User) Fields() []ent.Field {
 //Edge of the User
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("oauth_providers", UserOAuthProvider.Type),
-		edge.To("meta", UserMeta.Type),
+		//edge.To("oauth_providers", UserOAuthProvider.Type),
+		//edge.To("meta", UserMeta.Type),
+		edge.To("devices", UserDevice.Type),
 	}
 }
 
