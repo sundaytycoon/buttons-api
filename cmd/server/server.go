@@ -22,7 +22,6 @@ import (
 	adapterservicedb "github.com/sundaytycoon/buttons-api/internal/adapter/servicedb"
 	"github.com/sundaytycoon/buttons-api/internal/config"
 	handlerauth "github.com/sundaytycoon/buttons-api/internal/handler/auth"
-	handleruser "github.com/sundaytycoon/buttons-api/internal/handler/user"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
 
@@ -33,7 +32,6 @@ func Main() error {
 	er.PanicError(d.Provide(edgegoogle.New))
 	er.PanicError(d.Provide(adapterservicedb.New))
 	er.PanicError(d.Provide(adapterbatchdb.New))
-	er.PanicError(d.Provide(handleruser.New))
 	er.PanicError(d.Provide(handlerauth.New))
 
 	er.PanicError(d.Invoke(ServerStart))
@@ -48,20 +46,19 @@ type Handler interface {
 	Close() error
 }
 
-func ServerStart(params struct {
-	dig.In
-	Config      *config.Config
-	UserHandler *handleruser.Handler
-	AuthHandler *handlerauth.Handler
-}) error {
+func ServerStart(
+	params struct {
+		dig.In
+		Config      *config.Config
+		AuthHandler *handlerauth.Handler
+	},
+) error {
 	app := grpcserver.New()
 	gw := grpcgw.New()
 	grpcAppHandlers := []grpcserver.GRPCHandler{
-		params.UserHandler,
 		glueauth.New(params.AuthHandler),
 	}
 	grpcGWHandlers := []grpcgw.GRPCHandler{
-		params.UserHandler,
 		glueauth.New(params.AuthHandler),
 	}
 	httpEndpoint := net.JoinHostPort(params.Config.HTTPEndPoint.Host, params.Config.HTTPEndPoint.Port)
@@ -95,21 +92,23 @@ func ServerStart(params struct {
 		}
 	}()
 
-	shutdown(func() error {
-		if err := gw.Close(); err != nil {
-			if !er.Is(err, http.ErrServerClosed) {
-				log.Fatal().Err(err).Str("closing", "gateway").Send()
+	shutdown(
+		func() error {
+			if err := gw.Close(); err != nil {
+				if !er.Is(err, http.ErrServerClosed) {
+					log.Fatal().Err(err).Str("closing", "gateway").Send()
+				}
 			}
-		}
 
-		if err := app.Close(); err != nil {
-			if !er.Is(err, grpc.ErrServerStopped) {
-				log.Fatal().Err(err).Str("closing", "grpc, handlers's connector").Send()
+			if err := app.Close(); err != nil {
+				if !er.Is(err, grpc.ErrServerStopped) {
+					log.Fatal().Err(err).Str("closing", "grpc, handlers's connector").Send()
+				}
+				return err
 			}
-			return err
-		}
-		return nil
-	})
+			return nil
+		},
+	)
 	return nil
 }
 
@@ -137,13 +136,15 @@ func ServerCommand() *cobra.Command {
 			return c.Help()
 		},
 	}
-	c.AddCommand(&cobra.Command{
-		Use:     "start",
-		Aliases: []string{"s"},
-		Short:   "start api application",
-		RunE: func(c *cobra.Command, _ []string) error {
-			return Main()
+	c.AddCommand(
+		&cobra.Command{
+			Use:     "start",
+			Aliases: []string{"s"},
+			Short:   "start api application",
+			RunE: func(c *cobra.Command, _ []string) error {
+				return Main()
+			},
 		},
-	})
+	)
 	return c
 }

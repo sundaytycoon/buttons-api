@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+
 	"github.com/sundaytycoon/buttons-api/internal/constants/model"
 	"github.com/sundaytycoon/buttons-api/pkg/er"
 )
