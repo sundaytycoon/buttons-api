@@ -42,7 +42,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "user" package.
 	UserInverseTable = "users"
 	// UserColumn is the table column denoting the user relation/edge.
-	UserColumn = "user_oauth_providers"
+	UserColumn = "user_id"
 )
 
 // Columns holds all SQL columns for useroauthprovider fields.
@@ -60,21 +60,10 @@ var Columns = []string{
 	FieldRefreshToken,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "user_oauth_providers"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"user_oauth_providers",
-}
-
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}

@@ -105,20 +105,6 @@ func (udc *UserDeviceCreate) SetID(s string) *UserDeviceCreate {
 	return udc
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (udc *UserDeviceCreate) SetUserID(id string) *UserDeviceCreate {
-	udc.mutation.SetUserID(id)
-	return udc
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (udc *UserDeviceCreate) SetNillableUserID(id *string) *UserDeviceCreate {
-	if id != nil {
-		udc = udc.SetUserID(*id)
-	}
-	return udc
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (udc *UserDeviceCreate) SetUser(u *User) *UserDeviceCreate {
 	return udc.SetUserID(u.ID)
@@ -258,6 +244,9 @@ func (udc *UserDeviceCreate) check() error {
 			return &ValidationError{Name: "platform", err: fmt.Errorf(`ent: validator failed for field "UserDevice.platform": %w`, err)}
 		}
 	}
+	if _, ok := udc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "UserDevice.user"`)}
+	}
 	return nil
 }
 
@@ -293,14 +282,6 @@ func (udc *UserDeviceCreate) createSpec() (*UserDevice, *sqlgraph.CreateSpec) {
 	if id, ok := udc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
-	}
-	if value, ok := udc.mutation.UserID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: userdevice.FieldUserID,
-		})
-		_node.UserID = value
 	}
 	if value, ok := udc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -383,7 +364,7 @@ func (udc *UserDeviceCreate) createSpec() (*UserDevice, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_device = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

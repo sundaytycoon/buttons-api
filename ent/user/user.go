@@ -28,35 +28,35 @@ const (
 	FieldSignup = "signup"
 	// FieldUsername holds the string denoting the username field in the database.
 	FieldUsername = "username"
-	// EdgeOauthProviders holds the string denoting the oauth_providers edge name in mutations.
-	EdgeOauthProviders = "oauth_providers"
 	// EdgeMeta holds the string denoting the meta edge name in mutations.
 	EdgeMeta = "meta"
-	// EdgeDevice holds the string denoting the device edge name in mutations.
-	EdgeDevice = "device"
+	// EdgeOauthProviders holds the string denoting the oauth_providers edge name in mutations.
+	EdgeOauthProviders = "oauth_providers"
+	// EdgeDevices holds the string denoting the devices edge name in mutations.
+	EdgeDevices = "devices"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// OauthProvidersTable is the table that holds the oauth_providers relation/edge.
-	OauthProvidersTable = "user_oauth_providers"
-	// OauthProvidersInverseTable is the table name for the UserOAuthProvider entity.
-	// It exists in this package in order to avoid circular dependency with the "useroauthprovider" package.
-	OauthProvidersInverseTable = "user_oauth_providers"
-	// OauthProvidersColumn is the table column denoting the oauth_providers relation/edge.
-	OauthProvidersColumn = "user_oauth_providers"
 	// MetaTable is the table that holds the meta relation/edge.
 	MetaTable = "user_meta"
 	// MetaInverseTable is the table name for the UserMeta entity.
 	// It exists in this package in order to avoid circular dependency with the "usermeta" package.
 	MetaInverseTable = "user_meta"
 	// MetaColumn is the table column denoting the meta relation/edge.
-	MetaColumn = "user_meta"
-	// DeviceTable is the table that holds the device relation/edge.
-	DeviceTable = "user_devices"
-	// DeviceInverseTable is the table name for the UserDevice entity.
+	MetaColumn = "user_id"
+	// OauthProvidersTable is the table that holds the oauth_providers relation/edge.
+	OauthProvidersTable = "user_oauth_providers"
+	// OauthProvidersInverseTable is the table name for the UserOAuthProvider entity.
+	// It exists in this package in order to avoid circular dependency with the "useroauthprovider" package.
+	OauthProvidersInverseTable = "user_oauth_providers"
+	// OauthProvidersColumn is the table column denoting the oauth_providers relation/edge.
+	OauthProvidersColumn = "user_id"
+	// DevicesTable is the table that holds the devices relation/edge.
+	DevicesTable = "user_devices"
+	// DevicesInverseTable is the table name for the UserDevice entity.
 	// It exists in this package in order to avoid circular dependency with the "userdevice" package.
-	DeviceInverseTable = "user_devices"
-	// DeviceColumn is the table column denoting the device relation/edge.
-	DeviceColumn = "user_device"
+	DevicesInverseTable = "user_devices"
+	// DevicesColumn is the table column denoting the devices relation/edge.
+	DevicesColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.

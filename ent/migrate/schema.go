@@ -42,7 +42,6 @@ var (
 	// UserDevicesColumns holds the columns for the "user_devices" table.
 	UserDevicesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
-		{Name: "user_id", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "created_by", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -51,7 +50,7 @@ var (
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"DESKTOP", "MOBILE"}},
 		{Name: "os", Type: field.TypeEnum, Enums: []string{"MAC", "ANDROID", "WINDOWS"}},
 		{Name: "platform", Type: field.TypeEnum, Enums: []string{"native", "chrome", "safari", "explorer"}},
-		{Name: "user_device", Type: field.TypeString, Nullable: true},
+		{Name: "user_id", Type: field.TypeString, Nullable: true},
 	}
 	// UserDevicesTable holds the schema information for the "user_devices" table.
 	UserDevicesTable = &schema.Table{
@@ -60,8 +59,8 @@ var (
 		PrimaryKey: []*schema.Column{UserDevicesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "user_devices_users_device",
-				Columns:    []*schema.Column{UserDevicesColumns[10]},
+				Symbol:     "user_devices_users_devices",
+				Columns:    []*schema.Column{UserDevicesColumns[9]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -70,20 +69,19 @@ var (
 			{
 				Name:    "userdevice_user_id",
 				Unique:  true,
-				Columns: []*schema.Column{UserDevicesColumns[1]},
+				Columns: []*schema.Column{UserDevicesColumns[9]},
 			},
 		},
 	}
 	// UserMetaColumns holds the columns for the "user_meta" table.
 	UserMetaColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
-		{Name: "user_id", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "created_by", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeString},
 		{Name: "profile", Type: field.TypeString},
-		{Name: "user_meta", Type: field.TypeString, Nullable: true},
+		{Name: "user_id", Type: field.TypeString, Nullable: true},
 	}
 	// UserMetaTable holds the schema information for the "user_meta" table.
 	UserMetaTable = &schema.Table{
@@ -93,7 +91,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "user_meta_users_meta",
-				Columns:    []*schema.Column{UserMetaColumns[7]},
+				Columns:    []*schema.Column{UserMetaColumns[6]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -102,14 +100,13 @@ var (
 			{
 				Name:    "usermeta_user_id",
 				Unique:  true,
-				Columns: []*schema.Column{UserMetaColumns[1]},
+				Columns: []*schema.Column{UserMetaColumns[6]},
 			},
 		},
 	}
 	// UserOauthProvidersColumns holds the columns for the "user_oauth_providers" table.
 	UserOauthProvidersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
-		{Name: "user_id", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "created_by", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -119,7 +116,7 @@ var (
 		{Name: "expiry", Type: field.TypeTime},
 		{Name: "access_token", Type: field.TypeString, Unique: true},
 		{Name: "refresh_token", Type: field.TypeString, Unique: true},
-		{Name: "user_oauth_providers", Type: field.TypeString, Nullable: true},
+		{Name: "user_id", Type: field.TypeString, Nullable: true},
 	}
 	// UserOauthProvidersTable holds the schema information for the "user_oauth_providers" table.
 	UserOauthProvidersTable = &schema.Table{
@@ -129,7 +126,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "user_oauth_providers_users_oauth_providers",
-				Columns:    []*schema.Column{UserOauthProvidersColumns[11]},
+				Columns:    []*schema.Column{UserOauthProvidersColumns[10]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -138,17 +135,17 @@ var (
 			{
 				Name:    "useroauthprovider_user_id",
 				Unique:  false,
-				Columns: []*schema.Column{UserOauthProvidersColumns[1]},
+				Columns: []*schema.Column{UserOauthProvidersColumns[10]},
 			},
 			{
 				Name:    "useroauthprovider_status_provider_access_token",
 				Unique:  true,
-				Columns: []*schema.Column{UserOauthProvidersColumns[6], UserOauthProvidersColumns[7], UserOauthProvidersColumns[9]},
+				Columns: []*schema.Column{UserOauthProvidersColumns[5], UserOauthProvidersColumns[6], UserOauthProvidersColumns[8]},
 			},
 			{
 				Name:    "useroauthprovider_provider_refresh_token",
 				Unique:  true,
-				Columns: []*schema.Column{UserOauthProvidersColumns[7], UserOauthProvidersColumns[10]},
+				Columns: []*schema.Column{UserOauthProvidersColumns[6], UserOauthProvidersColumns[9]},
 			},
 		},
 	}

@@ -27,7 +27,6 @@ type UserMetaQuery struct {
 	predicates []predicate.UserMeta
 	// eager-loading edges.
 	withUser *UserQuery
-	withFKs  bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -349,18 +348,11 @@ func (umq *UserMetaQuery) prepareQuery(ctx context.Context) error {
 func (umq *UserMetaQuery) sqlAll(ctx context.Context) ([]*UserMeta, error) {
 	var (
 		nodes       = []*UserMeta{}
-		withFKs     = umq.withFKs
 		_spec       = umq.querySpec()
 		loadedTypes = [1]bool{
 			umq.withUser != nil,
 		}
 	)
-	if umq.withUser != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, usermeta.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &UserMeta{config: umq.config}
 		nodes = append(nodes, node)
@@ -385,10 +377,7 @@ func (umq *UserMetaQuery) sqlAll(ctx context.Context) ([]*UserMeta, error) {
 		ids := make([]string, 0, len(nodes))
 		nodeids := make(map[string][]*UserMeta)
 		for i := range nodes {
-			if nodes[i].user_meta == nil {
-				continue
-			}
-			fk := *nodes[i].user_meta
+			fk := nodes[i].UserID
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}
@@ -402,7 +391,7 @@ func (umq *UserMetaQuery) sqlAll(ctx context.Context) ([]*UserMeta, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_meta" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.User = n

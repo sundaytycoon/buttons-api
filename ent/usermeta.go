@@ -36,8 +36,7 @@ type UserMeta struct {
 	Profile string `json:"profile,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserMetaQuery when eager-loading is set.
-	Edges     UserMetaEdges `json:"edges"`
-	user_meta *string
+	Edges UserMetaEdges `json:"edges"`
 }
 
 // UserMetaEdges holds the relations/edges for other nodes in the graph.
@@ -72,8 +71,6 @@ func (*UserMeta) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullString)
 		case usermeta.FieldCreatedAt, usermeta.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case usermeta.ForeignKeys[0]: // user_meta
-			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type UserMeta", columns[i])
 		}
@@ -130,13 +127,6 @@ func (um *UserMeta) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field profile", values[i])
 			} else if value.Valid {
 				um.Profile = value.String
-			}
-		case usermeta.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user_meta", values[i])
-			} else if value.Valid {
-				um.user_meta = new(string)
-				*um.user_meta = value.String
 			}
 		}
 	}

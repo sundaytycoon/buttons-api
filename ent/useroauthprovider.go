@@ -48,8 +48,7 @@ type UserOAuthProvider struct {
 	RefreshToken string `json:"refresh_token,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserOAuthProviderQuery when eager-loading is set.
-	Edges                UserOAuthProviderEdges `json:"edges"`
-	user_oauth_providers *string
+	Edges UserOAuthProviderEdges `json:"edges"`
 }
 
 // UserOAuthProviderEdges holds the relations/edges for other nodes in the graph.
@@ -84,8 +83,6 @@ func (*UserOAuthProvider) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullString)
 		case useroauthprovider.FieldCreatedAt, useroauthprovider.FieldUpdatedAt, useroauthprovider.FieldExpiry:
 			values[i] = new(sql.NullTime)
-		case useroauthprovider.ForeignKeys[0]: // user_oauth_providers
-			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type UserOAuthProvider", columns[i])
 		}
@@ -166,13 +163,6 @@ func (uop *UserOAuthProvider) assignValues(columns []string, values []interface{
 				return fmt.Errorf("unexpected type %T for field refresh_token", values[i])
 			} else if value.Valid {
 				uop.RefreshToken = value.String
-			}
-		case useroauthprovider.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user_oauth_providers", values[i])
-			} else if value.Valid {
-				uop.user_oauth_providers = new(string)
-				*uop.user_oauth_providers = value.String
 			}
 		}
 	}

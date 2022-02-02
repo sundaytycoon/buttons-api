@@ -29,9 +29,9 @@ type UserQuery struct {
 	fields     []string
 	predicates []predicate.User
 	// eager-loading edges.
-	withOauthProviders *UserOAuthProviderQuery
 	withMeta           *UserMetaQuery
-	withDevice         *UserDeviceQuery
+	withOauthProviders *UserOAuthProviderQuery
+	withDevices        *UserDeviceQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -68,28 +68,6 @@ func (uq *UserQuery) Order(o ...OrderFunc) *UserQuery {
 	return uq
 }
 
-// QueryOauthProviders chains the current query on the "oauth_providers" edge.
-func (uq *UserQuery) QueryOauthProviders() *UserOAuthProviderQuery {
-	query := &UserOAuthProviderQuery{config: uq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := uq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := uq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(useroauthprovider.Table, useroauthprovider.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.OauthProvidersTable, user.OauthProvidersColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
 // QueryMeta chains the current query on the "meta" edge.
 func (uq *UserQuery) QueryMeta() *UserMetaQuery {
 	query := &UserMetaQuery{config: uq.config}
@@ -112,8 +90,30 @@ func (uq *UserQuery) QueryMeta() *UserMetaQuery {
 	return query
 }
 
-// QueryDevice chains the current query on the "device" edge.
-func (uq *UserQuery) QueryDevice() *UserDeviceQuery {
+// QueryOauthProviders chains the current query on the "oauth_providers" edge.
+func (uq *UserQuery) QueryOauthProviders() *UserOAuthProviderQuery {
+	query := &UserOAuthProviderQuery{config: uq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(useroauthprovider.Table, useroauthprovider.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.OauthProvidersTable, user.OauthProvidersColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDevices chains the current query on the "devices" edge.
+func (uq *UserQuery) QueryDevices() *UserDeviceQuery {
 	query := &UserDeviceQuery{config: uq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
@@ -126,7 +126,7 @@ func (uq *UserQuery) QueryDevice() *UserDeviceQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(userdevice.Table, userdevice.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.DeviceTable, user.DeviceColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.DevicesTable, user.DevicesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -315,24 +315,13 @@ func (uq *UserQuery) Clone() *UserQuery {
 		offset:             uq.offset,
 		order:              append([]OrderFunc{}, uq.order...),
 		predicates:         append([]predicate.User{}, uq.predicates...),
-		withOauthProviders: uq.withOauthProviders.Clone(),
 		withMeta:           uq.withMeta.Clone(),
-		withDevice:         uq.withDevice.Clone(),
+		withOauthProviders: uq.withOauthProviders.Clone(),
+		withDevices:        uq.withDevices.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
 	}
-}
-
-// WithOauthProviders tells the query-builder to eager-load the nodes that are connected to
-// the "oauth_providers" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithOauthProviders(opts ...func(*UserOAuthProviderQuery)) *UserQuery {
-	query := &UserOAuthProviderQuery{config: uq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	uq.withOauthProviders = query
-	return uq
 }
 
 // WithMeta tells the query-builder to eager-load the nodes that are connected to
@@ -346,14 +335,25 @@ func (uq *UserQuery) WithMeta(opts ...func(*UserMetaQuery)) *UserQuery {
 	return uq
 }
 
-// WithDevice tells the query-builder to eager-load the nodes that are connected to
-// the "device" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithDevice(opts ...func(*UserDeviceQuery)) *UserQuery {
+// WithOauthProviders tells the query-builder to eager-load the nodes that are connected to
+// the "oauth_providers" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithOauthProviders(opts ...func(*UserOAuthProviderQuery)) *UserQuery {
+	query := &UserOAuthProviderQuery{config: uq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withOauthProviders = query
+	return uq
+}
+
+// WithDevices tells the query-builder to eager-load the nodes that are connected to
+// the "devices" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithDevices(opts ...func(*UserDeviceQuery)) *UserQuery {
 	query := &UserDeviceQuery{config: uq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withDevice = query
+	uq.withDevices = query
 	return uq
 }
 
@@ -423,9 +423,9 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
 		loadedTypes = [3]bool{
-			uq.withOauthProviders != nil,
 			uq.withMeta != nil,
-			uq.withDevice != nil,
+			uq.withOauthProviders != nil,
+			uq.withDevices != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
@@ -448,35 +448,6 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 		return nodes, nil
 	}
 
-	if query := uq.withOauthProviders; query != nil {
-		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[string]*User)
-		for i := range nodes {
-			fks = append(fks, nodes[i].ID)
-			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.OauthProviders = []*UserOAuthProvider{}
-		}
-		query.withFKs = true
-		query.Where(predicate.UserOAuthProvider(func(s *sql.Selector) {
-			s.Where(sql.InValues(user.OauthProvidersColumn, fks...))
-		}))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			fk := n.user_oauth_providers
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "user_oauth_providers" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_oauth_providers" returned %v for node %v`, *fk, n.ID)
-			}
-			node.Edges.OauthProviders = append(node.Edges.OauthProviders, n)
-		}
-	}
-
 	if query := uq.withMeta; query != nil {
 		fks := make([]driver.Value, 0, len(nodes))
 		nodeids := make(map[string]*User)
@@ -485,7 +456,6 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 			nodeids[nodes[i].ID] = nodes[i]
 			nodes[i].Edges.Meta = []*UserMeta{}
 		}
-		query.withFKs = true
 		query.Where(predicate.UserMeta(func(s *sql.Selector) {
 			s.Where(sql.InValues(user.MetaColumn, fks...))
 		}))
@@ -494,44 +464,62 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.user_meta
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "user_meta" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
+			fk := n.UserID
+			node, ok := nodeids[fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_meta" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 			}
 			node.Edges.Meta = append(node.Edges.Meta, n)
 		}
 	}
 
-	if query := uq.withDevice; query != nil {
+	if query := uq.withOauthProviders; query != nil {
 		fks := make([]driver.Value, 0, len(nodes))
 		nodeids := make(map[string]*User)
 		for i := range nodes {
 			fks = append(fks, nodes[i].ID)
 			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.Device = []*UserDevice{}
+			nodes[i].Edges.OauthProviders = []*UserOAuthProvider{}
 		}
-		query.withFKs = true
-		query.Where(predicate.UserDevice(func(s *sql.Selector) {
-			s.Where(sql.InValues(user.DeviceColumn, fks...))
+		query.Where(predicate.UserOAuthProvider(func(s *sql.Selector) {
+			s.Where(sql.InValues(user.OauthProvidersColumn, fks...))
 		}))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.user_device
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "user_device" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
+			fk := n.UserID
+			node, ok := nodeids[fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_device" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 			}
-			node.Edges.Device = append(node.Edges.Device, n)
+			node.Edges.OauthProviders = append(node.Edges.OauthProviders, n)
+		}
+	}
+
+	if query := uq.withDevices; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[string]*User)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Devices = []*UserDevice{}
+		}
+		query.Where(predicate.UserDevice(func(s *sql.Selector) {
+			s.Where(sql.InValues(user.DevicesColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.UserID
+			node, ok := nodeids[fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			}
+			node.Edges.Devices = append(node.Edges.Devices, n)
 		}
 	}
 

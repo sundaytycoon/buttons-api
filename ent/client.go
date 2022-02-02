@@ -326,22 +326,6 @@ func (c *UserClient) GetX(ctx context.Context, id string) *User {
 	return obj
 }
 
-// QueryOauthProviders queries the oauth_providers edge of a User.
-func (c *UserClient) QueryOauthProviders(u *User) *UserOAuthProviderQuery {
-	query := &UserOAuthProviderQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(useroauthprovider.Table, useroauthprovider.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.OauthProvidersTable, user.OauthProvidersColumn),
-		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // QueryMeta queries the meta edge of a User.
 func (c *UserClient) QueryMeta(u *User) *UserMetaQuery {
 	query := &UserMetaQuery{config: c.config}
@@ -358,15 +342,31 @@ func (c *UserClient) QueryMeta(u *User) *UserMetaQuery {
 	return query
 }
 
-// QueryDevice queries the device edge of a User.
-func (c *UserClient) QueryDevice(u *User) *UserDeviceQuery {
+// QueryOauthProviders queries the oauth_providers edge of a User.
+func (c *UserClient) QueryOauthProviders(u *User) *UserOAuthProviderQuery {
+	query := &UserOAuthProviderQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(useroauthprovider.Table, useroauthprovider.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.OauthProvidersTable, user.OauthProvidersColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDevices queries the devices edge of a User.
+func (c *UserClient) QueryDevices(u *User) *UserDeviceQuery {
 	query := &UserDeviceQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(userdevice.Table, userdevice.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.DeviceTable, user.DeviceColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.DevicesTable, user.DevicesColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

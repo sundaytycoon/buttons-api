@@ -105,20 +105,6 @@ func (uopu *UserOAuthProviderUpdate) SetRefreshToken(s string) *UserOAuthProvide
 	return uopu
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (uopu *UserOAuthProviderUpdate) SetUserID(id string) *UserOAuthProviderUpdate {
-	uopu.mutation.SetUserID(id)
-	return uopu
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (uopu *UserOAuthProviderUpdate) SetNillableUserID(id *string) *UserOAuthProviderUpdate {
-	if id != nil {
-		uopu = uopu.SetUserID(*id)
-	}
-	return uopu
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (uopu *UserOAuthProviderUpdate) SetUser(u *User) *UserOAuthProviderUpdate {
 	return uopu.SetUserID(u.ID)
@@ -216,6 +202,9 @@ func (uopu *UserOAuthProviderUpdate) check() error {
 			return &ValidationError{Name: "provider", err: fmt.Errorf(`ent: validator failed for field "UserOAuthProvider.provider": %w`, err)}
 		}
 	}
+	if _, ok := uopu.mutation.UserID(); uopu.mutation.UserCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "UserOAuthProvider.user"`)
+	}
 	return nil
 }
 
@@ -236,13 +225,6 @@ func (uopu *UserOAuthProviderUpdate) sqlSave(ctx context.Context) (n int, err er
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := uopu.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: useroauthprovider.FieldUserID,
-		})
 	}
 	if value, ok := uopu.mutation.CreatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -437,20 +419,6 @@ func (uopuo *UserOAuthProviderUpdateOne) SetRefreshToken(s string) *UserOAuthPro
 	return uopuo
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (uopuo *UserOAuthProviderUpdateOne) SetUserID(id string) *UserOAuthProviderUpdateOne {
-	uopuo.mutation.SetUserID(id)
-	return uopuo
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (uopuo *UserOAuthProviderUpdateOne) SetNillableUserID(id *string) *UserOAuthProviderUpdateOne {
-	if id != nil {
-		uopuo = uopuo.SetUserID(*id)
-	}
-	return uopuo
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (uopuo *UserOAuthProviderUpdateOne) SetUser(u *User) *UserOAuthProviderUpdateOne {
 	return uopuo.SetUserID(u.ID)
@@ -555,6 +523,9 @@ func (uopuo *UserOAuthProviderUpdateOne) check() error {
 			return &ValidationError{Name: "provider", err: fmt.Errorf(`ent: validator failed for field "UserOAuthProvider.provider": %w`, err)}
 		}
 	}
+	if _, ok := uopuo.mutation.UserID(); uopuo.mutation.UserCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "UserOAuthProvider.user"`)
+	}
 	return nil
 }
 
@@ -592,13 +563,6 @@ func (uopuo *UserOAuthProviderUpdateOne) sqlSave(ctx context.Context) (_node *Us
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := uopuo.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: useroauthprovider.FieldUserID,
-		})
 	}
 	if value, ok := uopuo.mutation.CreatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{

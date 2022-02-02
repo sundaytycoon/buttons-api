@@ -79,20 +79,6 @@ func (umc *UserMetaCreate) SetID(s string) *UserMetaCreate {
 	return umc
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (umc *UserMetaCreate) SetUserID(id string) *UserMetaCreate {
-	umc.mutation.SetUserID(id)
-	return umc
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (umc *UserMetaCreate) SetNillableUserID(id *string) *UserMetaCreate {
-	if id != nil {
-		umc = umc.SetUserID(*id)
-	}
-	return umc
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (umc *UserMetaCreate) SetUser(u *User) *UserMetaCreate {
 	return umc.SetUserID(u.ID)
@@ -199,6 +185,9 @@ func (umc *UserMetaCreate) check() error {
 	if _, ok := umc.mutation.Profile(); !ok {
 		return &ValidationError{Name: "profile", err: errors.New(`ent: missing required field "UserMeta.profile"`)}
 	}
+	if _, ok := umc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "UserMeta.user"`)}
+	}
 	return nil
 }
 
@@ -234,14 +223,6 @@ func (umc *UserMetaCreate) createSpec() (*UserMeta, *sqlgraph.CreateSpec) {
 	if id, ok := umc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
-	}
-	if value, ok := umc.mutation.UserID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: usermeta.FieldUserID,
-		})
-		_node.UserID = value
 	}
 	if value, ok := umc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -300,7 +281,7 @@ func (umc *UserMetaCreate) createSpec() (*UserMeta, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_meta = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

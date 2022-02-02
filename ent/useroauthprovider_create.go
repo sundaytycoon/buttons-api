@@ -111,20 +111,6 @@ func (uopc *UserOAuthProviderCreate) SetID(s string) *UserOAuthProviderCreate {
 	return uopc
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (uopc *UserOAuthProviderCreate) SetUserID(id string) *UserOAuthProviderCreate {
-	uopc.mutation.SetUserID(id)
-	return uopc
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (uopc *UserOAuthProviderCreate) SetNillableUserID(id *string) *UserOAuthProviderCreate {
-	if id != nil {
-		uopc = uopc.SetUserID(*id)
-	}
-	return uopc
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (uopc *UserOAuthProviderCreate) SetUser(u *User) *UserOAuthProviderCreate {
 	return uopc.SetUserID(u.ID)
@@ -257,6 +243,9 @@ func (uopc *UserOAuthProviderCreate) check() error {
 	if _, ok := uopc.mutation.RefreshToken(); !ok {
 		return &ValidationError{Name: "refresh_token", err: errors.New(`ent: missing required field "UserOAuthProvider.refresh_token"`)}
 	}
+	if _, ok := uopc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "UserOAuthProvider.user"`)}
+	}
 	return nil
 }
 
@@ -292,14 +281,6 @@ func (uopc *UserOAuthProviderCreate) createSpec() (*UserOAuthProvider, *sqlgraph
 	if id, ok := uopc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
-	}
-	if value, ok := uopc.mutation.UserID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: useroauthprovider.FieldUserID,
-		})
-		_node.UserID = value
 	}
 	if value, ok := uopc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -390,7 +371,7 @@ func (uopc *UserOAuthProviderCreate) createSpec() (*UserOAuthProvider, *sqlgraph
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_oauth_providers = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

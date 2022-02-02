@@ -27,7 +27,6 @@ type UserOAuthProviderQuery struct {
 	predicates []predicate.UserOAuthProvider
 	// eager-loading edges.
 	withUser *UserQuery
-	withFKs  bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -349,18 +348,11 @@ func (uopq *UserOAuthProviderQuery) prepareQuery(ctx context.Context) error {
 func (uopq *UserOAuthProviderQuery) sqlAll(ctx context.Context) ([]*UserOAuthProvider, error) {
 	var (
 		nodes       = []*UserOAuthProvider{}
-		withFKs     = uopq.withFKs
 		_spec       = uopq.querySpec()
 		loadedTypes = [1]bool{
 			uopq.withUser != nil,
 		}
 	)
-	if uopq.withUser != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, useroauthprovider.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &UserOAuthProvider{config: uopq.config}
 		nodes = append(nodes, node)
@@ -385,10 +377,7 @@ func (uopq *UserOAuthProviderQuery) sqlAll(ctx context.Context) ([]*UserOAuthPro
 		ids := make([]string, 0, len(nodes))
 		nodeids := make(map[string][]*UserOAuthProvider)
 		for i := range nodes {
-			if nodes[i].user_oauth_providers == nil {
-				continue
-			}
-			fk := *nodes[i].user_oauth_providers
+			fk := nodes[i].UserID
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}
@@ -402,7 +391,7 @@ func (uopq *UserOAuthProviderQuery) sqlAll(ctx context.Context) ([]*UserOAuthPro
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_oauth_providers" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.User = n

@@ -117,21 +117,6 @@ func (uc *UserCreate) SetID(s string) *UserCreate {
 	return uc
 }
 
-// AddOauthProviderIDs adds the "oauth_providers" edge to the UserOAuthProvider entity by IDs.
-func (uc *UserCreate) AddOauthProviderIDs(ids ...string) *UserCreate {
-	uc.mutation.AddOauthProviderIDs(ids...)
-	return uc
-}
-
-// AddOauthProviders adds the "oauth_providers" edges to the UserOAuthProvider entity.
-func (uc *UserCreate) AddOauthProviders(u ...*UserOAuthProvider) *UserCreate {
-	ids := make([]string, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return uc.AddOauthProviderIDs(ids...)
-}
-
 // AddMetumIDs adds the "meta" edge to the UserMeta entity by IDs.
 func (uc *UserCreate) AddMetumIDs(ids ...string) *UserCreate {
 	uc.mutation.AddMetumIDs(ids...)
@@ -147,14 +132,29 @@ func (uc *UserCreate) AddMeta(u ...*UserMeta) *UserCreate {
 	return uc.AddMetumIDs(ids...)
 }
 
-// AddDeviceIDs adds the "device" edge to the UserDevice entity by IDs.
+// AddOauthProviderIDs adds the "oauth_providers" edge to the UserOAuthProvider entity by IDs.
+func (uc *UserCreate) AddOauthProviderIDs(ids ...string) *UserCreate {
+	uc.mutation.AddOauthProviderIDs(ids...)
+	return uc
+}
+
+// AddOauthProviders adds the "oauth_providers" edges to the UserOAuthProvider entity.
+func (uc *UserCreate) AddOauthProviders(u ...*UserOAuthProvider) *UserCreate {
+	ids := make([]string, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uc.AddOauthProviderIDs(ids...)
+}
+
+// AddDeviceIDs adds the "devices" edge to the UserDevice entity by IDs.
 func (uc *UserCreate) AddDeviceIDs(ids ...string) *UserCreate {
 	uc.mutation.AddDeviceIDs(ids...)
 	return uc
 }
 
-// AddDevice adds the "device" edges to the UserDevice entity.
-func (uc *UserCreate) AddDevice(u ...*UserDevice) *UserCreate {
+// AddDevices adds the "devices" edges to the UserDevice entity.
+func (uc *UserCreate) AddDevices(u ...*UserDevice) *UserCreate {
 	ids := make([]string, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
@@ -391,25 +391,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		})
 		_node.Username = value
 	}
-	if nodes := uc.mutation.OauthProvidersIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.OauthProvidersTable,
-			Columns: []string{user.OauthProvidersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: useroauthprovider.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	if nodes := uc.mutation.MetaIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -429,12 +410,31 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.DeviceIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.OauthProvidersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.DeviceTable,
-			Columns: []string{user.DeviceColumn},
+			Table:   user.OauthProvidersTable,
+			Columns: []string{user.OauthProvidersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: useroauthprovider.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.DevicesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.DevicesTable,
+			Columns: []string{user.DevicesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{

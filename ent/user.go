@@ -47,42 +47,42 @@ type User struct {
 
 // UserEdges holds the relations/edges for other nodes in the graph.
 type UserEdges struct {
-	// OauthProviders holds the value of the oauth_providers edge.
-	OauthProviders []*UserOAuthProvider `json:"oauth_providers,omitempty"`
 	// Meta holds the value of the meta edge.
 	Meta []*UserMeta `json:"meta,omitempty"`
-	// Device holds the value of the device edge.
-	Device []*UserDevice `json:"device,omitempty"`
+	// OauthProviders holds the value of the oauth_providers edge.
+	OauthProviders []*UserOAuthProvider `json:"oauth_providers,omitempty"`
+	// Devices holds the value of the devices edge.
+	Devices []*UserDevice `json:"devices,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [3]bool
 }
 
-// OauthProvidersOrErr returns the OauthProviders value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) OauthProvidersOrErr() ([]*UserOAuthProvider, error) {
-	if e.loadedTypes[0] {
-		return e.OauthProviders, nil
-	}
-	return nil, &NotLoadedError{edge: "oauth_providers"}
-}
-
 // MetaOrErr returns the Meta value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) MetaOrErr() ([]*UserMeta, error) {
-	if e.loadedTypes[1] {
+	if e.loadedTypes[0] {
 		return e.Meta, nil
 	}
 	return nil, &NotLoadedError{edge: "meta"}
 }
 
-// DeviceOrErr returns the Device value or an error if the edge
+// OauthProvidersOrErr returns the OauthProviders value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) DeviceOrErr() ([]*UserDevice, error) {
-	if e.loadedTypes[2] {
-		return e.Device, nil
+func (e UserEdges) OauthProvidersOrErr() ([]*UserOAuthProvider, error) {
+	if e.loadedTypes[1] {
+		return e.OauthProviders, nil
 	}
-	return nil, &NotLoadedError{edge: "device"}
+	return nil, &NotLoadedError{edge: "oauth_providers"}
+}
+
+// DevicesOrErr returns the Devices value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) DevicesOrErr() ([]*UserDevice, error) {
+	if e.loadedTypes[2] {
+		return e.Devices, nil
+	}
+	return nil, &NotLoadedError{edge: "devices"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -170,19 +170,19 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 	return nil
 }
 
-// QueryOauthProviders queries the "oauth_providers" edge of the User entity.
-func (u *User) QueryOauthProviders() *UserOAuthProviderQuery {
-	return (&UserClient{config: u.config}).QueryOauthProviders(u)
-}
-
 // QueryMeta queries the "meta" edge of the User entity.
 func (u *User) QueryMeta() *UserMetaQuery {
 	return (&UserClient{config: u.config}).QueryMeta(u)
 }
 
-// QueryDevice queries the "device" edge of the User entity.
-func (u *User) QueryDevice() *UserDeviceQuery {
-	return (&UserClient{config: u.config}).QueryDevice(u)
+// QueryOauthProviders queries the "oauth_providers" edge of the User entity.
+func (u *User) QueryOauthProviders() *UserOAuthProviderQuery {
+	return (&UserClient{config: u.config}).QueryOauthProviders(u)
+}
+
+// QueryDevices queries the "devices" edge of the User entity.
+func (u *User) QueryDevices() *UserDeviceQuery {
+	return (&UserClient{config: u.config}).QueryDevices(u)
 }
 
 // Update returns a builder for updating this User.

@@ -45,8 +45,7 @@ type UserDevice struct {
 	Platform userdevice.Platform `json:"platform,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserDeviceQuery when eager-loading is set.
-	Edges       UserDeviceEdges `json:"edges"`
-	user_device *string
+	Edges UserDeviceEdges `json:"edges"`
 }
 
 // UserDeviceEdges holds the relations/edges for other nodes in the graph.
@@ -81,8 +80,6 @@ func (*UserDevice) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullString)
 		case userdevice.FieldCreatedAt, userdevice.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case userdevice.ForeignKeys[0]: // user_device
-			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type UserDevice", columns[i])
 		}
@@ -157,13 +154,6 @@ func (ud *UserDevice) assignValues(columns []string, values []interface{}) error
 				return fmt.Errorf("unexpected type %T for field platform", values[i])
 			} else if value.Valid {
 				ud.Platform = userdevice.Platform(value.String)
-			}
-		case userdevice.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user_device", values[i])
-			} else if value.Valid {
-				ud.user_device = new(string)
-				*ud.user_device = value.String
 			}
 		}
 	}

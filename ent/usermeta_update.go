@@ -73,20 +73,6 @@ func (umu *UserMetaUpdate) SetProfile(s string) *UserMetaUpdate {
 	return umu
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (umu *UserMetaUpdate) SetUserID(id string) *UserMetaUpdate {
-	umu.mutation.SetUserID(id)
-	return umu
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (umu *UserMetaUpdate) SetNillableUserID(id *string) *UserMetaUpdate {
-	if id != nil {
-		umu = umu.SetUserID(*id)
-	}
-	return umu
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (umu *UserMetaUpdate) SetUser(u *User) *UserMetaUpdate {
 	return umu.SetUserID(u.ID)
@@ -111,12 +97,18 @@ func (umu *UserMetaUpdate) Save(ctx context.Context) (int, error) {
 	)
 	umu.defaults()
 	if len(umu.hooks) == 0 {
+		if err = umu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = umu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*UserMetaMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = umu.check(); err != nil {
+				return 0, err
 			}
 			umu.mutation = mutation
 			affected, err = umu.sqlSave(ctx)
@@ -166,6 +158,14 @@ func (umu *UserMetaUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (umu *UserMetaUpdate) check() error {
+	if _, ok := umu.mutation.UserID(); umu.mutation.UserCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "UserMeta.user"`)
+	}
+	return nil
+}
+
 func (umu *UserMetaUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -183,13 +183,6 @@ func (umu *UserMetaUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := umu.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: usermeta.FieldUserID,
-		})
 	}
 	if value, ok := umu.mutation.CreatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -324,20 +317,6 @@ func (umuo *UserMetaUpdateOne) SetProfile(s string) *UserMetaUpdateOne {
 	return umuo
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (umuo *UserMetaUpdateOne) SetUserID(id string) *UserMetaUpdateOne {
-	umuo.mutation.SetUserID(id)
-	return umuo
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (umuo *UserMetaUpdateOne) SetNillableUserID(id *string) *UserMetaUpdateOne {
-	if id != nil {
-		umuo = umuo.SetUserID(*id)
-	}
-	return umuo
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (umuo *UserMetaUpdateOne) SetUser(u *User) *UserMetaUpdateOne {
 	return umuo.SetUserID(u.ID)
@@ -369,12 +348,18 @@ func (umuo *UserMetaUpdateOne) Save(ctx context.Context) (*UserMeta, error) {
 	)
 	umuo.defaults()
 	if len(umuo.hooks) == 0 {
+		if err = umuo.check(); err != nil {
+			return nil, err
+		}
 		node, err = umuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*UserMetaMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = umuo.check(); err != nil {
+				return nil, err
 			}
 			umuo.mutation = mutation
 			node, err = umuo.sqlSave(ctx)
@@ -424,6 +409,14 @@ func (umuo *UserMetaUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (umuo *UserMetaUpdateOne) check() error {
+	if _, ok := umuo.mutation.UserID(); umuo.mutation.UserCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "UserMeta.user"`)
+	}
+	return nil
+}
+
 func (umuo *UserMetaUpdateOne) sqlSave(ctx context.Context) (_node *UserMeta, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -458,13 +451,6 @@ func (umuo *UserMetaUpdateOne) sqlSave(ctx context.Context) (_node *UserMeta, er
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := umuo.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: usermeta.FieldUserID,
-		})
 	}
 	if value, ok := umuo.mutation.CreatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{

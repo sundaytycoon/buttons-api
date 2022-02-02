@@ -99,20 +99,6 @@ func (udu *UserDeviceUpdate) SetPlatform(u userdevice.Platform) *UserDeviceUpdat
 	return udu
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (udu *UserDeviceUpdate) SetUserID(id string) *UserDeviceUpdate {
-	udu.mutation.SetUserID(id)
-	return udu
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (udu *UserDeviceUpdate) SetNillableUserID(id *string) *UserDeviceUpdate {
-	if id != nil {
-		udu = udu.SetUserID(*id)
-	}
-	return udu
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (udu *UserDeviceUpdate) SetUser(u *User) *UserDeviceUpdate {
 	return udu.SetUserID(u.ID)
@@ -220,6 +206,9 @@ func (udu *UserDeviceUpdate) check() error {
 			return &ValidationError{Name: "platform", err: fmt.Errorf(`ent: validator failed for field "UserDevice.platform": %w`, err)}
 		}
 	}
+	if _, ok := udu.mutation.UserID(); udu.mutation.UserCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "UserDevice.user"`)
+	}
 	return nil
 }
 
@@ -240,13 +229,6 @@ func (udu *UserDeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := udu.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: userdevice.FieldUserID,
-		})
 	}
 	if value, ok := udu.mutation.CreatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -428,20 +410,6 @@ func (uduo *UserDeviceUpdateOne) SetPlatform(u userdevice.Platform) *UserDeviceU
 	return uduo
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (uduo *UserDeviceUpdateOne) SetUserID(id string) *UserDeviceUpdateOne {
-	uduo.mutation.SetUserID(id)
-	return uduo
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (uduo *UserDeviceUpdateOne) SetNillableUserID(id *string) *UserDeviceUpdateOne {
-	if id != nil {
-		uduo = uduo.SetUserID(*id)
-	}
-	return uduo
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (uduo *UserDeviceUpdateOne) SetUser(u *User) *UserDeviceUpdateOne {
 	return uduo.SetUserID(u.ID)
@@ -556,6 +524,9 @@ func (uduo *UserDeviceUpdateOne) check() error {
 			return &ValidationError{Name: "platform", err: fmt.Errorf(`ent: validator failed for field "UserDevice.platform": %w`, err)}
 		}
 	}
+	if _, ok := uduo.mutation.UserID(); uduo.mutation.UserCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "UserDevice.user"`)
+	}
 	return nil
 }
 
@@ -593,13 +564,6 @@ func (uduo *UserDeviceUpdateOne) sqlSave(ctx context.Context) (_node *UserDevice
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := uduo.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: userdevice.FieldUserID,
-		})
 	}
 	if value, ok := uduo.mutation.CreatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{

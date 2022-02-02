@@ -27,7 +27,6 @@ type UserDeviceQuery struct {
 	predicates []predicate.UserDevice
 	// eager-loading edges.
 	withUser *UserQuery
-	withFKs  bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -349,18 +348,11 @@ func (udq *UserDeviceQuery) prepareQuery(ctx context.Context) error {
 func (udq *UserDeviceQuery) sqlAll(ctx context.Context) ([]*UserDevice, error) {
 	var (
 		nodes       = []*UserDevice{}
-		withFKs     = udq.withFKs
 		_spec       = udq.querySpec()
 		loadedTypes = [1]bool{
 			udq.withUser != nil,
 		}
 	)
-	if udq.withUser != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, userdevice.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &UserDevice{config: udq.config}
 		nodes = append(nodes, node)
@@ -385,10 +377,7 @@ func (udq *UserDeviceQuery) sqlAll(ctx context.Context) ([]*UserDevice, error) {
 		ids := make([]string, 0, len(nodes))
 		nodeids := make(map[string][]*UserDevice)
 		for i := range nodes {
-			if nodes[i].user_device == nil {
-				continue
-			}
-			fk := *nodes[i].user_device
+			fk := nodes[i].UserID
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}
@@ -402,7 +391,7 @@ func (udq *UserDeviceQuery) sqlAll(ctx context.Context) ([]*UserDevice, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_device" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.User = n

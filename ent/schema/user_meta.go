@@ -13,13 +13,15 @@ import (
 
 // UserMeta holds the schema definition for the UserOAuthProvider entity.
 type UserMeta struct {
-	//ent.Schema
+	ent.Schema
 }
 
 // Fields of the UserMeta.
 func (UserMeta) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").Unique(),
+		field.String("user_id").Unique(),
+
 		field.Time("created_at").
 			Default(time.Now).
 			Comment("해당 row를 최초로 만든 시간은 언제인지?"),
@@ -44,8 +46,8 @@ func (UserMeta) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("user", User.Type).
 			Ref("meta").
-			// setting the edge to unique, ensure
-			// that a car can have only one owner.
+			Field("user_id").
+			Required().
 			Unique(),
 	}
 }

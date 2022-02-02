@@ -111,21 +111,6 @@ func (uu *UserUpdate) SetUsername(s string) *UserUpdate {
 	return uu
 }
 
-// AddOauthProviderIDs adds the "oauth_providers" edge to the UserOAuthProvider entity by IDs.
-func (uu *UserUpdate) AddOauthProviderIDs(ids ...string) *UserUpdate {
-	uu.mutation.AddOauthProviderIDs(ids...)
-	return uu
-}
-
-// AddOauthProviders adds the "oauth_providers" edges to the UserOAuthProvider entity.
-func (uu *UserUpdate) AddOauthProviders(u ...*UserOAuthProvider) *UserUpdate {
-	ids := make([]string, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return uu.AddOauthProviderIDs(ids...)
-}
-
 // AddMetumIDs adds the "meta" edge to the UserMeta entity by IDs.
 func (uu *UserUpdate) AddMetumIDs(ids ...string) *UserUpdate {
 	uu.mutation.AddMetumIDs(ids...)
@@ -141,14 +126,29 @@ func (uu *UserUpdate) AddMeta(u ...*UserMeta) *UserUpdate {
 	return uu.AddMetumIDs(ids...)
 }
 
-// AddDeviceIDs adds the "device" edge to the UserDevice entity by IDs.
+// AddOauthProviderIDs adds the "oauth_providers" edge to the UserOAuthProvider entity by IDs.
+func (uu *UserUpdate) AddOauthProviderIDs(ids ...string) *UserUpdate {
+	uu.mutation.AddOauthProviderIDs(ids...)
+	return uu
+}
+
+// AddOauthProviders adds the "oauth_providers" edges to the UserOAuthProvider entity.
+func (uu *UserUpdate) AddOauthProviders(u ...*UserOAuthProvider) *UserUpdate {
+	ids := make([]string, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uu.AddOauthProviderIDs(ids...)
+}
+
+// AddDeviceIDs adds the "devices" edge to the UserDevice entity by IDs.
 func (uu *UserUpdate) AddDeviceIDs(ids ...string) *UserUpdate {
 	uu.mutation.AddDeviceIDs(ids...)
 	return uu
 }
 
-// AddDevice adds the "device" edges to the UserDevice entity.
-func (uu *UserUpdate) AddDevice(u ...*UserDevice) *UserUpdate {
+// AddDevices adds the "devices" edges to the UserDevice entity.
+func (uu *UserUpdate) AddDevices(u ...*UserDevice) *UserUpdate {
 	ids := make([]string, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
@@ -159,27 +159,6 @@ func (uu *UserUpdate) AddDevice(u ...*UserDevice) *UserUpdate {
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
-}
-
-// ClearOauthProviders clears all "oauth_providers" edges to the UserOAuthProvider entity.
-func (uu *UserUpdate) ClearOauthProviders() *UserUpdate {
-	uu.mutation.ClearOauthProviders()
-	return uu
-}
-
-// RemoveOauthProviderIDs removes the "oauth_providers" edge to UserOAuthProvider entities by IDs.
-func (uu *UserUpdate) RemoveOauthProviderIDs(ids ...string) *UserUpdate {
-	uu.mutation.RemoveOauthProviderIDs(ids...)
-	return uu
-}
-
-// RemoveOauthProviders removes "oauth_providers" edges to UserOAuthProvider entities.
-func (uu *UserUpdate) RemoveOauthProviders(u ...*UserOAuthProvider) *UserUpdate {
-	ids := make([]string, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return uu.RemoveOauthProviderIDs(ids...)
 }
 
 // ClearMeta clears all "meta" edges to the UserMeta entity.
@@ -203,20 +182,41 @@ func (uu *UserUpdate) RemoveMeta(u ...*UserMeta) *UserUpdate {
 	return uu.RemoveMetumIDs(ids...)
 }
 
-// ClearDevice clears all "device" edges to the UserDevice entity.
-func (uu *UserUpdate) ClearDevice() *UserUpdate {
-	uu.mutation.ClearDevice()
+// ClearOauthProviders clears all "oauth_providers" edges to the UserOAuthProvider entity.
+func (uu *UserUpdate) ClearOauthProviders() *UserUpdate {
+	uu.mutation.ClearOauthProviders()
 	return uu
 }
 
-// RemoveDeviceIDs removes the "device" edge to UserDevice entities by IDs.
+// RemoveOauthProviderIDs removes the "oauth_providers" edge to UserOAuthProvider entities by IDs.
+func (uu *UserUpdate) RemoveOauthProviderIDs(ids ...string) *UserUpdate {
+	uu.mutation.RemoveOauthProviderIDs(ids...)
+	return uu
+}
+
+// RemoveOauthProviders removes "oauth_providers" edges to UserOAuthProvider entities.
+func (uu *UserUpdate) RemoveOauthProviders(u ...*UserOAuthProvider) *UserUpdate {
+	ids := make([]string, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uu.RemoveOauthProviderIDs(ids...)
+}
+
+// ClearDevices clears all "devices" edges to the UserDevice entity.
+func (uu *UserUpdate) ClearDevices() *UserUpdate {
+	uu.mutation.ClearDevices()
+	return uu
+}
+
+// RemoveDeviceIDs removes the "devices" edge to UserDevice entities by IDs.
 func (uu *UserUpdate) RemoveDeviceIDs(ids ...string) *UserUpdate {
 	uu.mutation.RemoveDeviceIDs(ids...)
 	return uu
 }
 
-// RemoveDevice removes "device" edges to UserDevice entities.
-func (uu *UserUpdate) RemoveDevice(u ...*UserDevice) *UserUpdate {
+// RemoveDevices removes "devices" edges to UserDevice entities.
+func (uu *UserUpdate) RemoveDevices(u ...*UserDevice) *UserUpdate {
 	ids := make([]string, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
@@ -382,60 +382,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldUsername,
 		})
 	}
-	if uu.mutation.OauthProvidersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.OauthProvidersTable,
-			Columns: []string{user.OauthProvidersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: useroauthprovider.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.RemovedOauthProvidersIDs(); len(nodes) > 0 && !uu.mutation.OauthProvidersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.OauthProvidersTable,
-			Columns: []string{user.OauthProvidersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: useroauthprovider.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.OauthProvidersIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.OauthProvidersTable,
-			Columns: []string{user.OauthProvidersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: useroauthprovider.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if uu.mutation.MetaCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -490,12 +436,66 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uu.mutation.DeviceCleared() {
+	if uu.mutation.OauthProvidersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.DeviceTable,
-			Columns: []string{user.DeviceColumn},
+			Table:   user.OauthProvidersTable,
+			Columns: []string{user.OauthProvidersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: useroauthprovider.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedOauthProvidersIDs(); len(nodes) > 0 && !uu.mutation.OauthProvidersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthProvidersTable,
+			Columns: []string{user.OauthProvidersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: useroauthprovider.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.OauthProvidersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthProvidersTable,
+			Columns: []string{user.OauthProvidersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: useroauthprovider.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.DevicesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.DevicesTable,
+			Columns: []string{user.DevicesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -506,12 +506,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedDeviceIDs(); len(nodes) > 0 && !uu.mutation.DeviceCleared() {
+	if nodes := uu.mutation.RemovedDevicesIDs(); len(nodes) > 0 && !uu.mutation.DevicesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.DeviceTable,
-			Columns: []string{user.DeviceColumn},
+			Table:   user.DevicesTable,
+			Columns: []string{user.DevicesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -525,12 +525,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.DeviceIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.DevicesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.DeviceTable,
-			Columns: []string{user.DeviceColumn},
+			Table:   user.DevicesTable,
+			Columns: []string{user.DevicesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -643,21 +643,6 @@ func (uuo *UserUpdateOne) SetUsername(s string) *UserUpdateOne {
 	return uuo
 }
 
-// AddOauthProviderIDs adds the "oauth_providers" edge to the UserOAuthProvider entity by IDs.
-func (uuo *UserUpdateOne) AddOauthProviderIDs(ids ...string) *UserUpdateOne {
-	uuo.mutation.AddOauthProviderIDs(ids...)
-	return uuo
-}
-
-// AddOauthProviders adds the "oauth_providers" edges to the UserOAuthProvider entity.
-func (uuo *UserUpdateOne) AddOauthProviders(u ...*UserOAuthProvider) *UserUpdateOne {
-	ids := make([]string, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return uuo.AddOauthProviderIDs(ids...)
-}
-
 // AddMetumIDs adds the "meta" edge to the UserMeta entity by IDs.
 func (uuo *UserUpdateOne) AddMetumIDs(ids ...string) *UserUpdateOne {
 	uuo.mutation.AddMetumIDs(ids...)
@@ -673,14 +658,29 @@ func (uuo *UserUpdateOne) AddMeta(u ...*UserMeta) *UserUpdateOne {
 	return uuo.AddMetumIDs(ids...)
 }
 
-// AddDeviceIDs adds the "device" edge to the UserDevice entity by IDs.
+// AddOauthProviderIDs adds the "oauth_providers" edge to the UserOAuthProvider entity by IDs.
+func (uuo *UserUpdateOne) AddOauthProviderIDs(ids ...string) *UserUpdateOne {
+	uuo.mutation.AddOauthProviderIDs(ids...)
+	return uuo
+}
+
+// AddOauthProviders adds the "oauth_providers" edges to the UserOAuthProvider entity.
+func (uuo *UserUpdateOne) AddOauthProviders(u ...*UserOAuthProvider) *UserUpdateOne {
+	ids := make([]string, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uuo.AddOauthProviderIDs(ids...)
+}
+
+// AddDeviceIDs adds the "devices" edge to the UserDevice entity by IDs.
 func (uuo *UserUpdateOne) AddDeviceIDs(ids ...string) *UserUpdateOne {
 	uuo.mutation.AddDeviceIDs(ids...)
 	return uuo
 }
 
-// AddDevice adds the "device" edges to the UserDevice entity.
-func (uuo *UserUpdateOne) AddDevice(u ...*UserDevice) *UserUpdateOne {
+// AddDevices adds the "devices" edges to the UserDevice entity.
+func (uuo *UserUpdateOne) AddDevices(u ...*UserDevice) *UserUpdateOne {
 	ids := make([]string, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
@@ -691,27 +691,6 @@ func (uuo *UserUpdateOne) AddDevice(u ...*UserDevice) *UserUpdateOne {
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
-}
-
-// ClearOauthProviders clears all "oauth_providers" edges to the UserOAuthProvider entity.
-func (uuo *UserUpdateOne) ClearOauthProviders() *UserUpdateOne {
-	uuo.mutation.ClearOauthProviders()
-	return uuo
-}
-
-// RemoveOauthProviderIDs removes the "oauth_providers" edge to UserOAuthProvider entities by IDs.
-func (uuo *UserUpdateOne) RemoveOauthProviderIDs(ids ...string) *UserUpdateOne {
-	uuo.mutation.RemoveOauthProviderIDs(ids...)
-	return uuo
-}
-
-// RemoveOauthProviders removes "oauth_providers" edges to UserOAuthProvider entities.
-func (uuo *UserUpdateOne) RemoveOauthProviders(u ...*UserOAuthProvider) *UserUpdateOne {
-	ids := make([]string, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return uuo.RemoveOauthProviderIDs(ids...)
 }
 
 // ClearMeta clears all "meta" edges to the UserMeta entity.
@@ -735,20 +714,41 @@ func (uuo *UserUpdateOne) RemoveMeta(u ...*UserMeta) *UserUpdateOne {
 	return uuo.RemoveMetumIDs(ids...)
 }
 
-// ClearDevice clears all "device" edges to the UserDevice entity.
-func (uuo *UserUpdateOne) ClearDevice() *UserUpdateOne {
-	uuo.mutation.ClearDevice()
+// ClearOauthProviders clears all "oauth_providers" edges to the UserOAuthProvider entity.
+func (uuo *UserUpdateOne) ClearOauthProviders() *UserUpdateOne {
+	uuo.mutation.ClearOauthProviders()
 	return uuo
 }
 
-// RemoveDeviceIDs removes the "device" edge to UserDevice entities by IDs.
+// RemoveOauthProviderIDs removes the "oauth_providers" edge to UserOAuthProvider entities by IDs.
+func (uuo *UserUpdateOne) RemoveOauthProviderIDs(ids ...string) *UserUpdateOne {
+	uuo.mutation.RemoveOauthProviderIDs(ids...)
+	return uuo
+}
+
+// RemoveOauthProviders removes "oauth_providers" edges to UserOAuthProvider entities.
+func (uuo *UserUpdateOne) RemoveOauthProviders(u ...*UserOAuthProvider) *UserUpdateOne {
+	ids := make([]string, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uuo.RemoveOauthProviderIDs(ids...)
+}
+
+// ClearDevices clears all "devices" edges to the UserDevice entity.
+func (uuo *UserUpdateOne) ClearDevices() *UserUpdateOne {
+	uuo.mutation.ClearDevices()
+	return uuo
+}
+
+// RemoveDeviceIDs removes the "devices" edge to UserDevice entities by IDs.
 func (uuo *UserUpdateOne) RemoveDeviceIDs(ids ...string) *UserUpdateOne {
 	uuo.mutation.RemoveDeviceIDs(ids...)
 	return uuo
 }
 
-// RemoveDevice removes "device" edges to UserDevice entities.
-func (uuo *UserUpdateOne) RemoveDevice(u ...*UserDevice) *UserUpdateOne {
+// RemoveDevices removes "devices" edges to UserDevice entities.
+func (uuo *UserUpdateOne) RemoveDevices(u ...*UserDevice) *UserUpdateOne {
 	ids := make([]string, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
@@ -938,60 +938,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Column: user.FieldUsername,
 		})
 	}
-	if uuo.mutation.OauthProvidersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.OauthProvidersTable,
-			Columns: []string{user.OauthProvidersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: useroauthprovider.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.RemovedOauthProvidersIDs(); len(nodes) > 0 && !uuo.mutation.OauthProvidersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.OauthProvidersTable,
-			Columns: []string{user.OauthProvidersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: useroauthprovider.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.OauthProvidersIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.OauthProvidersTable,
-			Columns: []string{user.OauthProvidersColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
-					Column: useroauthprovider.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if uuo.mutation.MetaCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1046,12 +992,66 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uuo.mutation.DeviceCleared() {
+	if uuo.mutation.OauthProvidersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.DeviceTable,
-			Columns: []string{user.DeviceColumn},
+			Table:   user.OauthProvidersTable,
+			Columns: []string{user.OauthProvidersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: useroauthprovider.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedOauthProvidersIDs(); len(nodes) > 0 && !uuo.mutation.OauthProvidersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthProvidersTable,
+			Columns: []string{user.OauthProvidersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: useroauthprovider.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.OauthProvidersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthProvidersTable,
+			Columns: []string{user.OauthProvidersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: useroauthprovider.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.DevicesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.DevicesTable,
+			Columns: []string{user.DevicesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -1062,12 +1062,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedDeviceIDs(); len(nodes) > 0 && !uuo.mutation.DeviceCleared() {
+	if nodes := uuo.mutation.RemovedDevicesIDs(); len(nodes) > 0 && !uuo.mutation.DevicesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.DeviceTable,
-			Columns: []string{user.DeviceColumn},
+			Table:   user.DevicesTable,
+			Columns: []string{user.DevicesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -1081,12 +1081,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.DeviceIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.DevicesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.DeviceTable,
-			Columns: []string{user.DeviceColumn},
+			Table:   user.DevicesTable,
+			Columns: []string{user.DevicesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
