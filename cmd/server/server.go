@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	edgeentgo "github.com/sundaytycoon/buttons-api/edge/entgo"
 	glueauth "github.com/sundaytycoon/buttons-api/internal/glue/auth"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -29,6 +30,8 @@ func Main() error {
 	// build DI and Invoke server application
 	d := dig.New()
 	er.PanicError(d.Provide(config.New))
+
+	er.PanicError(d.Provide(edgeentgo.New))
 	er.PanicError(d.Provide(edgegoogle.New))
 	er.PanicError(d.Provide(adapterservicedb.New))
 	er.PanicError(d.Provide(adapterbatchdb.New))
