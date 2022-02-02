@@ -33,6 +33,7 @@ func (UserMeta) Fields() []ent.Field {
 			Default(time.Now).
 			UpdateDefault(time.Now).
 			Comment("해당 row를 수정한 마지막 시간은 언제인지"),
+
 		field.String("updated_by").
 			Comment("해당 row를 수정한 마지막 주체 누구인지"),
 
