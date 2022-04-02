@@ -1,0 +1,736 @@
+openapi: 3.0.3
+info:
+  title: search-dictionary HTTP API
+  description: It's Dictionary about search. Support everything for search-center and search platform
+  contact:
+    email: jin@daangn.com
+  version: 0.0.1
+externalDocs:
+  description: search dictionary notion
+  url: https://www.notion.so/daangn/git-search-dictionary-bb9b4a27c2824441b74bdfdea5d537d3
+servers:
+  - url: https://search-dictionary-http.kr.krmt.io/api/v1
+    description: prod server in KR
+  - url: https://search-dictionary-http.alpha.kr.krmt.io/api/v1
+    description: alpha server in KR
+  - url: http://localhost:33081/api/v1
+    description: local server
+
+tags:
+  - name: banned_keyword_types
+    description: 금지된 단어
+  - name: banned_keyword
+    description: 금지된 단어 연결 관리
+  - name: cached
+    description: 캐시처리된 API
+
+components:
+  schemas:
+    word:
+      type: object
+      description: a Keyword
+      required:
+        - id
+        - created_at
+        - created_by
+        - updated_at
+        - updated_by
+        - status
+        - name
+      properties:
+        id:
+          description: The unique identifer of the livestream.
+          type: integer
+          format: int64
+          readOnly: true
+          example: 1
+        created_at:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: '2021-09-26T02:17:58Z'
+        created_by:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: 'someone@daangn.com'
+        updated_at:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: '2021-09-26T02:17:58Z'
+        updated_by:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: 'someone@daangn.com'
+        status:
+          description: pure string
+          type: string
+          readOnly: true
+          example: ACTIVE
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - DELETED
+        name:
+          description: pure string
+          type: string
+          readOnly: true
+          example: '김치'
+    banned_keyword_type:
+      type: object
+      description: "banned keyword by type table"
+      required:
+        - id
+        - created_at
+        - created_by
+        - updated_at
+        - updated_by
+        - status
+        - type
+        - words_count
+        - memo
+      properties:
+        id:
+          description: The unique identifer of the livestream.
+          type: integer
+          format: int64
+          readOnly: true
+          example: 12345
+        created_at:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: '2021-09-26T02:17:58Z'
+        created_by:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: 'someone@daangn.com'
+        updated_at:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: '2021-09-26T02:17:58Z'
+        updated_by:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: 'someone@daangn.com'
+        status:
+          description: pure string
+          type: string
+          readOnly: true
+          example: ACTIVE
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - DELETED
+        type:
+          description: defined a relation name about banned keywords
+          type: string
+          readOnly: true
+          example: FLEAMARKET
+        words_count:
+          description: type에 연결되어있는 words의 갯수
+          type: integer
+          format: int64
+          readOnly: true
+          example: 422
+        memo:
+          description: leave some comments
+          type: string
+          readOnly: true
+          example: "memo 하세요 blah"
+    banned_keyword:
+      type: object
+      description: "words by banned_keyword.type"
+      required:
+        - id
+        - word
+        - banned_keyword_type
+        - created_at
+        - created_by
+        - updated_at
+        - updated_by
+        - status
+      properties:
+        id:
+          description: The unique identifer of the livestream.
+          type: integer
+          format: int64
+          readOnly: true
+          example: 12345
+        word:
+          $ref: '#/components/schemas/word'
+        banned_keyword_type:
+          $ref: '#/components/schemas/banned_keyword_type'
+        created_at:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: '2021-09-26T02:17:58Z'
+        created_by:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: 'someone@daangn.com'
+        updated_at:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: '2021-09-26T02:17:58Z'
+        updated_by:
+          description: The time the livestream was created.
+          type: string
+          readOnly: true
+          example: 'someone@daangn.com'
+        status:
+          description: pure string
+          type: string
+          readOnly: true
+          example: ACTIVE
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - DELETED
+
+  parameters:
+    wordId:
+      name: wordId
+      in: path
+      required: true
+      description: dictionary의 word id 입니다
+      schema:
+        type: integer
+        format: int64
+        example: 2
+    banned_keyword_type_id:
+      name: banned_keyword_type_id
+      in: path
+      required: true
+      description: 금지어 분류 id 입니다
+      schema:
+        type: integer
+        format: int64
+        example: 2
+    banned_keyword_type_type:
+      name: banned_keyword_type_type
+      in: path
+      required: true
+      description: 금지어 분류 이름 입니다
+      schema:
+        type: string
+        example: 'fleamarket'
+
+    banned_keyword_id:
+      name: banned_keyword_id
+      in: path
+      required: true
+      description: The reference key of a PurposeBannedKeyword row
+      schema:
+        type: integer
+        format: int64
+        example: 2
+
+    query_filter_banned_keyword_type_id:
+      in: query
+      name: banned_keyword_type_id
+      description: query, filter banned_keyword_type_id
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
+
+    query_pagination_size:
+      in: query
+      name: size
+      description: query, filter pagination size
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+        maximum: 100
+        example: 20
+        default: 0
+
+    query_pagination_offset:
+      in: query
+      name: offset
+      description: query filter pagination offset
+      schema:
+        type: integer
+        format: int64
+        example: 0
+        default: 0
+
+    query_pagination_status:
+      in: query
+      name: status
+      description: query filter pagination status
+      schema:
+        type: string
+        example: ''
+
+    query_sort_name:
+      in: query
+      name: sort_name
+      description: query filter sort name
+      schema:
+        type: string
+        example: ''
+
+    query_sort_created_at:
+      in: query
+      name: sort_created_at
+      description: query filter sort created_at
+      schema:
+        type: string
+        example: ''
+
+    query_pagination_q:
+      in: query
+      name: q
+      description: query filter pagination q
+      schema:
+        type: string
+        example: 'ALL'
+
+    query_from:
+      in: query
+      name: from
+      description: query filter pagination offset
+      schema:
+        type: string
+        example: 'request_from_drakejin'
+
+    query_type:
+      in: query
+      name: type
+      description: query filter by type
+      schema:
+        type: string
+        example: 'ALL'
+
+    header_audit_actor:
+      in: header
+      name: X-Audit-Actor
+      description: who did it
+      schema:
+        type: string
+
+    header_audit_action:
+      in: header
+      name: X-Audit-Action
+      description: what did it
+      schema:
+        type: string
+
+    header_audit_resource:
+      in: header
+      name: X-Audit-Resource
+      description: what kind of the target
+      schema:
+        type: string
+
+    header_audit_resource_id:
+      in: header
+      name: X-Audit-Resource-ID
+      description: what is the target id
+      schema:
+        type: string
+
+paths:
+  /banned_keyword_types:
+    post:
+      tags:
+        - banned_keyword_types
+      summary: add stopword
+      description: banned_keyword 를 추가합니다.
+      parameters:
+#        - $ref: '#/components/parameters/header_audit_actor'
+        - $ref: '#/components/parameters/header_audit_action'
+        - $ref: '#/components/parameters/header_audit_resource'
+#        - $ref: '#/components/parameters/header_audit_resource_id'
+      requestBody:
+        description: created banned_keyword row
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/banned_keyword_type'
+      responses:
+        '201':
+          description: 성공적으로 만들어졌습니다.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/banned_keyword_type'
+    get:
+      tags:
+        - banned_keyword_types
+      summary: get banned_keyword_type by type value
+      description: 등록했던 banned_keyword_type을 unique 한 값 type으로 가져옵니다
+      parameters:
+        - $ref: '#/components/parameters/query_type'
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/banned_keyword_type'
+
+  /banned_keyword_types/list:
+    get:
+      tags:
+        - banned_keyword_types
+      summary: get banned keywords
+      description: 등록했던 banned_keyword를 가져옵니다
+      parameters:
+        - $ref: '#/components/parameters/query_pagination_offset'
+        - $ref: '#/components/parameters/query_pagination_size'
+        - $ref: '#/components/parameters/query_pagination_status'
+        - $ref: '#/components/parameters/query_pagination_q'
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/banned_keyword_type'
+                  count:
+                    type: integer
+                    default: 2
+                    example: 2
+
+  /banned_keyword_types/{banned_keyword_type_id}:
+    get:
+      tags:
+        - banned_keyword_types
+      summary: banned_keyword의 row를 id대로 단 하나만 가져옵니다.
+      description: banned_keyword의 row를 id대로 단 하나만 가져옵니다.
+      parameters:
+        - $ref: '#/components/parameters/banned_keyword_type_id'
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/banned_keyword_type'
+
+    patch:
+      tags:
+        - banned_keyword_types
+      summary: banned_keyword 의 row를 수정합니다.
+      description: 보통 memo/status값의 수정에만 사용될 예정입니다.
+      parameters:
+        - $ref: '#/components/parameters/banned_keyword_type_id'
+#        - $ref: '#/components/parameters/header_audit_actor'
+        - $ref: '#/components/parameters/header_audit_action'
+        - $ref: '#/components/parameters/header_audit_resource'
+#        - $ref: '#/components/parameters/header_audit_resource_id'
+      requestBody:
+        description: Updated banned_keyword's properties
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/banned_keyword_type'
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/banned_keyword_type'
+
+  /banned_keywords:
+    post:
+      tags:
+        - banned_keyword
+      summary: banned_keyword에 type에 대한 단어를 등록합니다.
+      description: banned_keyword에 type에 대한 단어를 등록합니다.
+      parameters:
+#        - $ref: '#/components/parameters/header_audit_actor'
+        - $ref: '#/components/parameters/header_audit_action'
+        - $ref: '#/components/parameters/header_audit_resource'
+#        - $ref: '#/components/parameters/header_audit_resource_id'
+      requestBody:
+        description: banned_keyword에 등록할 단어를 입력합니다
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/banned_keyword'
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/banned_keyword'
+
+  /banned_keywords/list:
+    get:
+      tags:
+        - banned_keyword
+      summary: banned_keyword에 대한 단어목록들을 가져옵니다.
+      description: banned_keyword에 대한 단어목록들을 가져옵니다.
+      parameters:
+        - $ref: '#/components/parameters/query_filter_banned_keyword_type_id'
+        - $ref: '#/components/parameters/query_pagination_size'
+        - $ref: '#/components/parameters/query_pagination_offset'
+        - $ref: '#/components/parameters/query_sort_name'
+        - $ref: '#/components/parameters/query_sort_created_at'
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/banned_keyword'
+                  count:
+                    type: integer
+                    default: 2
+                    example: 2
+#  /banned_keywords/ALL:
+#    get:
+#      tags:
+#        - ALL_금지어
+#      summary: 금지어에 한하여, 전체 공통으로 제어할 수 있는 금지어를 제어할 수 있도록 하는 기능입니다.
+#      description: 금지어에 한하여, 전체 공통으로 제어할 수 있는 금지어를 제어할 수 있도록 하는 기능입니다.
+#      responses:
+#        '200':
+#          description: 성공적으로 데이터를 가져옵니다
+#          content:
+#            application/json:
+#              schema:
+#                type: object
+#                properties:
+#                  list:
+#                    type: array
+#                    items:
+#                      $ref: '#/components/schemas/word'
+#                  count:
+#                    type: integer
+#                    default: 2
+#                    example: 2
+#    post:
+#      tags:
+#        - banned_keyword
+#      summary: 금지어에 한하여, 전체 공통으로 제어할 수 있는 금지어를 제어할 수 있도록 하는 기능입니다.
+#      description: 금지어에 한하여, 전체 공통으로 제어할 수 있는 금지어를 제어할 수 있도록 하는 기능입니다.
+#      requestBody:
+#        description: Updated banned_keyword's properties
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                list:
+#                  type: array
+#                  items:
+#                    type: string
+#      responses:
+#        '200':
+#          description: 성공적으로 데이터를 가져옵니다
+#          content:
+#            application/json:
+#              schema:
+#                type: object
+#                properties:
+#                  list:
+#                    type: array
+#                    items:
+#                      $ref: '#/components/schemas/word'
+#                  count:
+#                    type: integer
+#                    default: 2
+#                    example: 2
+
+  /banned_keywords/bulk:
+    post:
+      tags:
+        - banned_keyword
+      summary: banned_keyword에 단어 여러개를 동시에 넣습니다.
+      description: banned_keyword에 단어 여러개를 동시에 넣습니다.
+      parameters:
+#        - $ref: '#/components/parameters/header_audit_actor'
+        - $ref: '#/components/parameters/header_audit_action'
+        - $ref: '#/components/parameters/header_audit_resource'
+#        - $ref: '#/components/parameters/header_audit_resource_id'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                list:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/banned_keyword'
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/banned_keyword'
+                  count:
+                    type: integer
+                    default: 2
+                    example: 2
+    patch:
+      tags:
+        - banned_keyword
+      summary: banned_keyword에 단어 여러개를 동시에 삭제합니다.
+      description: banned_keyword에 단어 여러개를 동시에 삭제합니다.
+      parameters:
+#        - $ref: '#/components/parameters/header_audit_actor'
+        - $ref: '#/components/parameters/header_audit_action'
+        - $ref: '#/components/parameters/header_audit_resource'
+#        - $ref: '#/components/parameters/header_audit_resource_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                    format: int64
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  words:
+                    type: array
+                    items:
+                      type: string
+
+  /banned_keywords/bulk_if_not_exist:
+    post:
+      tags:
+        - banned_keyword
+      summary: banned_keyword에 단어 여러개를 동시에 넣습니다.
+      description: banned_keyword에 단어 여러개를 동시에 넣습니다. 이미 넣어져있는 단어라면 /banned_keywords/bulk 와는 다르게 에러로 뱉지 않고 계속해서 추가 생성 합니다.
+      parameters:
+        #        - $ref: '#/components/parameters/header_audit_actor'
+        - $ref: '#/components/parameters/header_audit_action'
+        - $ref: '#/components/parameters/header_audit_resource'
+      #        - $ref: '#/components/parameters/header_audit_resource_id'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                list:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/banned_keyword'
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/banned_keyword'
+                  count:
+                    type: integer
+                    default: 2
+                    example: 2
+
+  /banned_keywords/{banned_keyword_id}:
+    get:
+      tags:
+        - banned_keyword
+      summary: 금지어로 등록된 단어 하나를 가져옵니다.
+      description: 금지어로 등록된 단어 하나를 가져옵니다.
+      parameters:
+        - $ref: '#/components/parameters/banned_keyword_id'
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/banned_keyword'
+
+    delete:
+      tags:
+        - banned_keyword
+      summary: typeBannedKeyword에 대한 수정을 합니다
+      description: 수정 및 삭제 정도만 있을거 같음.
+      parameters:
+#        - $ref: '#/components/parameters/header_audit_actor'
+        - $ref: '#/components/parameters/header_audit_action'
+        - $ref: '#/components/parameters/header_audit_resource'
+#        - $ref: '#/components/parameters/header_audit_resource_id'
+        - $ref: '#/components/parameters/banned_keyword_id'
+      responses:
+        '204':
+          description: 성공적으로 데이터를 가져옵니다
+
+  /cached/banned_keywords/type/{banned_keyword_type_type}:
+    get:
+      tags:
+        - cached
+      summary: banned_keyword의 목록들을 type로 가져옵니다.
+      description: 보통 memo/status값의 수정에만 사용될 예정입니다.
+      parameters:
+        - $ref: '#/components/parameters/banned_keyword_type_type'
+        - $ref: '#/components/parameters/query_from'
+      responses:
+        '200':
+          description: 성공적으로 데이터를 가져옵니다
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      type: string
+                  count:
+                    type: integer
+                    default: 2
+                    example: 2
+

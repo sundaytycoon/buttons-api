@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package buttons.buttonsapi.v1;
+
+option go_package = "github.com/sundaytycoon/buttons-api/api/proto/v1";
+option java_multiple_files = true;
+option java_outer_classname = "AuthProto";
+option java_package = "com.buttons.buttonsapi.v1";
+
+service AuthService {
+  // GetWebRedirectURL GET /api/v1/auth/web/redirect_url
+  rpc GetWebRedirectURL(GetWebRedirectURLRequest)  returns (GetWebRedirectURLResponse);
+  // GetWebGoogleCallback GET /api/v1/auth/web/google_callback
+  rpc GetWebGoogleCallback(GetWebGoogleCallbackRequest)  returns (GetWebGoogleCallbackResponse);
+}
+
+message GetWebRedirectURLRequest {
+  string provider = 1;
+  string service = 2;
+}
+
+message GetWebRedirectURLResponse {
+  string provider = 1;
+  string redirect_url = 2;
+}
+
+message GetWebGoogleCallbackRequest {
+
+  // googles
+  string code = 11; // from: google provider
+  string state = 12; // from: buttons-api's value
+  string scope = 13; // from: google provider
+  string authuser = 14; // from: google provider
+  string prompt = 15; // from: google provider
+  string hd = 16; // from: google provider specific host dd@{hd}
+}
+
+message GetWebGoogleCallbackResponse {
+}

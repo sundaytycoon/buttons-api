@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package buttons.buttonsapi.v1;
+
+option go_package = "github.com/sundaytycoon/buttons-api/api/proto/v1";
+option java_multiple_files = true;
+option java_outer_classname = "UserProto";
+option java_package = "com.buttons.buttonsapi.v1";
+
+service UserService {
+  rpc AddUser(AddUserRequest) returns (User);
+  rpc ListUser(ListUserRequest) returns (stream User);
+  rpc Get(UserServiceGetRequest) returns (UserServiceGetResponse);
+}
+
+message User {
+  string id = 1;
+}
+message AddUserRequest {
+  User user = 1;
+}
+
+message AddUserResponse {
+  User user = 1;
+}
+
+message ListUserRequest {
+}
+
+message ListUserResponse {
+  repeated User list = 1;
+  int64 count = 2;
+}
+
+message UserServiceGetRequest {
+  string id   = 1; // the id of this message.
+  string name = 2; // @exclude the name of this message
+}
+
+message UserServiceGetResponse {
+  string id   = 1; // the id of this message.
+  string name = 2; // @exclude the name of this message
+}

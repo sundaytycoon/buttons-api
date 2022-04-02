@@ -19,6 +19,7 @@
 
 
 .envrc
+.env
 
 application.yml
 ./application.yml

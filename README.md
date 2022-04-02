@@ -12,7 +12,7 @@ go run cmd/main.go server start # 5001 grpc - 5002 http
 
 # package structue?
 ```
-  📂 git@daangn/search-statistics
+  📂 git@sundaytycoon/buttons-api
    ┣📂 cmd
    ┃ ┗ 📜 main.go # [server, entd]가 있음
    ┣📂 doc

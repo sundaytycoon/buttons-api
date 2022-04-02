@@ -6,7 +6,6 @@ import (
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
-	"go.uber.org/dig"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
@@ -19,21 +18,12 @@ type Client struct {
 	cfg oauth2.Config
 }
 
-func New(
-	params struct {
-		dig.In
-		Config *config.Config
-	},
-) *Client {
-	return newClient(params.Config.HTTPEndPoint, params.Config.Google)
-}
-
-func newClient(httpCfg *config.EndPoint, googleCfg *config.Google) *Client {
+func New(cfg *config.Config) *Client {
 	return &Client{
 		cfg: oauth2.Config{
-			RedirectURL:  httpCfg.HTTPAddress() + googleCfg.OAuthCallbackURL,
-			ClientID:     googleCfg.ClientID,
-			ClientSecret: googleCfg.ClientSecret,
+			RedirectURL:  cfg.ApplicationHTTP.ExternalDSN + cfg.Google.OAuthCallbackURL,
+			ClientID:     cfg.Google.ClientID,
+			ClientSecret: cfg.Google.ClientSecret,
 			Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
 			Endpoint:     google.Endpoint,
 		},

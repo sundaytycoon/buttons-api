@@ -3,37 +3,26 @@ package mysql
 import (
 	"database/sql"
 
+	"github.com/aws/aws-xray-sdk-go/xray"
 	_ "github.com/go-sql-driver/mysql"
-
-	"github.com/sundaytycoon/buttons-api/internal/config"
-	"github.com/sundaytycoon/buttons-api/pkg/er"
-	"github.com/sundaytycoon/buttons-api/pkg/testdockercontainer"
+	"github.com/rs/zerolog/log"
 )
 
-func MockNew(mysqlDocker *testdockercontainer.DockerContainer) (*sql.DB, error) {
-	d := &config.Database{
-		Host:     mysqlDocker.ExternalHost,
-		Port:     mysqlDocker.ExternalPort,
-		User:     mysqlDocker.Get("user"),
-		Password: mysqlDocker.Get("password"),
-		Name:     mysqlDocker.Get("name"),
-		Dialect:  mysqlDocker.Get("dialect"),
-	}
-	return New(d.DSN())
-}
-
-func New(dsn string) (*sql.DB, error) {
-	op := er.GetOperator()
-
-	db, err := sql.Open("mysql", dsn)
+func MustNew(dsn string, maxIdleConns, maxOpenConns int) *sql.DB {
+	db, err := xray.SQLContext("mysql", dsn)
 	if err != nil {
-		return nil, er.WrapOp(err, op)
+		log.Panic().Err(err).Msgf("cannot connect with service db [%s]", dsn)
 	}
+	db.SetMaxIdleConns(maxIdleConns)
+	db.SetMaxOpenConns(maxOpenConns)
+
 	err = db.Ping()
 	if err != nil {
-		return nil, er.WrapOp(err, op)
+		log.Panic().Err(err).
+			Str("dsn", dsn).
+			Int("maxIdleConns", maxIdleConns).
+			Int("maxOpenConns", maxOpenConns).
+			Send()
 	}
-	db.SetMaxIdleConns(10)
-	db.SetMaxOpenConns(50)
-	return db, nil
+	return db
 }
