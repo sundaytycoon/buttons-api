@@ -3,6 +3,8 @@ package auth
 import (
 	"context"
 
+	"github.com/pkg/errors"
+
 	"github.com/sundaytycoon/buttons-api/internal/utils/er"
 
 	buttonsapi "github.com/sundaytycoon/buttons-api"
@@ -10,18 +12,18 @@ import (
 	"github.com/sundaytycoon/buttons-api/internal/model"
 )
 
-// repository  직접 구현 한 곳
-type repository struct {
-	googleClient googleClient
-	authStorage  authStorage
-}
-
 type authStorage interface {
 }
 
 type googleClient interface {
-	OAuthRedirectURL(state string) string
-	OAuthCallback(ctx context.Context, code string) (*google.OAuthCallbackResponse, error)
+	OAuthRedirectURL(string) string
+	OAuthCallback(context.Context, string) (*google.OAuthCallbackResponse, error)
+}
+
+// repository  직접 구현 한 곳
+type repository struct {
+	googleClient googleClient
+	authStorage  authStorage
 }
 
 func New(googleClient googleClient, authStorage authStorage) *repository {
@@ -35,7 +37,7 @@ func (r *repository) GetOAuthRedirectURL(provider, fromHost string) (string, err
 	if provider == buttonsapi.Google {
 		return r.googleClient.OAuthRedirectURL(fromHost), nil
 	} else {
-		return "", er.New("'provider' service is not defined", buttonsapi.ErrGoogleOAuthCallbackInternalError)
+		return "", er.WithNamedErr(errors.New("'provider' service is not defined"), buttonsapi.ErrGoogleOAuthCallbackInternalError)
 	}
 }
 
@@ -47,7 +49,7 @@ func (r *repository) GetUserInfoFromProvider(ctx context.Context, provider, code
 	if provider == buttonsapi.Google {
 		t, err := r.googleClient.OAuthCallback(ctx, code)
 		if err != nil {
-			if er.Is(err, google.ErrEmailIsNotVerified) {
+			if er.IsSource(err, google.ErrEmailIsNotVerified) {
 				err = er.WithNamedErr(err, buttonsapi.ErrGoogleOAuthCallbackEmailIsNotValid)
 			} else {
 				err = er.WithNamedErr(err, buttonsapi.ErrGoogleOAuthCallbackInternalError)
@@ -65,7 +67,7 @@ func (r *repository) GetUserInfoFromProvider(ctx context.Context, provider, code
 			Picture: t.Picture,
 		}
 	} else {
-		err = er.New("'provider' service is not defined", buttonsapi.ErrBadRequest)
+		err = er.WithNamedErr(errors.New("'provider' service is not defined"), buttonsapi.ErrInvalidRequest)
 		return nil, er.WrapOp(err, op)
 	}
 

@@ -42,13 +42,12 @@ fi
 
 if [[ ! -f `which oapi-codegen` ]]; then
   echo "Required 'oapi-codegen' cli."
-  echo "go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen"
-  echo "go install github.com/golang/mock/mockgen"
+  echo "go get -u github.com/deepmap/oapi-codegen/cmd/oapi-codegen"
 fi
 
 if [[ ! -f `which mockgen` ]]; then
   echo "Required 'mockgen' cli."
-  echo "go install github.com/golang/mock/mockgen"
+  echo "go get -u github.com/golang/mock/mockgen"
 fi
 
 

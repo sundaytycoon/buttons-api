@@ -2,13 +2,14 @@ package google
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
+	buttonsapi "github.com/sundaytycoon/buttons-api"
 	"github.com/sundaytycoon/buttons-api/internal/config"
 )
 
@@ -19,23 +20,20 @@ type Client struct {
 }
 
 func New(cfg *config.Config) *Client {
+	protocol := "http"
+	if cfg.Env != buttonsapi.ValueEnvLocal {
+		protocol = "https"
+	}
+
 	return &Client{
 		cfg: oauth2.Config{
-			RedirectURL:  cfg.ApplicationHTTP.ExternalDSN + cfg.Google.OAuthCallbackURL,
+			RedirectURL:  fmt.Sprintf("%s://%s%s", protocol, cfg.ApplicationHTTP.InternalDSN, cfg.Google.OAuthCallbackURL),
 			ClientID:     cfg.Google.ClientID,
 			ClientSecret: cfg.Google.ClientSecret,
 			Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
 			Endpoint:     google.Endpoint,
 		},
 	}
-}
-
-func (c *Client) OAuthRedirectURL(state string) string {
-	return c.cfg.AuthCodeURL(
-		state,
-		oauth2.AccessTypeOffline, // For get refresh_token
-		oauth2.ApprovalForce,     // For get refresh_token
-	)
 }
 
 type OAuthCallbackResponse struct {
@@ -48,10 +46,13 @@ type OAuthCallbackResponse struct {
 	Picture string
 }
 
-var (
-	ErrRefreshTokenIsNotValid = errors.New("google oauth2: refresh_token is not loaded")
-	ErrEmailIsNotVerified     = errors.New("google oauth2: email is not verified")
-)
+func (c *Client) OAuthRedirectURL(state string) string {
+	return c.cfg.AuthCodeURL(
+		state,
+		oauth2.AccessTypeOffline, // For get refresh_token
+		oauth2.ApprovalForce,     // For get refresh_token
+	)
+}
 
 func (c *Client) OAuthCallback(ctx context.Context, code string) (*OAuthCallbackResponse, error) {
 	token, err := c.cfg.Exchange(ctx, code)
@@ -63,7 +64,7 @@ func (c *Client) OAuthCallback(ctx context.Context, code string) (*OAuthCallback
 		return nil, err
 	}
 	if t.RefreshToken == "" {
-		return nil, ErrRefreshTokenIsNotValid
+		return nil, buttonsapi.ErrRefreshTokenIsNotValid
 	}
 
 	client := c.cfg.Client(ctx, t)
@@ -78,13 +79,14 @@ func (c *Client) OAuthCallback(ctx context.Context, code string) (*OAuthCallback
 		Picture       string `json:"picture"`
 		EmailVerified bool   `json:"email_verified"`
 	}
+
 	u := userInfo{}
 	err = jsoniter.NewDecoder(userInfoResp.Body).Decode(&u)
 	if err != nil {
 		return nil, err
 	}
 	if !u.EmailVerified {
-		return nil, ErrEmailIsNotVerified
+		return nil, buttonsapi.ErrEmailIsNotVerified
 	}
 
 	return &OAuthCallbackResponse{

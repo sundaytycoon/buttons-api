@@ -16,20 +16,21 @@ type Error struct {
 	NamedErr  error
 }
 
-func New(msg string, namedErr error) error {
-	err := newError(fmt.Errorf(msg))
-	return WithNamedErr(err, namedErr)
-}
-
 func WithMessage(err error, msg string) error {
 	e := newError(err)
 	e.Message = msg
 	return e
 }
 
-func WithNamedErr(source error, named error) error {
-	e := newError(source)
+func WithNamedErr(err error, named error) error {
+	e := newError(err)
 	e.NamedErr = named
+	return e
+}
+
+func WithSourceErr(err error, source error) error {
+	e := newError(err)
+	e.SourceErr = source
 	return e
 }
 
@@ -46,14 +47,27 @@ func newError(err error) *Error {
 	if e, ok := err.(*Error); ok {
 		return e
 	}
-	return &Error{SourceErr: err, Message: err.Error()}
+	return &Error{SourceErr: err, NamedErr: err, Message: err.Error()}
 }
 
-func Is(sourceErr, targetErr error) bool {
-	se := newError(sourceErr)
-	te := newError(targetErr)
+func IsSource(err, sourceErr error) bool {
+	if err != nil || sourceErr != nil {
+		return false
+	}
+	se := newError(err)
+	te := newError(sourceErr)
 
 	return errors.Is(se.SourceErr, te.SourceErr)
+}
+
+func IsNamed(err, namedErr error) bool {
+	if err == nil || namedErr == nil {
+		return false
+	}
+	se := newError(err)
+	te := newError(namedErr)
+
+	return errors.Is(se.NamedErr, te.NamedErr)
 }
 
 func (e *Error) Error() string {
@@ -72,7 +86,18 @@ func (e *Error) Error() string {
 	} else {
 		ops = append(ops, e.NamedErr.Error())
 	}
+	ops = append(ops, e.Message)
 	return strings.Join(ops, "\n")
+}
+
+func GetNamedErr(err error) error {
+	e := newError(err)
+	return e.NamedErr
+}
+
+func GetSourceErr(err error) error {
+	e := newError(err)
+	return e.SourceErr
 }
 
 func GetOperator() string {

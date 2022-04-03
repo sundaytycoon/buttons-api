@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/sundaytycoon/buttons-api/internal/model"
 	"github.com/sundaytycoon/buttons-api/internal/utils/er"
@@ -24,7 +25,7 @@ func New(ar authRepository) *Service {
 	}
 }
 
-func (s *Service) GetWebOAuthRedirectURL(ctx context.Context, fromHost, provider string) (string, error) {
+func (s *Service) GetWebOAuthRedirectURL(_ context.Context, fromHost, provider string) (string, error) {
 	op := er.GetOperator()
 	v, err := s.authRepository.GetOAuthRedirectURL(fromHost, provider)
 	if err != nil {
@@ -33,13 +34,19 @@ func (s *Service) GetWebOAuthRedirectURL(ctx context.Context, fromHost, provider
 	return v, nil
 }
 
-func (s *Service) GetWebCallback(ctx context.Context, provider, code, state string) (string, string, error) {
+func (s *Service) GetWebCallback(ctx context.Context, val url.Values, provider string) (*model.User, error) {
 	op := er.GetOperator()
+
+	code := val.Get("code")
+	_ = val.Get("scope")
+	_ = val.Get("hd")
+	_ = val.Get("prompt")
+	_ = val.Get("authuser")
 
 	// 1. get accessToken // refreshToken // expiry // auth_type // email
 	ut, err := s.authRepository.GetUserInfoFromProvider(ctx, provider, code)
 	if err != nil {
-		return "", "", er.WrapOp(err, op)
+		return nil, er.WrapOp(err, op)
 	}
 	fmt.Println(ut)
 	// 2. get userdata
@@ -66,5 +73,7 @@ func (s *Service) GetWebCallback(ctx context.Context, provider, code, state stri
 
 	// 7. session data 업데ㅇ이트
 
-	return state, "", nil
+	return &model.User{
+		UserToken: *ut,
+	}, nil
 }

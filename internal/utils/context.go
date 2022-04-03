@@ -39,7 +39,7 @@ type meta struct {
 }
 
 // WithRequestMetadataFromHTTP http request에 담긴 값을 context 객체에 넣는 역할을 한다.
-func WithRequestMetadataFromHTTP(r *http.Request, countryCode, env string) context.Context {
+func WithRequestMetadataFromHTTP(r *http.Request, env string) context.Context {
 	ctx := r.Context()
 
 	reqIdV := ctx.Value(chi_middleware.RequestIDKey)
@@ -53,14 +53,13 @@ func WithRequestMetadataFromHTTP(r *http.Request, countryCode, env string) conte
 	}
 
 	md := metadata.New(map[string]string{
-		MDRequestIP:   r.RemoteAddr,
-		MDRequestID:   reqId,
-		MDHostIP:      hostIp,
-		MDHandler:     fmt.Sprintf("%s.%s", HandlerTypeHTTP, chi.RouteContext(ctx).RoutePattern()),
-		MDUserAgent:   r.UserAgent(),
-		MDReferer:     r.Referer(),
-		MDCountryCode: countryCode,
-		MDEnv:         env,
+		MDRequestIP: r.RemoteAddr,
+		MDRequestID: reqId,
+		MDHostIP:    hostIp,
+		MDHandler:   fmt.Sprintf("%s.%s", HandlerTypeHTTP, chi.RouteContext(ctx).RoutePattern()),
+		MDUserAgent: r.UserAgent(),
+		MDReferer:   r.Referer(),
+		MDEnv:       env,
 	})
 
 	return metadata.NewIncomingContext(ctx, md)
